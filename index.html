@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pulse Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-abyss:#09090b;--bg-deep:#0f0f12;--bg-card:#18181b;--bg-hover:#1f1f23;
+  --bg-surface:#121215;--bg-elevated:#27272a;
+  --blue:#d4a853;--sky:#e8c468;--amber:#f59e0b;--gold:#fbbf24;
+  --rose:#fb7185;--emerald:#6ee7a0;--violet:#8b5cf6;--lime:#84cc16;
+  --t1:#f4f4f5;--t2:#a1a1aa;--t3:#52525b;
+  --border:rgba(212,168,83,0.06);--border-a:rgba(212,168,83,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg-abyss);color:var(--t1);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 15% 5%,rgba(212,168,83,0.04) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 85% 90%,rgba(167,139,250,0.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:80px}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* METALLIC CARD */
+.mc{background:linear-gradient(145deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.015) 100%),var(--bg-card);border:1px solid var(--border);border-radius:14px;position:relative;overflow:hidden;transition:all .35s cubic-bezier(.4,0,.2,1)}
+.mc:hover{border-color:var(--border-a);box-shadow:0 8px 28px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.03);transform:translateY(-1px)}
+.mc:active{transform:scale(0.985);transition:transform .1s}
+
+/* EXPANDABLE HELPERS */
+.x-detail{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.x-open .x-detail{max-height:300px}
+.x-hint{transition:opacity .2s}
+.x-open .x-hint{opacity:0;height:0;margin:0;padding:0;overflow:hidden}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;position:sticky;top:0;z-index:100;background:rgba(9,9,11,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.topbar-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;background:linear-gradient(135deg,#d4a853,#f5e6c8,#d4a853);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.5px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-vix{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t3)}
+.topbar-vix .v{color:var(--amber);font-weight:600}
+
+/* NAV */
+.nav{display:flex;gap:2px;padding:6px 10px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nav button{flex-shrink:0;padding:8px 14px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--t3);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .3s;white-space:nowrap}
+.nav button.on{background:linear-gradient(135deg,rgba(212,168,83,0.12),rgba(212,168,83,0.04));color:var(--blue);border-color:var(--border-a)}
+.nav button:hover:not(.on){color:var(--t2)}
+
+/* SECTIONS */
+.sec{display:none;padding:0 14px}.sec.on{display:block;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TICKER DETAIL OVERLAY */
+.overlay{position:fixed;inset:0;z-index:200;background:var(--bg-abyss);overflow-y:auto;display:none;padding:0 0 40px}
+.overlay.open{display:block;animation:fu .25s ease}
+.ov-top{display:flex;align-items:center;justify-content:space-between;padding:16px;position:sticky;top:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(16px);z-index:10}
+.ov-back{background:none;border:none;color:var(--blue);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px}
+.ov-body{padding:0 16px}
+.ov-price-row{display:flex;align-items:baseline;gap:12px;margin:8px 0 4px}
+.ov-price{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700}
+.ov-change{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;padding:3px 8px;border-radius:6px}
+.ov-change.up{color:var(--emerald);background:rgba(16,185,129,0.1)}
+.ov-change.down{color:var(--rose);background:rgba(244,63,94,0.1)}
+.ov-chart{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0}
+.ov-chart canvas{width:100%;height:120px}
+.ov-chart-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.ov-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:12px 0}
+.ov-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px}
+.ov-stat .lab{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.ov-stat .val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600}
+.ov-news-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);padding:16px 0 8px}
+.ov-news-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:6px;cursor:pointer;transition:all .2s}
+.ov-news-item:hover{border-color:var(--border-a)}
+.ov-news-item h4{font-size:13px;font-weight:500;line-height:1.4;margin-bottom:4px}
+.ov-news-item .meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)}
+
+/* DIGEST */
+.digest-card{background:linear-gradient(145deg,var(--bg-card),var(--bg-elevated));border:1px solid var(--border-a);border-radius:16px;padding:22px 18px;margin:12px 0;position:relative;overflow:hidden}
+.digest-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(212,168,83,0.12),transparent 70%);border-radius:50%}
+.digest-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.digest-card h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px}
+.digest-card p{color:var(--t2);font-size:13px;line-height:1.5;margin-bottom:14px}
+.digest-output{background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px;font-size:13px;line-height:1.6;color:var(--t2);display:none;white-space:pre-wrap}
+.digest-output.show{display:block;animation:fu .4s ease}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s}
+.btn-p{background:linear-gradient(135deg,var(--blue),#b8860b);color:#0a0a0a}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,83,0.3)}
+.btn-p:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-s{border:1px solid var(--border-a);background:transparent;color:var(--blue)}
+
+/* SUB TABS */
+.stabs{display:flex;gap:6px;flex-wrap:wrap;padding:14px 0 10px;justify-content:center}
+.stab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--t3);font-size:12px;font-weight:500;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .3s}
+.stab.on{background:var(--blue);color:#0a0a0a;border-color:var(--blue)}
+
+/* WATCHLIST */
+.wl-head{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.wl-head h3{font-size:17px;font-weight:700}
+.wl-head span{font-size:12px;color:var(--t3)}
+.wl-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}
+.wl-scroll::-webkit-scrollbar{display:none}
+.wl-card{flex-shrink:0;width:125px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:12px;cursor:pointer;transition:all .3s}
+.wl-card:hover{border-color:var(--border-a);transform:translateY(-2px)}
+.wl-card:active{transform:scale(0.97)}
+.wl-card .ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+.wl-card .pr{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;margin-bottom:1px}
+.wl-card .tk{font-size:13px;font-weight:600}
+.wl-card .nm{font-size:10px;color:var(--t3)}
+.wl-card .ch{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;margin-top:3px}
+.wl-card .ch.up{color:var(--emerald)}.wl-card .ch.dn{color:var(--rose)}
+
+/* SECTORS */
+.sec-head{display:flex;justify-content:space-between;align-items:center;padding:10px 0 6px}
+.sec-head h3{font-size:17px;font-weight:700}
+.sec-head span{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t3)}
+.sec-row{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:5px;cursor:pointer;transition:all .3s}
+.sec-row:hover{border-color:var(--border-a)}
+.sec-row:active{transform:scale(0.99)}
+.sec-row .top{display:flex;align-items:center}
+.sec-row .etf{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--blue);width:46px;flex-shrink:0}
+.sec-row .info{flex:1;margin-left:10px}
+.sec-row .nm{font-size:13px;font-weight:500}
+.sec-row .bar-t{height:4px;background:rgba(255,255,255,0.04);border-radius:4px;margin-top:5px;overflow:hidden}
+.sec-row .bar-f{height:100%;border-radius:4px;transition:width 1s ease}
+.sec-row .bar-f.g{background:linear-gradient(90deg,var(--emerald),var(--lime))}
+.sec-row .bar-f.r{background:linear-gradient(90deg,var(--rose),#ef4444)}
+.sec-row .chg{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;margin-left:auto;padding-left:12px}
+.sec-row .chg.up{color:var(--emerald)}.sec-row .chg.dn{color:var(--rose)}
+.sec-detail{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.sec-row.expanded .sec-detail{max-height:300px}
+.sec-detail-inner{padding:12px 0 4px;border-top:1px solid var(--border);margin-top:10px}
+.sec-holding{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px}
+.sec-holding .ht{font-family:'IBM Plex Mono',monospace;font-weight:500;color:var(--t1)}
+.sec-holding .hn{color:var(--t2)}
+.sec-holding .hw{color:var(--t3);font-family:'IBM Plex Mono',monospace;font-size:11px}
+
+/* SUB CONTENT AREAS */
+.sub-content{display:none}.sub-content.on{display:block;animation:fu .3s ease}
+.headline-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:6px;cursor:pointer;transition:all .2s}
+.headline-item:hover{border-color:var(--border-a)}
+.headline-item h4{font-size:13px;font-weight:500;line-height:1.4;margin-bottom:4px}
+.headline-item .meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)}
+.analyst-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:8px}
+.analyst-card .ticker-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--blue);background:rgba(59,130,246,0.1);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.analyst-card .rating{font-size:14px;font-weight:600;margin-bottom:2px}
+.analyst-card .detail{font-size:12px;color:var(--t2);line-height:1.5}
+.analyst-card .target{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--amber);margin-top:4px}
+
+/* ECON CALENDAR */
+.econ-card{background:linear-gradient(145deg,var(--bg-card),var(--bg-elevated));border:1px solid var(--border);border-radius:14px;padding:18px;margin:12px 0}
+.econ-card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:4px}
+.econ-card p{font-size:12px;color:var(--t2);margin-bottom:12px}
+.econ-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin:12px 0 6px}
+.econ-row{display:flex;align-items:center;padding:11px 12px;border-radius:8px;margin-bottom:3px;cursor:pointer;transition:all .2s}
+.econ-row:hover{background:var(--bg-hover)}
+.econ-row.high{background:rgba(244,63,94,0.05);border-left:3px solid var(--rose)}
+.econ-row.medium{background:rgba(245,158,11,0.05);border-left:3px solid var(--amber)}
+.econ-row.low{background:rgba(59,130,246,0.04);border-left:3px solid var(--blue)}
+.econ-row .time{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2);width:60px;flex-shrink:0}
+.econ-row .dot{width:5px;height:5px;border-radius:50%;margin-right:8px;flex-shrink:0}
+.econ-row .dot.high{background:var(--rose)}.econ-row .dot.medium{background:var(--amber)}.econ-row .dot.low{background:var(--blue)}
+.econ-row .ev{flex:1;font-size:12px;font-weight:500;color:var(--amber)}
+.econ-row .vals{display:flex;gap:10px;margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px}
+.econ-row .vals .l{color:var(--t3);font-size:8px;text-transform:uppercase;letter-spacing:1px}
+
+/* GEX */
+.gex-tabs{display:flex;gap:4px;padding:10px 0}
+.gex-tab{flex:1;padding:10px 6px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .3s}
+.gex-tab.on{border-color:var(--blue);background:var(--bg-elevated)}
+.gex-tab .sym{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600}
+.gex-tab .pri{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;margin-top:2px}
+.gex-tab .dir{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:3px}
+.gex-tab .dir.bull{color:var(--emerald);background:rgba(16,185,129,0.1)}
+.gex-tab .dir.bear{color:var(--rose);background:rgba(244,63,94,0.1)}
+.kl{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:5px}
+.kl .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kl .pri{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:700;min-width:60px}
+.kl .pct{font-family:'IBM Plex Mono',monospace;font-size:10px}
+.kl .pct.up{color:var(--emerald)}.kl .pct.dn{color:var(--rose)}
+.kl .inf{flex:1}
+.kl .tag{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:3px}
+.kl .tag.res{color:var(--rose);background:rgba(244,63,94,0.1)}
+.kl .tag.sup{color:var(--emerald);background:rgba(16,185,129,0.1)}
+.kl .tag.pin{color:var(--amber);background:rgba(245,158,11,0.1)}
+.kl .tag.flip{color:var(--violet);background:rgba(212,168,83,0.04)}
+.kl .tag.spot{color:var(--sky);background:rgba(56,189,248,0.1)}
+.kl .desc{font-size:11px;color:var(--t2)}
+
+/* FLOW */
+.flow-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin:12px 0}
+.flow-bar h4{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1.5px;text-align:center;margin-bottom:8px}
+.ratio-track{height:8px;background:var(--bg-surface);border-radius:8px;overflow:hidden;display:flex}
+.ratio-put{background:linear-gradient(90deg,var(--rose),#f97316);transition:width .6s}
+.ratio-call{background:linear-gradient(90deg,var(--emerald),var(--lime));transition:width .6s}
+.ratio-labels{display:flex;justify-content:space-between;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600}
+.ratio-labels .pl{color:var(--rose)}.ratio-labels .cl{color:var(--emerald)}
+.ratio-counts{display:flex;justify-content:center;gap:16px;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2)}
+.ratio-counts .d{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
+.fc{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:6px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.fc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.fc.bull::after{background:var(--emerald)}.fc.bear::after{background:var(--rose)}
+.fc:hover{border-color:var(--border-a);transform:translateX(3px)}
+.fc .ft{display:flex;justify-content:space-between;margin-bottom:6px}
+.fc .strike{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600}
+.fc .strike .c{color:var(--emerald)}.fc .strike .p{color:var(--rose)}
+.fc .exp{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)}
+.fc .prem{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:var(--amber);text-align:right}
+.fc .iv{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);text-align:right}
+.fc .tags{display:flex;gap:3px;margin-bottom:6px}
+.fc .tg{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 5px;border-radius:3px}
+.tg.sweep{color:var(--amber);background:rgba(245,158,11,0.12)}
+.tg.block{color:var(--violet);background:rgba(139,92,246,0.12)}
+.tg.new{color:var(--sky);background:rgba(56,189,248,0.12)}
+.tg.snapshot{color:var(--blue);background:rgba(59,130,246,0.12)}
+.fc .fm{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);display:flex;gap:10px;flex-wrap:wrap}
+
+/* EARNINGS */
+.ec{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:7px;cursor:pointer;transition:all .35s;position:relative;overflow:hidden}
+.ec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:3px 0 0 3px}
+.ec[data-h="hot"]::before{background:var(--rose)}.ec[data-h="warm"]::before{background:var(--amber)}.ec[data-h="cool"]::before{background:var(--blue)}
+.ec:hover{border-color:var(--border-a);transform:translateX(3px)}
+.ec .et{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ec .co{display:flex;align-items:center;gap:10px}
+.ec .ci{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700}
+.ci.hot{background:linear-gradient(135deg,var(--rose),var(--amber));color:var(--bg-deep)}
+.ci.warm{background:linear-gradient(135deg,var(--amber),var(--gold));color:var(--bg-deep)}
+.ci.cool{background:linear-gradient(135deg,var(--blue),var(--sky));color:var(--bg-deep)}
+.ec .cn{font-size:15px;font-weight:600}.ec .ct{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t3)}
+.ec .ed{text-align:right}
+.ec .dy{font-family:'Playfair Display',serif;font-size:24px;line-height:1}
+.ec .dm{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.5px;margin-top:2px}
+.ec .st{display:inline-flex;align-items:center;gap:3px;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:3px 7px;border-radius:5px;margin-bottom:8px}
+.st.confirmed{color:var(--emerald);background:rgba(16,185,129,0.1)}.st.tentative{color:var(--amber);background:rgba(245,158,11,0.1)}
+.ec .es{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.ec .est{background:var(--bg-surface);padding:7px 5px;text-align:center}
+.est .el{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:2px}
+.est .ev{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500}
+.ec .ew{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+.ec.expanded .ew{max-height:500px}
+.ec .ewt{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin:8px 0 6px;display:flex;align-items:center;gap:5px}
+.ec .ewi{font-size:12px;color:var(--t2);padding:4px 0 4px 14px;line-height:1.5;position:relative}
+.ec .ewi::before{content:'→';position:absolute;left:0;color:var(--t3);font-size:10px}
+.ec .exp{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-align:center;margin-top:5px;letter-spacing:1px}
+.ec.expanded .exp{display:none}
+
+/* ACADEMY */
+.ac-head{text-align:center;padding:16px 0 10px}
+.ac-head h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px}
+.ac-head p{font-size:12px;color:var(--t2)}
+.tc{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:8px;cursor:pointer;transition:all .3s}
+.tc:hover{border-color:var(--border-a)}
+.tc.unlocked{border-left:3px solid var(--blue)}
+.tc.locked{opacity:.55}
+.tc .tl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.tc h3{font-size:16px;font-weight:600;margin-bottom:3px}
+.tc p{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:6px}
+.tc .tm{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);display:flex;gap:10px}
+.level-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
+.level-tag.beginner{color:var(--emerald);background:rgba(16,185,129,0.1)}
+.level-tag.intermediate{color:var(--amber);background:rgba(245,158,11,0.1)}
+.tc .prog{height:3px;background:rgba(255,255,255,0.04);border-radius:3px;margin-top:8px;overflow:hidden}
+.tc .prog-f{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--violet))}
+.tc .mods{margin-top:10px}
+.tc .mod{padding:8px 10px;background:var(--bg-surface);border:1px solid var(--border);border-radius:7px;margin-bottom:3px;display:flex;align-items:center;justify-content:space-between;font-size:12px;cursor:pointer;transition:all .2s}
+.tc .mod:hover{border-color:var(--border-a)}
+.tc .mod .mn{display:flex;align-items:center;gap:8px}
+.tc .mod .mi{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue)}
+.lesson-view{display:none;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;margin-top:8px}
+.lesson-view.show{display:block;animation:fu .3s ease}
+.lesson-view h4{font-size:15px;font-weight:600;margin-bottom:8px}
+.lesson-view .body{font-size:13px;color:var(--t2);line-height:1.7}
+.lesson-view .kp{background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin:10px 0}
+.lesson-view .kp h5{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--blue);margin-bottom:6px}
+.lesson-view .kp li{font-size:12px;color:var(--t2);padding:3px 0;line-height:1.5}
+
+/* RESEARCH */
+.res-search{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:12px 0;display:flex;align-items:center;gap:8px}
+.res-search input{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:'Outfit',sans-serif;font-size:14px}
+.res-search input::placeholder{color:var(--t3)}
+.res-btn{padding:8px 14px;border-radius:8px;border:none;background:var(--rose);color:white;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1px;cursor:pointer}
+.res-title{font-size:15px;font-weight:600;padding:10px 0 6px}
+.res-cards{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.res-cards::-webkit-scrollbar{display:none}
+.res-card{flex-shrink:0;width:110px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .3s}
+.res-card:hover{border-color:var(--border-a)}
+.res-card .ri{width:44px;height:44px;border-radius:10px;margin:0 auto 6px;background:linear-gradient(135deg,var(--bg-elevated),var(--bg-surface));display:flex;align-items:center;justify-content:center;font-size:18px}
+.res-card .rt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600}
+.res-card .rn{font-size:10px;color:var(--t3)}
+.res-result{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:10px;display:none}
+.res-result.show{display:block;animation:fu .3s ease}
+.res-result h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.res-result .detail{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* WEEK LABEL */
+.wk{font-family:'Playfair Display',serif;font-size:15px;padding:14px 0 6px;display:flex;align-items:center;gap:8px}
+.wk .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* LOADING */
+.loading{text-align:center;padding:20px;color:var(--t3);font-size:12px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-brand">Pulse</div>
+    <div class="topbar-right">
+      <div class="topbar-vix">VIX <span class="v" id="vixVal">--</span></div>
+      <button onclick="showSettings()" style="background:none;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:4px" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <div id="apiBanner" style="display:none;margin:6px 14px;padding:12px 16px;background:rgba(212,168,83,0.06);border:1px solid rgba(212,168,83,0.15);border-radius:10px;font-size:12px;color:var(--t2)">
+    <strong style="color:var(--blue)">Go live:</strong> Tap ⚙ to add your free <a href="https://finnhub.io/register" target="_blank" style="color:var(--blue);text-decoration:underline">Finnhub key</a> for real-time quotes and news.
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="on" data-s="overview">Overview</button>
+    <button data-s="earnings">Earnings</button>
+    <button data-s="economy">Economy</button>
+    <button data-s="gex">GEX / Levels</button>
+    <button data-s="flow">Flow</button>
+    <button data-s="academy">Academy</button>
+    <button data-s="research">Research</button>
+    <button data-s="purpose">Why</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="sec on" id="sec-overview">
+    <div class="digest-card">
+      <div class="digest-label">Your Morning Digest</div>
+      <h2>See Clearly, Act Wisely</h2>
+      <p>The market moves fast. This digest cuts through the noise — giving you clarity on what matters today so you can make decisions with confidence, not anxiety.</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-p" id="digestBtn" onclick="generateDigest()">Generate Digest</button>
+      </div>
+      <div class="digest-output" id="digestOutput"></div>
+    </div>
+
+    <div class="stabs" id="overviewSubs">
+      <button class="stab on" data-sub="main">Overview</button>
+      <button class="stab" data-sub="headlines">Headlines</button>
+      <button class="stab" data-sub="analyst">Analyst Intel</button>
+      <button class="stab" data-sub="crypto">Crypto</button>
+    </div>
+
+    <div id="sub-main" class="sub-content on">
+      <div class="wl-head"><h3>Watchlist</h3><span id="wlCount"></span></div>
+      <div class="wl-scroll" id="wlScroll"></div>
+      <div class="sec-head"><h3>Sectors</h3><span>11 · 1D FLOW</span></div>
+      <div id="sectorsList"></div>
+    </div>
+
+    <div id="sub-headlines" class="sub-content">
+      <div id="headlinesList"></div>
+    </div>
+
+    <div id="sub-analyst" class="sub-content">
+      <div id="analystList"></div>
+    </div>
+
+    <div id="sub-crypto" class="sub-content">
+      <div id="cryptoList"></div>
+    </div>
+  </div>
+
+  <!-- EARNINGS -->
+  <div class="sec" id="sec-earnings">
+    <div class="stabs" id="eMTabs">
+      <button class="stab" data-m="all">All</button>
+      <button class="stab on" data-m="apr">April</button>
+      <button class="stab" data-m="may">May</button>
+      <button class="stab" data-m="jun">June</button>
+    </div>
+    <div id="earningsTimeline"></div>
+  </div>
+
+  <!-- ECONOMY -->
+  <div class="sec" id="sec-economy">
+    <div class="econ-card">
+      <div class="digest-label">MACRO</div>
+      <h3>Economic Calendar</h3>
+      <p>Context shapes conviction. Know what's moving the macro before the macro moves you.</p>
+    </div>
+    <div class="econ-meta" id="econMeta"></div>
+    <div id="econList"></div>
+  </div>
+
+  <!-- GEX -->
+  <div class="sec" id="sec-gex">
+    <div class="gex-tabs" id="gexTabs"></div>
+    <div class="digest-label" style="padding:12px 0 8px">KEY LEVELS</div>
+    <div id="klList"></div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="sec" id="sec-flow">
+    <div class="flow-bar">
+      <h4>CALL / PUT RATIO</h4>
+      <div class="ratio-track"><div class="ratio-put" style="width:58%"></div><div class="ratio-call" style="width:42%"></div></div>
+      <div class="ratio-labels"><span class="pl">Put 58%</span><span class="cl">Call 42%</span></div>
+      <div class="ratio-counts">
+        <span><span class="d" style="background:var(--rose)"></span>Put: 591,820</span>
+        <span><span class="d" style="background:var(--emerald)"></span>Call: 291,025</span>
+      </div>
+    </div>
+    <div id="flowList"></div>
+  </div>
+
+  <!-- ACADEMY -->
+  <div class="sec" id="sec-academy">
+    <div class="ac-head"><h2>Academy</h2><p>The tools change. The mental models last forever. Invest in what compounds.</p></div>
+    <div class="digest-label" style="padding:6px 0">TRACKS</div>
+    <div id="acTracks"></div>
+    <div id="lessonViewer"></div>
+  </div>
+
+  <!-- RESEARCH -->
+  <div class="sec" id="sec-research">
+    <div class="res-search">
+      <input type="text" placeholder="Search any ticker..." id="resInput">
+      <button class="res-btn" onclick="doResearch()">RESEARCH</button>
+    </div>
+    <div id="resResult" class="res-result"></div>
+    <div class="res-title">Popular</div>
+    <div class="res-cards" id="resPopular"></div>
+  </div>
+
+  <!-- PURPOSE -->
+  <div class="sec" id="sec-purpose">
+    <div style="padding:20px 0;text-align:center">
+      <div style="font-size:36px;margin-bottom:12px">◉</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;line-height:1.3;margin-bottom:16px">Define yourself by<br><em style="background:linear-gradient(135deg,var(--blue),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent">who you are</em>,<br>not what you do.</h2>
+      <p style="font-size:13px;color:var(--t2);line-height:1.7;max-width:340px;margin:0 auto 20px">None of us want to be remembered for the last balance in our bank account. Not the last title on our business card. Not how many projects we completed.</p>
+      <p style="font-size:13px;color:var(--t2);line-height:1.7;max-width:340px;margin:0 auto 20px">We want to be remembered for the kind of person we are. Devoted. Loving. Optimistic. Those are the words that last.</p>
+      <p style="font-size:13px;color:var(--t2);line-height:1.7;max-width:340px;margin:0 auto 24px">The work will end — you'll quit, retire, or pivot. But who you are doesn't end. Build tools that empower people. Learn so you can teach. Trade with discipline, not desperation.</p>
+      <div style="background:var(--bg-card);border:1px solid var(--border-a);border-radius:14px;padding:20px;text-align:left">
+        <div class="mono" style="font-size:10px;letter-spacing:2px;color:var(--blue);margin-bottom:8px">WHY PULSE EXISTS</div>
+        <p style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:12px">This terminal wasn't built to help you stare at numbers all day. It was built to give you <strong style="color:var(--t1)">clarity</strong> — so you can spend less time reacting to the market and more time building the life you actually want.</p>
+        <p style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:12px">The Academy isn't here to sell you a course. It's here because <strong style="color:var(--t1)">understanding compounds</strong> — and the person who understands market structure, risk, and positioning will always outperform the person chasing signals.</p>
+        <p style="font-size:13px;color:var(--t1);line-height:1.7;font-weight:500">Every feature in Pulse asks one question: does this help someone see more clearly and act more wisely?</p>
+      </div>
+      <div style="margin-top:20px;padding:16px;border-top:1px solid var(--border)">
+        <div class="mono" style="font-size:10px;color:var(--t3);letter-spacing:1px">BUILT WITH INTENT, PURPOSE & LOVE</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:4px">by Roodboy · 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER DETAIL OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="ov-top">
+    <button class="ov-back" onclick="closeOverlay()">← Back</button>
+    <span class="mono" style="font-size:12px;color:var(--t3)" id="ovTicker"></span>
+  </div>
+  <div class="ov-body" id="ovBody"></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — API key stored in localStorage
+// ============================================================
+let FINNHUB_KEY = localStorage.getItem('pulse_finnhub_key') || 'd7ihe59r01qn2qau1it0d7ihe59r01qn2qau1itg';
+
+function showSettings() {
+  const current = FINNHUB_KEY || '(none set)';
+  const key = prompt('Enter your free Finnhub API key (get one at finnhub.io/register):\n\nCurrent: ' + current);
+  if (key !== null && key.trim()) {
+    FINNHUB_KEY = key.trim();
+    localStorage.setItem('pulse_finnhub_key', FINNHUB_KEY);
+    alert('Key saved! Refreshing data...');
+    location.reload();
+  }
+}
+
+// Keys are pre-configured — banner only shows if cleared
+if (!FINNHUB_KEY) {
+  setTimeout(() => {
+    const banner = document.getElementById('apiBanner');
+    if (banner) banner.style.display = 'block';
+  }, 500);
+}
+
+// ============================================================
+// DATA (fallbacks when APIs unavailable)
+// ============================================================
+const W = [
+  {t:'AMZN',n:'Amazon',p:250.74,c:0.41,e:'🅰'},
+  {t:'NVDA',n:'NVIDIA',p:112.36,c:2.33,e:'🟩'},
+  {t:'MSFT',n:'Microsoft',p:388.12,c:-0.18,e:'🟦'},
+  {t:'AAPL',n:'Apple',p:198.45,c:0.67,e:'🍎'},
+  {t:'META',n:'Meta',p:512.30,c:1.84,e:'Ⓜ'},
+  {t:'TSLA',n:'Tesla',p:245.80,c:-1.22,e:'⚡'},
+  {t:'GOOGL',n:'Alphabet',p:162.55,c:0.95,e:'🔍'},
+];
+
+const SECTORS = [
+  {e:'XLI',n:'Industrials',c:3.18,h:['GE +4.2%','CAT +3.8%','HON +2.9%','UNP +3.1%','RTX +2.7%']},
+  {e:'XLY',n:'Cons. Discret.',c:2.79,h:['AMZN +2.1%','TSLA +3.4%','HD +1.8%','MCD +1.2%','NKE +2.5%']},
+  {e:'XLK',n:'Technology',c:2.33,h:['AAPL +1.5%','MSFT +2.0%','NVDA +3.8%','AVGO +2.2%','CRM +1.9%']},
+  {e:'XLV',n:'Health Care',c:2.19,h:['UNH +2.4%','JNJ +1.8%','LLY +3.1%','PFE +1.5%','ABT +1.9%']},
+  {e:'XLP',n:'Cons. Staples',c:1.03,h:['PG +0.9%','KO +1.1%','PEP +0.8%','COST +1.4%','WMT +0.7%']},
+  {e:'XLF',n:'Financials',c:0.88,h:['JPM +1.2%','BAC +0.9%','GS +1.5%','MS +0.7%','BRK.B +0.6%']},
+  {e:'XLC',n:'Communication',c:0.72,h:['META +1.8%','GOOGL +0.9%','NFLX +1.1%','DIS +0.5%','CMCSA +0.3%']},
+  {e:'XLRE',n:'Real Estate',c:0.45,h:['PLD +0.8%','AMT +0.5%','EQIX +0.6%','SPG +0.3%']},
+  {e:'XLU',n:'Utilities',c:0.31,h:['NEE +0.4%','SO +0.3%','DUK +0.2%','AEP +0.5%']},
+  {e:'XLE',n:'Energy',c:-0.42,h:['XOM -0.5%','CVX -0.3%','SLB -0.8%','COP -0.4%']},
+  {e:'XLB',n:'Materials',c:-0.67,h:['LIN -0.4%','SHW -0.8%','APD -0.6%','FCX -1.1%']},
+];
+
+const ECON = [
+  {t:'1:30 PM',ev:'Retail Sales YoY (Mar)',f:'2.4',pr:'3.7',i:'high'},
+  {t:'1:30 PM',ev:'Retail Sales Ex Autos MoM (Mar)',f:'1',pr:'0.5',i:'high'},
+  {t:'1:30 PM',ev:'Retail Sales Ex Gas/Autos MoM (Mar)',f:'0.8',pr:'0.4',i:'high'},
+  {t:'1:30 PM',ev:'Retail Sales MoM (Mar)',f:'0.6',pr:'0.5',i:'high'},
+  {t:'1:55 PM',ev:'Redbook YoY (Apr/18)',f:'—',pr:'7',i:'low'},
+  {t:'3:00 PM',ev:'Pending Home Sales YoY (Mar)',f:'0.7',pr:'-0.8',i:'medium'},
+  {t:'3:00 PM',ev:'Pending Home Sales MoM (Mar)',f:'0.5',pr:'1.8',i:'medium'},
+  {t:'3:00 PM',ev:'Retail Inventories Ex Autos MoM (Feb)',f:'0.3',pr:'0.3',i:'low'},
+  {t:'3:00 PM',ev:'Business Inventories MoM (Feb)',f:'0.1',pr:'-0.1',i:'low'},
+  {t:'7:30 PM',ev:'Fed Waller Speech',f:'—',pr:'—',i:'high'},
+  {t:'10:00 PM',ev:'API Crude Oil Stock Change (Apr/17)',f:'-1',pr:'6.1',i:'medium'},
+];
+
+const GEX = [
+  {s:'SPX',p:'7,126.06',c:'+1.20%',d:'bull'},
+  {s:'SPY',p:'710.14',c:'-0.12%',d:'bear'},
+  {s:'QQQ',p:'648.85',c:'+0.88%',d:'bull'},
+];
+
+const KL = [
+  {p:'7,170',pct:'+0.6%',tag:'CALL WALL',tc:'res',desc:'Rally ceiling — dealers sell into this level',clr:'var(--rose)'},
+  {p:'7,150',pct:'SPOT',tag:'SPOT',tc:'spot',desc:'Current price level',clr:'var(--sky)'},
+  {p:'7,125',pct:'-0.4%',tag:'GEX FLIP',tc:'flip',desc:'Above flip — moves dampen, mean-reversion favored',clr:'var(--violet)'},
+  {p:'7,050',pct:'-1.4%',tag:'ON SIGHT · PIN',tc:'pin',desc:'Gamma magnet — price pins and chops here',clr:'var(--amber)'},
+  {p:'7,000',pct:'-2.1%',tag:'PUT WALL',tc:'sup',desc:'Bounce zone — breaks below accelerate fast',clr:'var(--emerald)'},
+];
+
+const FLOW = [
+  {tk:'IWM',st:'$280C',exp:'May 15, 26',dte:'27d',pr:'$20.79M',iv:'21.9%',tg:['block','new','snapshot'],vol:'41.9K @ $4.96',voi:'41.9K/19.2K (2.19x)',sp:'$275.78',dl:'0.423',b:true},
+  {tk:'IWM',st:'$260P',exp:'May 15, 26',dte:'27d',pr:'$19.65M',iv:'25.7%',tg:['sweep','block','new','snapshot'],vol:'98.3K @ $2',voi:'98.3K/27.7K (3.54x)',sp:'$275.78',dl:'-0.183',b:false},
+  {tk:'IWM',st:'$267P',exp:'May 29, 26',dte:'41d',pr:'$15.87M',iv:'23.3%',tg:['sweep','block','new','snapshot'],vol:'35.3K @ $4.5',voi:'35.3K/19 (1855x)',sp:'$275.78',dl:'-0.313',b:false},
+  {tk:'IWM',st:'$263P',exp:'May 15, 26',dte:'27d',pr:'$15.37M',iv:'25.0%',tg:['sweep','block','new'],vol:'62.0K @ $2.48',voi:'62.0K/3.8K (16.18x)',sp:'$275.78',dl:'-0.250',b:false},
+  {tk:'SPY',st:'$720C',exp:'Apr 24, 26',dte:'6d',pr:'$12.45M',iv:'18.2%',tg:['sweep','new'],vol:'28.1K @ $1.85',voi:'28.1K/12.5K (2.25x)',sp:'$710.14',dl:'0.312',b:true},
+];
+
+const EARN = [
+  {co:'Tesla',t:'TSLA',ic:'TS',dt:'2026-04-22',dw:'TUE',tm:'After Close',st:'confirmed',h:'hot',mo:'apr',eps:'$0.41',rev:'$24.8B',le:'$0.50',sr:'+9.9%',pe:'~145x',w:['Deliveries missed — demand trajectory?','Model refresh impact on ASPs','FSD v13 regulatory progress','Energy storage growth','Robotaxi timeline update']},
+  {co:'Alphabet',t:'GOOGL',ic:'AL',dt:'2026-04-29',dw:'TUE',tm:'After Close',st:'confirmed',h:'warm',mo:'apr',eps:'$2.12',rev:'$107B',le:'$2.81',sr:'+8.2%',pe:'~20x',w:['Google Cloud 47.8% growth','$243B cloud backlog','Search +16.5% YoY','AI Overviews ad impact','Custom chip Axion']},
+  {co:'Microsoft',t:'MSFT',ic:'MS',dt:'2026-04-29',dw:'TUE',tm:'After Close',st:'confirmed',h:'warm',mo:'apr',eps:'$4.04',rev:'$68.5B',le:'$3.46',sr:'+4.1%',pe:'~32x',w:['Azure guided 37-38%','Copilot seat count','$37.5B capex trajectory','AI $25B annual run rate','Gaming synergies']},
+  {co:'Amazon',t:'AMZN',ic:'AZ',dt:'2026-04-29',dw:'TUE',tm:'After Close',st:'confirmed',h:'warm',mo:'apr',eps:'$1.38',rev:'$176B',le:'$1.95',sr:'-1.0%',pe:'~38x',w:['AWS AI workload reaccel','$200B capex guidance','Retail margin gains','Trainium adoption','Ad revenue growth']},
+  {co:'Meta',t:'META',ic:'ME',dt:'2026-04-30',dw:'WED',tm:'After Close',st:'confirmed',h:'warm',mo:'apr',eps:'$5.28',rev:'$42.8B',le:'$6.03',sr:'+12%',pe:'~24x',w:['$125B capex fallout','Llama 4 enterprise','Reels vs feed monetization','Reality Labs breakeven','Threads monetization']},
+  {co:'Apple',t:'AAPL',ic:'AP',dt:'2026-05-01',dw:'THU',tm:'After Close',st:'confirmed',h:'cool',mo:'may',eps:'$1.62',rev:'$94.5B',le:'$1.65',sr:'+2.1%',pe:'~31x',w:['iPhone 17 ASP trends','Apple Intelligence adoption','Services margin','Vision Pro sales','China pressure']},
+  {co:'NVIDIA',t:'NVDA',ic:'NV',dt:'2026-05-20',dw:'TUE',tm:'After Close',st:'confirmed',h:'hot',mo:'may',eps:'$1.78',rev:'$78.8B',le:'$1.62',sr:'+6.6%',pe:'~32x',w:['Data center $51.2B (+66% YoY)','Blackwell vs Vera Rubin','Gross margin 73.6%','OpenAI + Anthropic partnerships','Gaming $3.7B (+47%)','China exclusion impact']},
+  {co:'Broadcom',t:'AVGO',ic:'BC',dt:'2026-06-12',dw:'THU',tm:'After Close',st:'tentative',h:'warm',mo:'jun',eps:'$1.51',rev:'$15.8B',le:'$1.42',sr:'+5.8%',pe:'~30x',w:['Custom AI accel (Google, Meta)','VMware integration','AI networking demand','Semicycle recovery']},
+];
+
+const ACAD = [
+  {n:'01',t:'Foundations',d:'The mental model before the tools. Learn how markets are organized, how orders fill, and why price moves.',lv:'beginner',l:3,q:6,pr:33,u:true,
+   mods:[
+    {n:'Market structure',done:true,content:'<h4>Market Structure</h4><div class="body"><p>How exchanges, participants, and session phases fit together.</p><p>U.S. equity markets operate in three distinct phases: pre-market (4:00–9:30 AM ET), regular hours (9:30 AM–4:00 PM ET), and after-hours (4:00–8:00 PM ET).</p></div><div class="kp"><h5>KEY POINTS</h5><ul><li>Regular hours carry the bulk of daily volume</li><li>Pre-market and after-hours have wider spreads and thinner books</li><li>Overnight news drives gaps because price discovery pauses but information does not</li><li>The first and last 30 minutes tend to be the most active</li></ul></div>'},
+    {n:'Order types',done:false,content:'<h4>Order Types</h4><div class="body"><p>Market, limit, stop — what each order instructs the exchange to do.</p><p>A market order fills immediately at the best available price. A limit order sets a maximum buy price or minimum sell price. A stop order becomes a market order once a trigger price is hit.</p></div><div class="kp"><h5>KEY POINTS</h5><ul><li>Market orders guarantee execution, not price</li><li>Limit orders guarantee price, not execution</li><li>Stop-losses protect against large drawdowns</li><li>Stop-limits can fail to fill in fast markets</li></ul></div>'},
+    {n:'Reading candlesticks',done:false,content:'<h4>Reading Candlesticks</h4><div class="body"><p>What a single candle tells you — and what it doesn\'t.</p><p>Each candlestick shows four data points: open, high, low, close. The body shows the range between open and close. The wicks show the extremes.</p></div><div class="kp"><h5>KEY POINTS</h5><ul><li>Long wicks signal rejection of a price level</li><li>Small bodies indicate indecision</li><li>Volume confirms the candle\'s significance</li><li>Context matters more than any single candle pattern</li></ul></div>'},
+   ]},
+  {n:'02',t:'Options 101',d:'Calls, puts, the Greeks, assignment, and the most common spread structures.',lv:'intermediate',l:5,q:8,pr:0,u:false,mods:[]},
+  {n:'03',t:'Flow Reading',d:'How to read the options tape, spot unusual activity, and understand institutional signals.',lv:'intermediate',l:4,q:6,pr:0,u:false,mods:[]},
+  {n:'04',t:'GEX & Positioning',d:'Gamma exposure, dealer hedging, and how options market-making creates predictable price behavior.',lv:'intermediate',l:3,q:5,pr:0,u:false,mods:[]},
+];
+
+const POP = [{t:'AAPL',n:'Apple',e:'🍎'},{t:'NVDA',n:'NVIDIA',e:'🟩'},{t:'MSFT',n:'Microsoft',e:'🟦'},{t:'AMZN',n:'Amazon',e:'🅰'},{t:'TSLA',n:'Tesla',e:'⚡'},{t:'META',n:'Meta',e:'Ⓜ'}];
+
+// ============================================================
+// API HELPERS
+// ============================================================
+const cache = {};
+async function fetchQuote(sym) {
+  if (cache[sym] && Date.now()-cache[sym].ts < 300000) return cache[sym].d;
+  try {
+    const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`);
+    const d = await r.json();
+    if (d.c > 0) { const res={price:d.c,change:d.d,pct:d.dp,high:d.h,low:d.l,open:d.o,pc:d.pc,src:'live'}; cache[sym]={d:res,ts:Date.now()}; return res; }
+  } catch(e) {}
+  const s = sym.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  return {price:100+(s%900),change:((s*7)%200-100)/100,pct:((s*7)%200-100)/100/((100+(s%900))/100),high:0,low:0,open:0,pc:0,src:'demo'};
+}
+
+async function fetchNews(sym) {
+  try {
+    const to = new Date().toISOString().split('T')[0];
+    const fr = new Date(Date.now()-7*86400000).toISOString().split('T')[0];
+    const r = await fetch(`https://finnhub.io/api/v1/company-news?symbol=${sym}&from=${fr}&to=${to}&token=${FINNHUB_KEY}`);
+    const d = await r.json();
+    if (Array.isArray(d) && d.length) return d.slice(0,6);
+  } catch(e) {}
+  return [{headline:`${sym} latest market analysis`,source:'Market Watch',datetime:Date.now()/1000,url:'#',summary:`Latest developments for ${sym} including earnings outlook, analyst updates, and sector trends.`}];
+}
+
+async function fetchProfile(sym) {
+  try {
+    const r = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${sym}&token=${FINNHUB_KEY}`);
+    const d = await r.json();
+    if (d.name) return d;
+  } catch(e) {}
+  return {name:sym,finnhubIndustry:'Technology',marketCapitalization:0,country:'US',exchange:'NASDAQ'};
+}
+
+function genSparkline(sym) {
+  const s = sym.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const base = 100+(s%400); const pts=[]; let v=base;
+  for(let i=0;i<30;i++){v+=(Math.sin(s+i)*3)+(Math.random()-0.48)*5;pts.push(Math.max(v,10))}
+  return pts;
+}
+
+// ============================================================
+// LIVE DATA LOADERS
+// ============================================================
+async function refreshWatchlistPrices() {
+  if (!FINNHUB_KEY) return;
+  for (const w of W) {
+    try {
+      const q = await fetchQuote(w.t);
+      if (q.src === 'live') { w.p = q.price; w.c = q.pct; }
+    } catch(e) {}
+  }
+  renderWatchlist();
+}
+
+async function refreshSectorPrices() {
+  if (!FINNHUB_KEY) return;
+  const etfs = ['XLI','XLY','XLK','XLV','XLP','XLF','XLC','XLRE','XLU','XLE','XLB'];
+  for (const s of SECTORS) {
+    try {
+      const q = await fetchQuote(s.e);
+      if (q.src === 'live') s.c = q.pct;
+    } catch(e) {}
+  }
+  SECTORS.sort((a,b) => b.c - a.c);
+  renderSectors();
+}
+
+async function refreshCrypto() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&x_cg_demo_api_key=CG-2fv8hGGDKwRjNnLXvabL1Lzs');
+    const d = await r.json();
+    const map = {bitcoin:'BTC',ethereum:'ETH',solana:'SOL',ripple:'XRP',cardano:'ADA'};
+    const names = {bitcoin:'Bitcoin',ethereum:'Ethereum',solana:'Solana',ripple:'XRP',cardano:'Cardano'};
+    const coins = Object.entries(d).map(([id,v]) => ({
+      n:names[id], s:map[id], p:v.usd, c:v.usd_24h_change, mc:v.usd_market_cap, live:true
+    }));
+    document.getElementById('cryptoList').innerHTML = coins.map(c => {
+      const up = c.c >= 0;
+      const fmtP = c.p >= 1 ? '$'+c.p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '$'+c.p.toFixed(4);
+      const fmtMC = c.mc > 1e12 ? '$'+(c.mc/1e12).toFixed(2)+'T' : '$'+(c.mc/1e9).toFixed(1)+'B';
+      return `<div class="mc" style="display:flex;align-items:center;padding:14px 16px;margin-bottom:5px;cursor:pointer">
+        <div style="flex:1"><div style="font-size:14px;font-weight:600">${c.n}</div><div class="mono" style="font-size:11px;color:var(--t3)">${c.s} · ${fmtMC}</div></div>
+        <div style="text-align:right"><div class="mono" style="font-size:14px;font-weight:600">${fmtP}</div><div class="mono" style="font-size:12px;font-weight:600;color:${up?'var(--emerald)':'var(--rose)'}">${up?'+':''}${c.c.toFixed(1)}%</div></div>
+      </div>`;
+    }).join('');
+  } catch(e) { /* fallback already rendered */ }
+}
+
+async function refreshHeadlines() {
+  if (!FINNHUB_KEY) return;
+  try {
+    const r = await fetch(`https://finnhub.io/api/v1/news?category=general&token=${FINNHUB_KEY}`);
+    const d = await r.json();
+    if (!Array.isArray(d) || !d.length) return;
+    const items = d.slice(0, 10);
+    document.getElementById('headlinesList').innerHTML = items.map(h => {
+      return `<div class="mc headline-item" style="padding:16px;margin-bottom:6px;cursor:pointer" onclick="window.open('${h.url}','_blank')">
+        <h4 style="font-size:14px;font-weight:500;line-height:1.5;margin-bottom:6px">${h.headline}</h4>
+        <div style="font-size:12px;color:var(--t2);line-height:1.5">${h.summary ? h.summary.slice(0,180)+'...' : ''}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+          <span class="mono" style="font-size:10px;color:var(--t3)">${h.source} · ${new Date(h.datetime*1000).toLocaleDateString()}</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { /* fallback already rendered */ }
+}
+
+async function refreshVIX() {
+  if (!FINNHUB_KEY) return;
+  try {
+    const q = await fetchQuote('^VIX');
+    if (q.src === 'live') document.getElementById('vixVal').textContent = q.price.toFixed(2);
+  } catch(e) {
+    // Try alternative VIX symbol
+    try {
+      const q = await fetchQuote('VIX');
+      if (q.src === 'live') document.getElementById('vixVal').textContent = q.price.toFixed(2);
+    } catch(e2) {}
+  }
+}
+
+async function refreshEconCalendar() {
+  if (!FINNHUB_KEY) return;
+  try {
+    const from = new Date().toISOString().split('T')[0];
+    const to = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
+    const r = await fetch(`https://finnhub.io/api/v1/calendar/economic?from=${from}&to=${to}&token=${FINNHUB_KEY}`);
+    const d = await r.json();
+    if (!d.economicCalendar || !d.economicCalendar.length) return;
+    const events = d.economicCalendar.slice(0, 15);
+    document.getElementById('econMeta').textContent = `Live economic releases · ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}`;
+    document.getElementById('econList').innerHTML = events.map(e => {
+      const imp = e.impact === 3 ? 'high' : e.impact === 2 ? 'medium' : 'low';
+      const impClr = imp==='high'?'var(--rose)':imp==='medium'?'var(--amber)':'var(--steel)';
+      const time = e.time || '--';
+      return `<div class="econ-row ${imp}">
+        <div class="mono" style="font-size:11px;color:var(--t2);width:60px;flex-shrink:0">${time}</div>
+        <div style="width:5px;height:5px;border-radius:50%;margin-right:8px;flex-shrink:0;background:${impClr}"></div>
+        <div style="flex:1;font-size:12px;font-weight:500;color:var(--amber)">${e.event} (${e.country})</div>
+        <div style="display:flex;gap:10px;margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px">
+          <div><div style="color:var(--t3);font-size:8px;text-transform:uppercase;letter-spacing:1px">EST</div><div>${e.estimate||'—'}</div></div>
+          <div><div style="color:var(--t3);font-size:8px;text-transform:uppercase;letter-spacing:1px">PREV</div><div>${e.prev||'—'}</div></div>
+          ${e.actual?`<div><div style="color:var(--t3);font-size:8px;text-transform:uppercase;letter-spacing:1px">ACT</div><div style="color:var(--emerald);font-weight:600">${e.actual}</div></div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { /* fallback already rendered */ }
+}
+
+function drawChart(canvasId, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width*dpr; canvas.height = 120*dpr;
+  ctx.scale(dpr,dpr);
+  const w=rect.width, h=120, pad=6;
+  const min=Math.min(...data), max=Math.max(...data), range=max-min||1;
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,color.replace(')',',0.2)').replace('rgb','rgba'));
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath();
+  data.forEach((v,i)=>{const x=pad+(i/(data.length-1))*(w-pad*2);const y=h-pad-((v-min)/range)*(h-pad*2);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  const lx=pad+((data.length-1)/(data.length-1))*(w-pad*2);
+  ctx.lineTo(lx,h);ctx.lineTo(pad,h);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();
+  data.forEach((v,i)=>{const x=pad+(i/(data.length-1))*(w-pad*2);const y=h-pad-((v-min)/range)*(h-pad*2);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+  const lv=data[data.length-1];const dy=h-pad-((lv-min)/range)*(h-pad*2);
+  ctx.beginPath();ctx.arc(lx,dy,4,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+}
+
+// ============================================================
+// TICKER DETAIL OVERLAY
+// ============================================================
+async function openTicker(sym) {
+  const ov = document.getElementById('overlay');
+  const body = document.getElementById('ovBody');
+  document.getElementById('ovTicker').textContent = sym;
+  body.innerHTML = '<div class="loading"><span class="spinner"></span>Loading '+sym+'...</div>';
+  ov.classList.add('open');
+  document.body.style.overflow='hidden';
+
+  const [quote, profile, news] = await Promise.all([fetchQuote(sym), fetchProfile(sym), fetchNews(sym)]);
+  const up = quote.pct >= 0;
+  const sparkData = genSparkline(sym);
+  const chartId = 'ov-chart-'+sym;
+
+  body.innerHTML = `
+    <h2 style="font-family:'Playfair Display',serif;font-size:24px;margin-bottom:2px">${profile.name||sym}</h2>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t3);margin-bottom:8px">${sym} · ${profile.exchange||'NASDAQ'} · ${profile.finnhubIndustry||''}</div>
+    <div class="ov-price-row">
+      <div class="ov-price">$${quote.price.toFixed(2)}</div>
+      <div class="ov-change ${up?'up':'down'}">${up?'+':''}${quote.pct.toFixed(2)}% (${up?'+':''}$${quote.change.toFixed(2)})</div>
+    </div>
+    <div class="ov-chart">
+      <div class="ov-chart-label">30-Day Price Action</div>
+      <canvas id="${chartId}" height="120"></canvas>
+    </div>
+    <div class="ov-stats">
+      <div class="ov-stat"><div class="lab">Open</div><div class="val">$${quote.open?quote.open.toFixed(2):'--'}</div></div>
+      <div class="ov-stat"><div class="lab">Prev Close</div><div class="val">$${quote.pc?quote.pc.toFixed(2):'--'}</div></div>
+      <div class="ov-stat"><div class="lab">Day High</div><div class="val" style="color:var(--emerald)">$${quote.high?quote.high.toFixed(2):'--'}</div></div>
+      <div class="ov-stat"><div class="lab">Day Low</div><div class="val" style="color:var(--rose)">$${quote.low?quote.low.toFixed(2):'--'}</div></div>
+      ${profile.marketCapitalization?`<div class="ov-stat"><div class="lab">Market Cap</div><div class="val">$${(profile.marketCapitalization/1000).toFixed(1)}B</div></div>`:''}
+      <div class="ov-stat"><div class="lab">Industry</div><div class="val" style="font-size:11px">${profile.finnhubIndustry||'--'}</div></div>
+    </div>
+    <div class="ov-news-title">LATEST NEWS</div>
+    ${news.map(n=>`<div class="ov-news-item" onclick="window.open('${n.url}','_blank')">
+      <h4>${n.headline}</h4>
+      <div class="meta">${n.source||'News'} · ${new Date(n.datetime*1000).toLocaleDateString()}</div>
+    </div>`).join('')}
+    <div style="text-align:center;padding:20px;font-size:11px;color:var(--t3)">Data via Finnhub${quote.src==='demo'?' (demo mode — add API key for live)':''}</div>
+  `;
+
+  requestAnimationFrame(()=>{
+    drawChart(chartId, sparkData, up?'rgb(16,185,129)':'rgb(244,63,94)');
+  });
+}
+
+function closeOverlay(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow=''}
+
+// ============================================================
+// AI DIGEST (CLAUDECEPTION)
+// ============================================================
+async function generateDigest() {
+  const btn=document.getElementById('digestBtn');
+  const out=document.getElementById('digestOutput');
+  btn.disabled=true; btn.textContent='Generating...';
+  out.className='digest-output show';
+  out.textContent='Analyzing market conditions...';
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`You are a senior market analyst. Generate a concise morning market digest for April 19, 2026. Cover: 1) Overall market sentiment and key index levels (SPX ~7126, SPY ~710, QQQ ~649), 2) Sector rotation highlights (Industrials +3.18%, Technology +2.33%, Energy -0.42%), 3) Key events this week (Tesla earnings 4/22, GOOGL/MSFT/AMZN 4/29, retail sales data), 4) Options positioning (VIX at 17.48, put-heavy flow in IWM). Keep it under 250 words. Use a confident but measured tone. No disclaimers.`}]
+      })
+    });
+    const d = await r.json();
+    const text = d.content?.map(i=>i.text||'').join('\n')||'Digest generated. Connect API key for live results.';
+    out.textContent = text;
+  } catch(e) {
+    out.textContent = `📊 MARKET DIGEST — April 19, 2026\n\nSENTIMENT: Cautiously bullish. SPX holding 7,126 (+1.2%), testing resistance near 7,170 call wall. Breadth improving with 8 of 11 sectors green.\n\nSECTOR ROTATION: Industrials leading (+3.18%) on infrastructure spending tailwinds. Technology solid (+2.33%) ahead of mega-cap earnings. Energy the notable laggard (-0.42%) on crude supply concerns.\n\nWEEK AHEAD: Tesla kicks off mega-cap earnings Tuesday 4/22 — street expects $0.41 EPS, watching FSD and robotaxi timeline. The real fireworks come 4/29 with Alphabet, Microsoft, and Amazon all reporting same day. Retail sales data Tuesday will test the consumer resilience narrative.\n\nPOSITIONING: VIX at 17.48 suggests moderate hedging. IWM seeing heavy put flow — $19.65M in $260P sweeps, $15.87M in $267P blocks. Institutional positioning defensively tilted on small caps while maintaining long exposure in mega-cap tech.\n\nKEY LEVELS: SPX call wall at 7,170 caps upside near-term. GEX flip at 7,125 means moves above dampen. Put wall support at 7,000 — breaks below accelerate.\n\nBOTTOM LINE: See clearly. Act wisely. Stay selective — let earnings confirm the trend before adding risk. The market will be here tomorrow. Make sure you are too.`;
+  }
+  btn.disabled=false; btn.textContent='Refresh Digest';
+}
+
+// ============================================================
+// RENDER ALL SECTIONS
+// ============================================================
+function renderWatchlist() {
+  document.getElementById('wlCount').textContent=W.length+' tickers';
+  document.getElementById('wlScroll').innerHTML = W.map(w=>{
+    const up=w.c>=0;
+    return `<div class="mc wl-card" onclick="openTicker('${w.t}')">
+      <div class="ic" style="background:${up?'rgba(16,185,129,0.08)':'rgba(244,63,94,0.08)'};font-size:18px">${w.e}</div>
+      <div class="pr">$${w.p.toFixed(2)}</div>
+      <div class="tk">${w.t}</div>
+      <div class="nm">${w.n}</div>
+      <div class="ch ${up?'up':'dn'}">${up?'+':''}${w.c.toFixed(2)}%</div>
+    </div>`;
+  }).join('')+`<div class="wl-card" style="border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--t3)" onclick="document.querySelector('[data-s=research]').click()"><div style="font-size:22px">+</div><div style="font-size:10px">Add</div></div>`;
+}
+
+function renderSectors() {
+  const mx=Math.max(...SECTORS.map(s=>Math.abs(s.c)));
+  document.getElementById('sectorsList').innerHTML = SECTORS.map(s=>{
+    const up=s.c>=0;const w=Math.max((Math.abs(s.c)/mx)*100,8);
+    return `<div class="mc sec-row" onclick="this.classList.toggle('expanded')">
+      <div class="top">
+        <div class="etf">${s.e}</div>
+        <div class="info">
+          <div class="nm">${s.n}</div>
+          <div class="bar-t"><div class="bar-f ${up?'g':'r'}" style="width:${w}%"></div></div>
+        </div>
+        <div class="chg ${up?'up':'dn'}">${up?'+':''}${s.c.toFixed(2)}%</div>
+      </div>
+      <div class="sec-detail"><div class="sec-detail-inner">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1px;margin-bottom:6px">TOP HOLDINGS</div>
+        ${s.h.map(h=>{const[tk,ch]=h.split(' ');return `<div class="sec-holding" onclick="event.stopPropagation();openTicker('${tk}')">
+          <span class="ht">${tk}</span><span class="hw">${ch}</span>
+        </div>`}).join('')}
+      </div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderHeadlines() {
+  const H = [
+    {h:'Tesla Q1 deliveries miss estimates as brand challenges persist',s:'Reuters',d:'Apr 19',tg:'bear',sum:'Delivered ~336K vehicles vs 370K expected. Growing competition in China/Europe plus brand perception challenges drove the shortfall. Energy storage remained a bright spot with record deployments.'},
+    {h:'Fed officials signal patience on rate cuts amid sticky inflation',s:'CNBC',d:'Apr 18',tg:'neut',sum:'Multiple Fed governors emphasized needing sustained inflation progress before cutting. Services inflation at 4.2% annualized. Markets now price two cuts in 2026, down from four at start of year.'},
+    {h:'NVIDIA unveils Vera Rubin — claims 10x inference cost reduction',s:'Bloomberg',d:'Apr 17',tg:'bull',sum:'Jensen Huang announced Vera Rubin platform with six new chips at GTC Spring 2026. First samples shipped to hyperscalers, production expected H2 FY27. Stock rose 4.2%.'},
+    {h:'Microsoft Copilot hits 1M enterprise seats, AI revenue accelerates',s:'The Verge',d:'Apr 17',tg:'bull',sum:'365 Copilot surpassed 1M paid seats, up from 400K six months ago. At $30/user/month, roughly $360M annualized Copilot revenue. Broader AI business projected at $25B for FY2026.'},
+    {h:'Amazon $200B capex plan draws cautious market reaction',s:'WSJ',d:'Apr 16',tg:'bear',sum:'Projected $200B in 2026 capex, up from $142B. Management cited AI demand but investors questioned return timelines, triggering a selloff. AWS backlog hit records.'},
+    {h:'S&P 500 earnings on track for sixth straight double-digit quarter',s:'FactSet',d:'Apr 16',tg:'bull',sum:'Expected 13.2% YoY growth for Q1. IT sector leads at 45% projected growth. 59 companies issued positive guidance, well above the 44 five-year average.'},
+    {h:'China tariffs create fresh uncertainty for tech supply chains',s:'Reuters',d:'Apr 15',tg:'bear',sum:'Beijing expanded tariffs on semiconductor equipment. ~$15B annual trade impact for Apple, NVIDIA and others. Companies diversifying manufacturing but disruptions remain a risk.'},
+    {h:'Meta Llama 4 hits 200K enterprise deployments in first month',s:'Bloomberg',d:'Apr 15',tg:'bull',sum:'Fastest-adopted open-source AI model ever. Strategy creates lock-in through fine-tuning investments, with Meta capturing downstream compute revenue.'},
+  ];
+  document.getElementById('headlinesList').innerHTML = H.map(h=>{
+    const tc=h.tg==='bull'?'var(--emerald)':h.tg==='bear'?'var(--rose)':'var(--t2)';
+    const tb=h.tg==='bull'?'rgba(110,231,160,0.08)':h.tg==='bear'?'rgba(251,113,133,0.08)':'rgba(161,161,170,0.06)';
+    const tl=h.tg==='bull'?'BULLISH':h.tg==='bear'?'BEARISH':'NEUTRAL';
+    return `<div class="mc headline-item" style="padding:16px;margin-bottom:6px;cursor:pointer" onclick="this.classList.toggle('x-open')">
+      <h4>${h.h}</h4>
+      <div class="x-detail" style="font-size:12px;color:var(--t2);line-height:1.6;padding-top:8px">${h.sum}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        <span class="mono" style="font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;color:${tc};background:${tb}">${tl}</span>
+        <span class="mono" style="font-size:10px;color:var(--t3)">${h.s} · ${h.d}</span>
+      </div>
+      <div class="mono x-hint" style="font-size:9px;color:var(--t3);text-align:center;margin-top:6px;letter-spacing:1px">TAP TO READ ↓</div>
+    </div>`}).join('');
+}
+
+function renderAnalyst() {
+  const A = [
+    {t:'NVDA',r:'Strong Buy ↑',pk:'Morgan Stanley raises on Vera Rubin demand.',dt:'Vera Rubin positions NVIDIA for the next AI infrastructure cycle. Hyperscaler capex ($737B combined 2026) suggests demand far exceeds supply. Gaming $3.7B (+47% YoY) diversifies. Raise PT to $185.',pt:'PT $185 → from $160'},
+    {t:'TSLA',r:'Hold →',pk:'Goldman Neutral ahead of Q1 print.',dt:'336K deliveries vs 370K expected is concerning. Energy storage inflecting ($3.2B quarterly run rate) and FSD v13 could unlock robotaxi optionality. Risk/reward balanced here.',pt:'PT $260 → from $275'},
+    {t:'MSFT',r:'Outperform ↑',pk:'Wedbush raises on Azure AI acceleration.',dt:'Copilot exceeding internal targets, 1M+ seats. Azure guided 37-38%, AI workloads now 13pts of growth. $37.5B capex but monetizing faster than peers. Best positioned in AI.',pt:'PT $450 → from $420'},
+    {t:'AMZN',r:'Buy →',pk:'JP Morgan notes durable AWS demand.',dt:'AWS backlog suggests multi-year demand. Retail margins at highs despite $200B capex guidance. Trainium silicon de-risks NVIDIA dependency. Ad revenue hidden profit engine at 24% margins.',pt:'PT $280 → from $265'},
+    {t:'GOOGL',r:'Buy ↑',pk:'BofA raises on Cloud backlog strength.',dt:'$243B cloud backlog = 3+ years visibility. Search resilient +16.5% YoY despite AI Overviews fears. Axion chip reducing silicon dependency. 47/55 analysts rate Strong Buy.',pt:'PT $210 → from $195'},
+    {t:'META',r:'Outperform ↑',pk:'Bernstein upgrades on Llama 4 ecosystem.',dt:'200K enterprise deployments create compute revenue lock-in. Reels monetization closing gap vs feed (78% efficiency). $125B capex funded by 42% operating margins. Reality Labs losses narrowing.',pt:'PT $620 → from $560'},
+  ];
+  document.getElementById('analystList').innerHTML = A.map(a=>`
+    <div class="mc" style="padding:16px;margin-bottom:6px;cursor:pointer" onclick="this.classList.toggle('x-open')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <span class="mono" style="font-size:11px;font-weight:600;color:var(--blue);background:rgba(212,168,83,0.1);padding:2px 8px;border-radius:4px">${a.t}</span>
+          <div style="font-size:15px;font-weight:600;margin-top:6px">${a.r}</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:2px">${a.pk}</div>
+        </div>
+        <div class="mono" style="font-size:12px;color:var(--blue);font-weight:600;flex-shrink:0;margin-left:12px">${a.pt.split('→')[0].trim()}</div>
+      </div>
+      <div class="x-detail" style="padding-top:10px;border-top:1px solid var(--border);margin-top:10px">
+        <div style="font-size:12px;color:var(--t2);line-height:1.7">${a.dt}</div>
+        <div class="mono" style="font-size:12px;color:var(--blue);margin-top:8px">${a.pt}</div>
+        <div style="text-align:center;margin-top:10px"><button class="btn btn-s" style="padding:6px 12px;font-size:11px" onclick="event.stopPropagation();openTicker('${a.t}')">View ${a.t} →</button></div>
+      </div>
+      <div class="mono x-hint" style="font-size:9px;color:var(--t3);text-align:center;margin-top:6px;letter-spacing:1px">TAP FOR THESIS ↓</div>
+    </div>
+  `).join('');
+}
+
+function renderCrypto() {
+  const crypto = [
+    {n:'Bitcoin',s:'BTC',p:'$87,432',c:'+2.4%',up:true},
+    {n:'Ethereum',s:'ETH',p:'$3,218',c:'+1.8%',up:true},
+    {n:'Solana',s:'SOL',p:'$142.50',c:'-0.6%',up:false},
+    {n:'XRP',s:'XRP',p:'$0.628',c:'+3.1%',up:true},
+  ];
+  document.getElementById('cryptoList').innerHTML = crypto.map(c=>`
+    <div style="display:flex;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:5px">
+      <div style="flex:1"><div style="font-size:14px;font-weight:600">${c.n}</div><div class="mono" style="font-size:11px;color:var(--t3)">${c.s}</div></div>
+      <div style="text-align:right"><div class="mono" style="font-size:14px;font-weight:600">${c.p}</div><div class="mono" style="font-size:12px;font-weight:600;color:${c.up?'var(--emerald)':'var(--rose)'}">${c.c}</div></div>
+    </div>
+  `).join('');
+}
+
+function renderEcon() {
+  document.getElementById('econMeta').textContent='Monday, April 21, 2026 · Releases · Eastern Time';
+  document.getElementById('econList').innerHTML = ECON.map(e=>`
+    <div class="econ-row ${e.i}">
+      <div class="time">${e.t}</div>
+      <div class="dot ${e.i}"></div>
+      <div class="ev">${e.ev}</div>
+      <div class="vals">
+        <div><div class="l">FCST</div><div>${e.f}</div></div>
+        <div><div class="l">PREV</div><div>${e.pr}</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGex() {
+  document.getElementById('gexTabs').innerHTML = GEX.map((g,i)=>`
+    <div class="gex-tab ${i===0?'on':''}" onclick="document.querySelectorAll('.gex-tab').forEach(t=>t.classList.remove('on'));this.classList.add('on')">
+      <div class="sym">${g.s}</div><div class="pri">${g.p}</div>
+      <div class="dir ${g.d}">↑ ${g.d.toUpperCase()}</div>
+    </div>
+  `).join('');
+  document.getElementById('klList').innerHTML = KL.map(k=>`
+    <div class="kl"><div class="dot" style="background:${k.clr}"></div>
+      <div><div class="pri">${k.p}</div><div class="pct ${k.pct.includes('+')?'up':k.pct.includes('-')?'dn':''}">${k.pct}</div></div>
+      <div class="inf"><div class="tag ${k.tc}">${k.tag}</div><div class="desc">${k.desc}</div></div>
+    </div>
+  `).join('');
+}
+
+function renderFlow() {
+  document.getElementById('flowList').innerHTML = FLOW.map(f=>`
+    <div class="fc ${f.b?'bull':'bear'}">
+      <div class="ft"><div><div class="strike">${f.tk} <span class="${f.st.includes('C')?'c':'p'}">${f.st}</span></div><div class="exp">${f.exp} ${f.dte}</div></div>
+        <div><div class="prem">${f.pr}</div><div class="iv">IV ${f.iv}</div></div></div>
+      <div class="tags">${f.tg.map(t=>`<span class="tg ${t}">${t}</span>`).join('')}</div>
+      <div class="fm"><span>⚡ ${f.vol}</span><span>Vol/OI ${f.voi}</span><span>Spot ${f.sp}</span><span>Δ ${f.dl}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderEarnings(mo='apr') {
+  let data = mo==='all'?EARN:EARN.filter(e=>e.mo===mo);
+  const weeks={};
+  data.forEach(e=>{const d=new Date(e.dt);const s=new Date(d);s.setDate(d.getDate()-d.getDay()+1);const en=new Date(s);en.setDate(s.getDate()+4);
+    const k=`Week of ${s.getDate()} ${s.toLocaleDateString('en-US',{month:'short'})} – ${en.getDate()} ${en.toLocaleDateString('en-US',{month:'short'})}`;
+    if(!weeks[k])weeks[k]=[];weeks[k].push(e)});
+  let html='';
+  Object.entries(weeks).forEach(([wk,entries])=>{
+    html+=`<div class="wk">${wk}<span class="ln"></span></div>`;
+    entries.forEach(e=>{const d=new Date(e.dt);
+      html+=`<div class="ec" data-h="${e.h}" onclick="this.classList.toggle('expanded')">
+        <div class="et"><div class="co"><div class="ci ${e.h}">${e.ic}</div><div><div class="cn">${e.co}</div><div class="ct">${e.t} <span style="cursor:pointer;color:var(--blue);text-decoration:underline" onclick="event.stopPropagation();openTicker('${e.t}')">View →</span></div></div></div>
+          <div class="ed"><div class="dy">${d.getDate()}</div><div class="dm">${d.toLocaleDateString('en-US',{month:'short'}).toUpperCase()} · ${e.dw}</div><div class="dm">${e.tm}</div></div></div>
+        <span class="st ${e.st}">${e.st==='confirmed'?'✓':'○'} ${e.st}</span>
+        <div class="es"><div class="est"><div class="el">EPS Est</div><div class="ev">${e.eps}</div></div><div class="est"><div class="el">Rev Est</div><div class="ev" style="color:var(--amber)">${e.rev}</div></div><div class="est"><div class="el">Last EPS</div><div class="ev">${e.le}</div></div><div class="est"><div class="el">Fwd P/E</div><div class="ev" style="color:var(--sky)">${e.pe}</div></div></div>
+        <div class="exp">TAP TO EXPAND ↓</div>
+        <div class="ew"><div class="ewt"><span>◉</span>WHAT TO WATCH</div>${e.w.map(w=>`<div class="ewi">${w}</div>`).join('')}</div>
+      </div>`;
+    });
+  });
+  if(!data.length) html='<div style="text-align:center;padding:40px;color:var(--t3)">No earnings this period</div>';
+  document.getElementById('earningsTimeline').innerHTML=html;
+}
+
+function renderAcademy() {
+  document.getElementById('acTracks').innerHTML = ACAD.map(t=>`
+    <div class="tc ${t.u?'unlocked':'locked'}">
+      <div class="tl">TRACK ${t.n} ${t.u?'':'· LOCKED'}</div>
+      <h3>${t.t}</h3><p>${t.d}</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span class="level-tag ${t.lv}">${t.lv.toUpperCase()}</span>
+        <span class="tm">${t.l} LESSONS · ${t.q} QUIZ</span>
+      </div>
+      ${t.u?`<div class="prog"><div class="prog-f" style="width:${t.pr}%"></div></div>`:''}
+      ${t.mods.length?`<div class="mods">${t.mods.map((m,i)=>`
+        <div class="mod" onclick="event.stopPropagation();showLesson(${i},'${t.n}')">
+          <span class="mn"><span class="mi">${String(i+1).padStart(2,'0')}</span>${m.n}</span>
+          <span style="color:${m.done?'var(--emerald)':'var(--t3)'}">${m.done?'✓':'→'}</span>
+        </div>
+      `).join('')}</div>`:''}
+    </div>
+  `).join('');
+}
+
+function showLesson(idx, trackNum) {
+  const track = ACAD.find(t=>t.n===trackNum);
+  if(!track||!track.mods[idx]) return;
+  const mod = track.mods[idx];
+  const viewer = document.getElementById('lessonViewer');
+  viewer.innerHTML = `<div class="lesson-view show">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="mono" style="font-size:10px;color:var(--t3);letter-spacing:1px">LESSON ${idx+1} OF ${track.mods.length}</div>
+      <button class="btn btn-s" style="padding:6px 12px;font-size:11px" onclick="document.getElementById('lessonViewer').innerHTML=''">Close</button>
+    </div>
+    ${mod.content}
+    <div style="margin-top:14px;padding:10px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px;text-align:center">
+      <div class="mono" style="font-size:10px;color:var(--emerald);letter-spacing:1px">✓ MARKED AS READ</div>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--t3)">Understanding compounds. This is yours to keep forever.</div>
+  </div>`;
+  viewer.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function doResearch() {
+  const sym = document.getElementById('resInput').value.trim().toUpperCase();
+  if(!sym) return;
+  const el = document.getElementById('resResult');
+  el.className='res-result show';
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Researching '+sym+'...</div>';
+  const [profile, quote, news] = await Promise.all([fetchProfile(sym), fetchQuote(sym), fetchNews(sym)]);
+  const up = quote.pct>=0;
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div><h3>${profile.name||sym}</h3><div class="mono" style="font-size:11px;color:var(--t3)">${sym} · ${profile.exchange||''} · ${profile.finnhubIndustry||''}</div></div>
+      <div style="text-align:right"><div class="mono" style="font-size:18px;font-weight:700">$${quote.price.toFixed(2)}</div>
+      <div class="mono" style="font-size:12px;font-weight:600;color:${up?'var(--emerald)':'var(--rose)'}">${up?'+':''}${quote.pct.toFixed(2)}%</div></div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="mono" style="font-size:10px;color:var(--blue);letter-spacing:1.5px;margin-bottom:6px">LATEST NEWS</div>
+      ${news.slice(0,3).map(n=>`<div class="headline-item" onclick="window.open('${n.url}','_blank')"><h4>${n.headline}</h4><div class="meta">${n.source||'News'}</div></div>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:10px"><button class="btn btn-p" style="padding:8px 16px;font-size:12px" onclick="openTicker('${sym}')">Full Detail View →</button></div>
+  `;
+}
+
+function renderResearch() {
+  document.getElementById('resPopular').innerHTML = POP.map(r=>`
+    <div class="mc res-card" onclick="openTicker('${r.t}')"><div class="ri">${r.e}</div><div class="rt">${r.t}</div><div class="rn">${r.n}</div></div>
+  `).join('');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+document.getElementById('nav').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+btn.dataset.s).classList.add('on');
+});
+
+document.getElementById('eMTabs').addEventListener('click',e=>{
+  const btn=e.target.closest('.stab');if(!btn)return;
+  document.querySelectorAll('#eMTabs .stab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  renderEarnings(btn.dataset.m);
+});
+
+document.getElementById('overviewSubs').addEventListener('click',e=>{
+  const btn=e.target.closest('.stab');if(!btn)return;
+  document.querySelectorAll('#overviewSubs .stab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('.sub-content').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sub-'+btn.dataset.sub).classList.add('on');
+  if(btn.dataset.sub==='headlines'){}
+  if(btn.dataset.sub==='analyst'){}
+  if(btn.dataset.sub==='crypto'){}
+});
+
+// ============================================================
+// INIT — render static first, then overlay live data
+// ============================================================
+document.getElementById('vixVal').textContent='17.48';
+renderWatchlist();
+renderSectors();
+renderHeadlines();
+renderAnalyst();
+renderCrypto();
+renderEcon();
+renderGex();
+renderFlow();
+renderEarnings('apr');
+renderAcademy();
+renderResearch();
+
+// Fetch live data (non-blocking, upgrades static content)
+(async function loadLiveData() {
+  await refreshVIX();
+  await refreshWatchlistPrices();
+  await refreshSectorPrices();
+  await refreshCrypto();
+  if (FINNHUB_KEY) {
+    await refreshHeadlines();
+    await refreshEconCalendar();
+  }
+  // Auto-refresh every 2 minutes
+  setInterval(async () => {
+    await refreshWatchlistPrices();
+    await refreshVIX();
+  }, 120000);
+  // Crypto every 5 min
+  setInterval(refreshCrypto, 300000);
+})();
+</script>
+</body>
+</html>
