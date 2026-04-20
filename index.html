@@ -312,10 +312,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
 
-  <div id="apiBanner" style="display:none;margin:6px 14px;padding:12px 16px;background:rgba(212,168,83,0.06);border:1px solid rgba(212,168,83,0.15);border-radius:10px;font-size:12px;color:var(--t2)">
-    <strong style="color:var(--blue)">Go live:</strong> Tap ⚙ to add your free <a href="https://finnhub.io/register" target="_blank" style="color:var(--blue);text-decoration:underline">Finnhub key</a> for real-time quotes and news.
-  </div>
-
   <div class="nav" id="nav">
     <button class="on" data-s="overview">Overview</button>
     <button data-s="earnings">Earnings</button>
@@ -461,27 +457,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 // ============================================================
-// CONFIG — API key stored in localStorage
+// CONFIG — API keys
 // ============================================================
-let FINNHUB_KEY = localStorage.getItem('pulse_finnhub_key') || 'd7ihe59r01qn2qau1it0d7ihe59r01qn2qau1itg';
+const FINNHUB_KEY = 'd7ihe59r01qn2qau1it0d7ihe59r01qn2qau1itg';
+const COINGECKO_KEY = 'CG-2fv8hGGDKwRjNnLXvabL1Lzs';
 
 function showSettings() {
-  const current = FINNHUB_KEY || '(none set)';
-  const key = prompt('Enter your free Finnhub API key (get one at finnhub.io/register):\n\nCurrent: ' + current);
-  if (key !== null && key.trim()) {
-    FINNHUB_KEY = key.trim();
-    localStorage.setItem('pulse_finnhub_key', FINNHUB_KEY);
-    alert('Key saved! Refreshing data...');
-    location.reload();
-  }
-}
-
-// Keys are pre-configured — banner only shows if cleared
-if (!FINNHUB_KEY) {
-  setTimeout(() => {
-    const banner = document.getElementById('apiBanner');
-    if (banner) banner.style.display = 'block';
-  }, 500);
+  alert('Pulse Terminal\n\nLive data powered by:\n• Finnhub (stocks, news, econ calendar)\n• CoinGecko (crypto)\n• Claude AI (market digest)\n\nBuilt by Roodboy · 2026');
 }
 
 // ============================================================
@@ -618,7 +600,7 @@ function genSparkline(sym) {
 // LIVE DATA LOADERS
 // ============================================================
 async function refreshWatchlistPrices() {
-  if (!FINNHUB_KEY) return;
+
   for (const w of W) {
     try {
       const q = await fetchQuote(w.t);
@@ -629,7 +611,7 @@ async function refreshWatchlistPrices() {
 }
 
 async function refreshSectorPrices() {
-  if (!FINNHUB_KEY) return;
+
   const etfs = ['XLI','XLY','XLK','XLV','XLP','XLF','XLC','XLRE','XLU','XLE','XLB'];
   for (const s of SECTORS) {
     try {
@@ -643,7 +625,7 @@ async function refreshSectorPrices() {
 
 async function refreshCrypto() {
   try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&x_cg_demo_api_key=CG-2fv8hGGDKwRjNnLXvabL1Lzs');
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&x_cg_demo_api_key='+COINGECKO_KEY);
     const d = await r.json();
     const map = {bitcoin:'BTC',ethereum:'ETH',solana:'SOL',ripple:'XRP',cardano:'ADA'};
     const names = {bitcoin:'Bitcoin',ethereum:'Ethereum',solana:'Solana',ripple:'XRP',cardano:'Cardano'};
@@ -663,7 +645,7 @@ async function refreshCrypto() {
 }
 
 async function refreshHeadlines() {
-  if (!FINNHUB_KEY) return;
+
   try {
     const r = await fetch(`https://finnhub.io/api/v1/news?category=general&token=${FINNHUB_KEY}`);
     const d = await r.json();
@@ -682,7 +664,7 @@ async function refreshHeadlines() {
 }
 
 async function refreshVIX() {
-  if (!FINNHUB_KEY) return;
+
   try {
     const q = await fetchQuote('^VIX');
     if (q.src === 'live') document.getElementById('vixVal').textContent = q.price.toFixed(2);
@@ -696,7 +678,7 @@ async function refreshVIX() {
 }
 
 async function refreshEconCalendar() {
-  if (!FINNHUB_KEY) return;
+
   try {
     const from = new Date().toISOString().split('T')[0];
     const to = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
@@ -1116,10 +1098,8 @@ renderResearch();
   await refreshWatchlistPrices();
   await refreshSectorPrices();
   await refreshCrypto();
-  if (FINNHUB_KEY) {
-    await refreshHeadlines();
-    await refreshEconCalendar();
-  }
+  await refreshHeadlines();
+  await refreshEconCalendar();
   // Auto-refresh every 2 minutes
   setInterval(async () => {
     await refreshWatchlistPrices();
