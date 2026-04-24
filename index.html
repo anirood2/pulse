@@ -503,6 +503,7 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
   <div class="si loading" id="si-stage"><div class="sdot"></div><span class="stxt">STAGE: PENDING</span></div>
   <div class="sup" id="sup"></div>
 </div>
+<div id="gErr" style="display:none;position:fixed;top:78px;left:0;right:0;z-index:500;background:rgba(255,51,78,.15);border-bottom:1px solid rgba(255,51,78,.3);padding:4px 14px;font-family:var(--mono);font-size:9px;color:var(--r)"></div>
 
 <div class="pages">
 
@@ -750,6 +751,16 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
 <script>
 'use strict';
 
+// Global error catcher for debugging
+window.onerror = function(msg, src, line, col, err) {
+  var el = document.getElementById('gErr');
+  if (el) {
+    el.style.display = 'block';
+    el.textContent = '⚠ ' + msg + (line?' (L'+line+')':'');
+  }
+  return false; // don't suppress
+};
+
 // ─── API ────────────────────────────────────────────────────
 var FH = 'cvemjnhr01qhb9f8n2a0cvemjnhr01qhb9f8n2ag';
 
@@ -888,28 +899,52 @@ function calcMACD(closes) {
 }
 
 // ─── FETCH PRICE ────────────────────────────────────────────
+// Rate limiter: max 25 calls/sec to stay under Finnhub free tier
+var _rl = {q:[], running:0, max:8};
+function _rlRun() {
+  while (_rl.running < _rl.max && _rl.q.length) {
+    _rl.running++;
+    var job = _rl.q.shift();
+    job().finally(function(){ _rl.running--; setTimeout(_rlRun,120); });
+  }
+}
+function _rlFetch(url) {
+  return new Promise(function(res,rej){
+    _rl.q.push(function(){
+      return fetch(url,{cache:'no-store'})
+        .then(function(r){
+          if(r.status===429){
+            // Rate limited — wait and retry once
+            return new Promise(function(res2){setTimeout(res2,2000);})
+              .then(function(){ return fetch(url,{cache:'no-store'}); })
+              .then(function(r2){ return r2.json(); });
+          }
+          return r.json();
+        })
+        .then(res).catch(rej);
+    });
+    _rlRun();
+  });
+}
+
 function fetchQ(sym) {
-  return fetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FH)
-    .then(function(r){return r.json();})
+  return _rlFetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FH)
     .then(function(d){
-      if (d && d.c>0) return {p:d.c,ch:d.dp,h:d.h,l:d.l,pc:d.pc};
+      if (d && d.c && d.c>0) return {p:d.c, ch:d.dp||0, h:d.h||d.c, l:d.l||d.c, pc:d.pc||d.c};
       return null;
     }).catch(function(){return null;});
 }
 
 function fetchPro(sym) {
-  return fetch('https://finnhub.io/api/v1/stock/profile2?symbol='+sym+'&token='+FH)
-    .then(function(r){return r.json();})
+  return _rlFetch('https://finnhub.io/api/v1/stock/profile2?symbol='+sym+'&token='+FH)
     .catch(function(){return null;});
 }
 
 function fetchCandles(sym) {
   var now = Math.floor(Date.now()/1000);
-  var from = now - 300*24*3600;
+  var from = now - 400*24*3600;
   var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+sym+'&resolution=D&from='+from+'&to='+now+'&token='+FH;
-  return fetch(url)
-    .then(function(r){return r.json();})
-    .catch(function(){return null;});
+  return _rlFetch(url).catch(function(){return null;});
 }
 
 // ─── COMPUTE TECHNICALS ──────────────────────────────────────
@@ -1020,15 +1055,24 @@ function allT() { return TICKERS.concat(custom); }
 function loadPrices() {
   setStatus('si-price','PRICES: LOADING','loading');
   var all = allT();
-  var done=0;
+  var done=0, total=all.length;
+
+  // Feed all through rate limiter — it handles concurrency
   var proms = all.map(function(t){
     return fetchQ(t.s).then(function(q){
-      if(q){ prices[t.s]=q; done++; }
+      if(q){
+        prices[t.s]=q; done++;
+        setStatus('si-price','PRICES: '+done+'/'+total+' LIVE','loading');
+        var el=document.getElementById('s4');if(el)el.textContent=done+'/'+total;
+        render();
+      }
     });
   });
   return Promise.all(proms).then(function(){
-    setStatus('si-price','PRICES: '+done+'/'+all.length+' LIVE','ok');
-    document.getElementById('s4').textContent = done+'/'+all.length;
+    var cls = done>0 ? 'ok' : 'err';
+    setStatus('si-price','PRICES: '+done+'/'+total+' LIVE', cls);
+    var el=document.getElementById('s4');if(el)el.textContent=done+'/'+total;
+    render();
   });
 }
 
@@ -1050,7 +1094,7 @@ function loadTech() {
       render();
       return;
     }
-    var batch = all.slice(i,i+4);
+    var batch = all.slice(i,i+3);
     Promise.all(batch.map(function(t){
       return computeTech(t.s).then(function(tech){
         if(tech){ techDone++; stages[t.s]=classify(tech,t); }
@@ -1058,7 +1102,7 @@ function loadTech() {
     })).then(function(){
       render();
       setStatus('si-tech','TECH: '+(Math.min(i+4,all.length))+'/'+all.length,'loading');
-      setTimeout(function(){ nextBatch(i+4); }, 350);
+      setTimeout(function(){ nextBatch(i+3); }, 800);
     });
   }
   nextBatch(0);
@@ -2100,8 +2144,9 @@ async function runQuant() {
       '<div class="qchdr">'+
         '<div class="qclogo" id="qlogo-'+sym+'">'+
           '<img src="https://logo.clearbit.com/'+sym.toLowerCase()+'.com" alt="'+sym+'"'+
-          ' onload="this.style.opacity=1" style="opacity:0;transition:opacity .2s"'+
-          ' onerror="var p=this.parentNode;if(p){p.innerHTML=\'<div style=\"font-family:var(--mono);font-size:10px;color:var(--t1);font-weight:700\">\'+(sym.slice(0,4)+\'</div>\');}">'+
+          ' data-sym="'+sym+'" class="qlogoimg" style="opacity:0;transition:opacity .3s"'+
+          ' onload="this.style.opacity=1"'+
+          ' onerror="this.style.display='none';var f=document.createElement('div');f.className='cfb';f.textContent=this.dataset.sym||this.alt;this.parentNode.appendChild(f);">'+
         '</div>'+
         '<div class="qcinfo">'+
           '<div class="qcsym">'+sym+'</div>'+
@@ -2220,14 +2265,27 @@ function init(){
   render();
   renderEdu();
   initQuant();
-  loadPrices().then(function(){
-    render();
-    loadTech();
-  });
+  // Test connectivity first
+  setStatus('si-price','PRICES: CONNECTING','loading');
+  fetch('https://finnhub.io/api/v1/quote?symbol=AAPL&token='+FH,{cache:'no-store'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d && d.c>0){
+        setStatus('si-price','PRICES: CONNECTED','loading');
+        loadPrices().then(function(){ render(); loadTech(); });
+      } else {
+        setStatus('si-price','PRICES: API LIMIT — RETRY IN 60s','err');
+        setTimeout(function(){ loadPrices().then(function(){render();loadTech();}); }, 15000);
+      }
+    })
+    .catch(function(){
+      setStatus('si-price','PRICES: CHECK CONNECTION','err');
+      setTimeout(function(){ loadPrices().then(function(){render();loadTech();}); }, 10000);
+    });
   setInterval(function(){
     loadPrices().then(function(){render();if(document.getElementById('pg-radar').classList.contains('active'))renderRR();});
-  },90000);
-  setInterval(function(){if(!techBusy)loadTech();},900000);
+  },120000);
+  setInterval(function(){if(!techBusy)loadTech();},1800000);
 }
 
 init();
