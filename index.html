@@ -762,7 +762,55 @@ window.onerror = function(msg, src, line, col, err) {
 };
 
 // ─── API ────────────────────────────────────────────────────
-var FH = 'cvemjnhr01qhb9f8n2a0cvemjnhr01qhb9f8n2ag';
+var FH = 'd7lmqs9r01qk7lvtlku0d7lmqs9r01qk7lvtlkug';
+
+// ─── PROXY FETCH (bypasses CORS for any URL) ─────────────────
+// Uses allorigins.win — free, no key, works from GitHub Pages
+function proxyFetch(url) {
+  var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+  return fetch(proxy)
+    .then(function(r){ return r.json(); })
+    .then(function(d){ return JSON.parse(d.contents); })
+    .catch(function(){ return null; });
+}
+
+// Yahoo Finance quote — no API key needed via proxy
+function fetchYahoo(sym) {
+  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d';
+  return proxyFetch(url).then(function(d){
+    try {
+      var r = d.chart.result[0];
+      var meta = r.meta;
+      var cur  = meta.regularMarketPrice;
+      var prev = meta.chartPreviousClose || meta.previousClose;
+      var chg  = prev ? ((cur - prev) / prev * 100) : 0;
+      return {
+        p: cur,
+        ch: parseFloat(chg.toFixed(2)),
+        h: meta.regularMarketDayHigh || cur,
+        l: meta.regularMarketDayLow || cur,
+        pc: prev || cur
+      };
+    } catch(e){ return null; }
+  }).catch(function(){ return null; });
+}
+
+// Yahoo Finance candles — 1 year daily, no key needed
+function fetchYahooCandles(sym) {
+  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=2y';
+  return proxyFetch(url).then(function(d){
+    try {
+      var r = d.chart.result[0];
+      var ts = r.timestamp;
+      var q  = r.indicators.quote[0];
+      var arr = [];
+      for(var i=0; i<ts.length; i++){
+        if(q.close[i]) arr.push({t:ts[i], c:q.close[i], h:q.high[i]||q.close[i], l:q.low[i]||q.close[i], o:q.open[i]||q.close[i], v:q.volume[i]||0});
+      }
+      return arr.length > 10 ? {s:'ok', arr:arr} : null;
+    } catch(e){ return null; }
+  }).catch(function(){ return null; });
+}
 
 // ─── TICKERS ────────────────────────────────────────────────
 var TICKERS = [
@@ -928,23 +976,39 @@ function _rlFetch(url) {
 }
 
 function fetchQ(sym) {
-  return _rlFetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FH)
-    .then(function(d){
-      if (d && d.c && d.c>0) return {p:d.c, ch:d.dp||0, h:d.h||d.c, l:d.l||d.c, pc:d.pc||d.c};
-      return null;
-    }).catch(function(){return null;});
+  // Try Yahoo Finance first (no API key, works everywhere)
+  return fetchYahoo(sym).then(function(q){
+    if(q && q.p > 0) return q;
+    // Fallback to Finnhub
+    return _rlFetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FH)
+      .then(function(d){
+        if(d && d.c && d.c>0) return {p:d.c, ch:d.dp||0, h:d.h||d.c, l:d.l||d.c, pc:d.pc||d.c};
+        return null;
+      }).catch(function(){return null;});
+  }).catch(function(){return null;});
 }
 
 function fetchPro(sym) {
+  // Try Finnhub profile, fallback gracefully
   return _rlFetch('https://finnhub.io/api/v1/stock/profile2?symbol='+sym+'&token='+FH)
     .catch(function(){return null;});
 }
 
 function fetchCandles(sym) {
-  var now = Math.floor(Date.now()/1000);
-  var from = now - 400*24*3600;
-  var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+sym+'&resolution=D&from='+from+'&to='+now+'&token='+FH;
-  return _rlFetch(url).catch(function(){return null;});
+  // Try Yahoo candles first — more reliable from browser
+  return fetchYahooCandles(sym).then(function(yc){
+    if(yc && yc.arr && yc.arr.length > 20) {
+      // Return in Finnhub-compatible format
+      var c=[],h=[],l=[],o=[],v=[],t=[];
+      yc.arr.forEach(function(d){c.push(d.c);h.push(d.h);l.push(d.l);o.push(d.o);v.push(d.v);t.push(d.t);});
+      return {s:'ok',c:c,h:h,l:l,o:o,v:v,t:t};
+    }
+    // Fallback to Finnhub candles
+    var now = Math.floor(Date.now()/1000);
+    var from = now - 400*24*3600;
+    var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+sym+'&resolution=D&from='+from+'&to='+now+'&token='+FH;
+    return _rlFetch(url).catch(function(){return null;});
+  }).catch(function(){return null;});
 }
 
 // ─── COMPUTE TECHNICALS ──────────────────────────────────────
@@ -2265,23 +2329,19 @@ function init(){
   render();
   renderEdu();
   initQuant();
-  // Test connectivity first
+  // Test connectivity with Yahoo Finance (no API key needed)
   setStatus('si-price','PRICES: CONNECTING','loading');
-  fetch('https://finnhub.io/api/v1/quote?symbol=AAPL&token='+FH,{cache:'no-store'})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d && d.c>0){
-        setStatus('si-price','PRICES: CONNECTED','loading');
-        loadPrices().then(function(){ render(); loadTech(); });
-      } else {
-        setStatus('si-price','PRICES: API LIMIT — RETRY IN 60s','err');
-        setTimeout(function(){ loadPrices().then(function(){render();loadTech();}); }, 15000);
-      }
-    })
-    .catch(function(){
-      setStatus('si-price','PRICES: CHECK CONNECTION','err');
-      setTimeout(function(){ loadPrices().then(function(){render();loadTech();}); }, 10000);
-    });
+  fetchYahoo('AAPL').then(function(q){
+    if(q && q.p > 0){
+      setStatus('si-price','PRICES: CONNECTED','loading');
+    } else {
+      setStatus('si-price','PRICES: LOADING...','loading');
+    }
+    loadPrices().then(function(){ render(); loadTech(); });
+  }).catch(function(){
+    setStatus('si-price','PRICES: RETRYING','err');
+    setTimeout(function(){ loadPrices().then(function(){render();loadTech();}); }, 3000);
+  });
   setInterval(function(){
     loadPrices().then(function(){render();if(document.getElementById('pg-radar').classList.contains('active'))renderRR();});
   },120000);
