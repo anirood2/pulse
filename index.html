@@ -345,6 +345,144 @@ a{color:inherit;text-decoration:none;}
 
 @media(min-width:640px){.clist,.rrlist,.edulist{display:grid;grid-template-columns:1fr 1fr;gap:12px;}}
 @media(min-width:1024px){.clist,.rrlist,.edulist{grid-template-columns:repeat(3,1fr);}}
+
+/* ── QUANT ENGINE ── */
+.qhero{padding:16px 16px 10px;}
+.qtitle{font-size:22px;font-weight:800;letter-spacing:-1px;}
+.qtitle em{color:var(--p);font-style:normal;}
+.qsub{font-family:var(--mono);font-size:9px;color:var(--t1);margin-top:4px;line-height:1.5;}
+.qmode{margin:0 16px 12px;display:flex;gap:6px;}
+.qmb{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t2);text-align:center;cursor:pointer;transition:all .15s;}
+.qmb.on{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+.qsect{padding:0 16px 10px;}
+.qslbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1.5px;margin-bottom:8px;}
+.qsgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.qscard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.qscard.on{border-color:var(--p);background:rgba(167,139,250,.06);}
+.qscard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:var(--p);opacity:0;transition:opacity .15s;}
+.qscard.on::before{opacity:1;}
+.qsn{font-weight:700;font-size:12px;margin-bottom:2px;}
+.qsd{font-family:var(--mono);font-size:8px;color:var(--t2);}
+.qschk{position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;
+  font-size:8px;transition:all .15s;}
+.qscard.on .qschk{background:var(--p);border-color:var(--p);color:var(--bg);}
+.qtkgrid{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px;}
+.qtk{padding:6px 12px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t2);cursor:pointer;transition:all .15s;}
+.qtk.on{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+.qfocus{padding:0 16px 12px;display:flex;gap:6px;flex-wrap:wrap;}
+.qfpill{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:8px;color:var(--t2);cursor:pointer;transition:all .15s;}
+.qfpill.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.06);}
+.qrun{margin:0 16px 14px;padding:12px 16px;background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(0,232,122,.08));
+  border:1px solid rgba(167,139,250,.3);border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  transition:all .2s;}
+.qrun:active{transform:scale(.98);}
+.qrunl{font-size:13px;font-weight:700;color:var(--t0);}
+.qruns{font-family:var(--mono);font-size:8px;color:var(--t1);margin-top:2px;}
+.qrunbtn{font-family:var(--mono);font-size:10px;padding:8px 16px;background:var(--p);
+  color:var(--bg);border-radius:8px;font-weight:700;border:none;cursor:pointer;
+  transition:all .15s;white-space:nowrap;}
+.qrunbtn:disabled{opacity:.4;}
+.qout{padding:0 16px 16px;}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;margin-bottom:12px;animation:fadein .4s ease both;}
+.qcard.TOP{border-left:3px solid var(--p);}
+.qcard.BUY{border-left:3px solid var(--g);}
+.qcard.WATCH{border-left:3px solid var(--b);}
+.qcard.AVOID{border-left:3px solid var(--r);}
+.qchdr{padding:14px 14px 10px;display:flex;align-items:center;gap:10px;}
+.qclogo{width:38px;height:38px;border-radius:10px;background:var(--card2);
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.qclogo img{width:100%;height:100%;object-fit:contain;padding:5px;}
+.qcinfo{flex:1;min-width:0;}
+.qcsym{font-weight:800;font-size:17px;letter-spacing:-.3px;line-height:1;}
+.qcname{font-size:10px;color:var(--t1);margin-top:1px;}
+.qcbdg{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:8px;
+  padding:2px 8px;border-radius:10px;border:1px solid;margin-top:4px;letter-spacing:.3px;}
+.qcright{text-align:right;flex-shrink:0;}
+.qcpt{font-family:var(--mono);font-size:12px;color:var(--g);font-weight:600;}
+.qcup{font-family:var(--mono);font-size:9px;color:var(--g);margin-top:2px;}
+.qcpe{font-family:var(--mono);font-size:9px;color:var(--t2);margin-top:1px;}
+.qmetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0 12px 10px;}
+.qm{background:var(--card2);border-radius:8px;padding:7px 8px;text-align:center;}
+.qml{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:2px;}
+.qmv{font-family:var(--mono);font-size:10px;font-weight:600;}
+.qthesis{margin:0 12px 10px;padding:10px 12px;background:var(--card2);border-radius:8px;border-left:3px solid var(--p);}
+.qtt{font-family:var(--mono);font-size:7px;color:var(--p);letter-spacing:1px;margin-bottom:6px;}
+.qtb{font-size:11px;color:var(--t1);line-height:1.75;}
+.qtb strong{color:var(--t0);}
+.qtb em{color:var(--y);font-style:normal;}
+.qcats{padding:0 12px 10px;display:flex;flex-wrap:wrap;gap:4px;}
+.qcat{font-family:var(--mono);font-size:7px;padding:2px 8px;border-radius:10px;border:1px solid;}
+.qrr{margin:0 12px 12px;background:var(--card3);border-radius:8px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;}
+.qrrl{font-family:var(--mono);font-size:8px;color:var(--t2);}
+.qrrv{font-family:var(--mono);font-size:16px;font-weight:800;}
+.qloading{padding:40px 16px;text-align:center;}
+.qspin{width:32px;height:32px;border:2px solid var(--line2);border-top-color:var(--p);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.qlt{font-family:var(--mono);font-size:10px;color:var(--t1);}
+.qls{font-family:var(--mono);font-size:8px;color:var(--t2);margin-top:4px;}
+.qempty{text-align:center;padding:40px 16px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.8;}
+.qsumbar{margin:0 16px 14px;padding:12px;background:var(--card2);border:1px solid var(--line);border-radius:12px;}
+.qsumt{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px;margin-bottom:8px;}
+.qsumrow{display:flex;justify-content:space-between;gap:8px;}
+.qsumc{flex:1;text-align:center;}
+.qsumv{font-family:var(--mono);font-size:18px;font-weight:700;}
+.qsuml{font-family:var(--mono);font-size:7px;color:var(--t2);margin-top:2px;}
+/* Search UI */
+.qsrchbox{padding:0 16px 10px;}
+.qsinp-wrap{display:flex;align-items:center;gap:8px;background:var(--card);
+  border:1px solid var(--line2);border-radius:10px;padding:10px 12px;margin-bottom:10px;
+  transition:border-color .15s;}
+.qsinp-wrap:focus-within{border-color:var(--p);}
+.qsinp-icon{color:var(--t2);font-size:14px;flex-shrink:0;}
+.qsinp{flex:1;background:none;border:none;outline:none;font-family:var(--mono);
+  font-size:13px;color:var(--t0);caret-color:var(--p);text-transform:uppercase;}
+.qsinp::placeholder{color:var(--t2);text-transform:none;}
+.qsclear{background:none;border:none;color:var(--t2);font-size:12px;cursor:pointer;padding:2px 4px;}
+.qstags{display:flex;flex-wrap:wrap;gap:6px;min-height:0;margin-bottom:8px;}
+.qstag{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;
+  background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);
+  font-family:var(--mono);font-size:10px;color:var(--p);}
+.qstag-rm{font-size:10px;color:var(--t2);cursor:pointer;line-height:1;}
+.qshints{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.qshint{font-family:var(--mono);font-size:9px;padding:4px 10px;border-radius:20px;
+  border:1px solid var(--line2);color:var(--t2);cursor:pointer;transition:all .12s;}
+.qshint:active{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+/* Chart */
+.qchart-wrap{margin:0 12px 10px;background:var(--card2);border-radius:10px;overflow:hidden;min-height:150px;}
+.qchart-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 4px;}
+.qchart-sym{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px;}
+.qchart-price{font-family:var(--mono);font-size:14px;font-weight:600;}
+.qchart-chg{font-family:var(--mono);font-size:9px;margin-left:6px;}
+.qchart-ranges{display:flex;gap:4px;padding:0 10px 6px;}
+.qcrange{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:10px;
+  border:1px solid var(--line2);color:var(--t2);cursor:pointer;transition:all .12s;}
+.qcrange.on{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
+.qchart-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);}
+.qcst{padding:7px 8px;text-align:center;border-right:1px solid var(--line);}
+.qcst:last-child{border-right:none;}
+.qcstl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:2px;}
+.qcstv{font-family:var(--mono);font-size:10px;font-weight:600;}
+/* Live price strip on card */
+.qlivestrip{padding:0 12px 8px;display:flex;align-items:center;gap:8px;}
+.qlprice{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:-1px;}
+.qlchg{font-family:var(--mono);font-size:11px;}
+.qlhl{font-family:var(--mono);font-size:8px;color:var(--t2);margin-left:auto;text-align:right;line-height:1.6;}
+/* AI block */
+.qaib{margin:0 12px 10px;padding:12px;background:rgba(167,139,250,.05);
+  border:1px solid rgba(167,139,250,.15);border-radius:10px;}
+.qaib-lbl{font-family:var(--mono);font-size:7px;color:var(--p);letter-spacing:1.5px;margin-bottom:8px;}
+.qaib-txt{font-size:11px;color:var(--t1);line-height:1.8;}
 </style>
 </head>
 <body>
@@ -517,12 +655,96 @@ a{color:inherit;text-decoration:none;}
   <div class="disc"><div class="dtxt">Educational content only. Not investment advice.</div></div>
 </div>
 
+<!-- ═══════ QUANT ENGINE ═══════ -->
+<div class="page" id="pg-quant">
+  <div class="qhero">
+    <div class="qtitle">Quant <em>Engine</em></div>
+    <div class="qsub">Live prices · interactive charts · AI-powered R/R for any ticker</div>
+  </div>
+
+  <!-- Mode toggle -->
+  <div class="qmode">
+    <div class="qmb on" data-qm="search" onclick="setQMode('search',this)">🔍 Any Ticker</div>
+    <div class="qmb" data-qm="sector" onclick="setQMode('sector',this)">🏭 By Sector</div>
+    <div class="qmb" data-qm="focus" onclick="setQMode('focus',this)">🎯 Focus Filter</div>
+  </div>
+
+  <!-- SEARCH MODE — any ticker -->
+  <div id="qm-search">
+    <div class="qsect">
+      <div class="qslbl">ENTER ANY TICKER(S) — COMMA SEPARATED</div>
+      <div class="qsrchbox">
+        <div class="qsinp-wrap">
+          <span class="qsinp-icon">⌕</span>
+          <input id="qSearchInp" class="qsinp" placeholder="e.g. AAPL, TSLA, NVDA…" autocomplete="off"
+            oninput="onQSearch(this.value)" onkeydown="onQSearchKey(event)"/>
+          <button class="qsclear" onclick="clearQSearch()" id="qsClearBtn" style="display:none">✕</button>
+        </div>
+        <div class="qstags" id="qSearchTags"></div>
+        <div class="qshints">
+          <span style="font-family:var(--mono);font-size:8px;color:var(--t2)">QUICK ADD:</span>
+          <span class="qshint" onclick="qAddTicker('MCHP')">MCHP</span>
+          <span class="qshint" onclick="qAddTicker('ACLS')">ACLS</span>
+          <span class="qshint" onclick="qAddTicker('HOOD')">HOOD</span>
+          <span class="qshint" onclick="qAddTicker('AGX')">AGX</span>
+          <span class="qshint" onclick="qAddTicker('VPG')">VPG</span>
+          <span class="qshint" onclick="qAddTicker('COIN')">COIN</span>
+          <span class="qshint" onclick="qAddTicker('CRCL')">CRCL</span>
+          <span class="qshint" onclick="qAddTicker('SMTC')">SMTC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTOR MODE -->
+  <div id="qm-sector" style="display:none">
+    <div class="qsect">
+      <div class="qslbl">SELECT SECTORS TO ANALYZE</div>
+      <div class="qsgrid" id="qSectGrid"></div>
+    </div>
+  </div>
+
+  <!-- FOCUS MODE -->
+  <div id="qm-focus" style="display:none">
+    <div class="qsect">
+      <div class="qslbl">WHAT ARE YOU LOOKING FOR?</div>
+      <div class="qfocus" id="qFocusGrid">
+        <div class="qfpill on" data-f="not_run" onclick="toggleFocus('not_run',this)">🟢 Not Yet Run</div>
+        <div class="qfpill" data-f="high_rr" onclick="toggleFocus('high_rr',this)">⚡ Best R/R</div>
+        <div class="qfpill" data-f="undervalued" onclick="toggleFocus('undervalued',this)">💎 Undervalued</div>
+        <div class="qfpill" data-f="catalyst" onclick="toggleFocus('catalyst',this)">🔥 Near Catalyst</div>
+        <div class="qfpill" data-f="recovery" onclick="toggleFocus('recovery',this)">📈 Recovery Play</div>
+        <div class="qfpill" data-f="ai_infra" onclick="toggleFocus('ai_infra',this)">🤖 AI Infra</div>
+        <div class="qfpill" data-f="crypto_fintech" onclick="toggleFocus('crypto_fintech',this)">🪙 Crypto/Fintech</div>
+        <div class="qfpill" data-f="power_infra" onclick="toggleFocus('power_infra',this)">⚡ Power Infra</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RUN button -->
+  <div class="qrun" onclick="runQuant()">
+    <div>
+      <div class="qrunl">Run Deep Analysis</div>
+      <div class="qruns" id="qRunSub">Add tickers or select a sector/filter above</div>
+    </div>
+    <button class="qrunbtn" id="qRunBtn">ANALYZE →</button>
+  </div>
+
+  <!-- Output -->
+  <div class="qout" id="qOut">
+    <div class="qempty">Enter any ticker above and tap Analyze — get live price, interactive chart, and AI quant research for any stock.</div>
+  </div>
+
+  <div class="disc"><div class="dtxt">Quant Engine uses live market data + AI. Not investment advice. Always do your own due diligence.</div></div>
+</div>
+
 </div><!-- /pages -->
 
 <div class="tabbar">
   <button class="tb on" onclick="switchPg('squeeze',this)"><span class="tb-i">⚡</span><span class="tb-l">SQUEEZE</span></button>
   <button class="tb" onclick="switchPg('radar',this)"><span class="tb-i">📡</span><span class="tb-l">RADAR</span></button>
   <button class="tb" onclick="switchPg('edu',this)"><span class="tb-i">📖</span><span class="tb-l">LEARN</span></button>
+  <button class="tb" onclick="switchPg('quant',this)"><span class="tb-i">🔬</span><span class="tb-l">QUANT</span></button>
 </div>
 
 <script>
@@ -628,6 +850,7 @@ function switchPg(pg, btn) {
   btn.classList.add('on');
   if (pg === 'radar') { renderRR(); updateRwyDots(); }
   if (pg === 'edu')   renderEdu();
+  if (pg === 'quant') initQuant();
 }
 
 // ─── RSI CALCULATION ────────────────────────────────────────
@@ -1432,10 +1655,571 @@ function jumpTerm(term){
   if(match){eduExp[match.id]=true;renderEdu();setTimeout(function(){var el=document.getElementById('edu-'+match.id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
 }
 
+
+// ─── QUANT ENGINE DATA ────────────────────────────────────────
+
+var QUANT_SECTORS = [
+  {id:'semi_test',     label:'Semi Test Equipment',      emoji:'🔬', tickers:['ACLS','VPG','COHU'],   peers:'TER · FORM · AEHR'},
+  {id:'analog_semi',   label:'Analog / Industrial Semis', emoji:'⚙️', tickers:['MCHP','ON'],           peers:'TXN · SYNA · ADI'},
+  {id:'robotics',      label:'Robotics & Automation',     emoji:'🤖', tickers:['VPG','IESC'],          peers:'SYM · BRKS'},
+  {id:'power_infra',   label:'Power Infrastructure',      emoji:'⚡', tickers:['AGX','IESC'],          peers:'GNRC · POWL'},
+  {id:'crypto_fintech',label:'Crypto / Fintech',          emoji:'🪙', tickers:['HOOD','COIN','CRCL'],  peers:'COIN · CRCL'},
+  {id:'semi_materials',label:'Semi Materials',            emoji:'💎', tickers:['ENTG','UCTT'],         peers:'MKS · ICHR'},
+  {id:'ai_infra',      label:'AI Infrastructure',         emoji:'🧠', tickers:['MCHP','SMTC'],        peers:'NVDA · AMD · MU'},
+  {id:'ev_sic',        label:'EV / SiC Power',            emoji:'🔋', tickers:['ACLS','ON'],           peers:'WOLF · AEHR'},
+];
+
+var QUANT_DB = {
+  ACLS:{n:'Axcelis Technologies',sec:'Semi Test',rating:'BUY',pt:144,pe:20.1,short:8,
+    thesis:'<strong>Ion implant king for Silicon Carbide</strong> — the chip substrate in every EV power module. Punished hard in 2025 on EV capex slowdown. P/E 20.1x vs sector avg 44.2x — that valuation gap closes as memory penetration + SiC ramp accelerate. ACLS–Veeco merger removes China concentration overhang. B. Riley upgraded to Buy 4/22/26. <em>The stock hasn\'t moved yet while the thesis is being validated in real time.</em>',
+    cats:['SiC/EV Recovery','Memory Upside','Merger Catalyst','Deep Value'],
+    rr:'EXTREME — 44% upside to consensus, 80%+ to bull case $144. Fresh analyst upgrade as catalyst.'},
+  MCHP:{n:'Microchip Technology',sec:'Analog Semi',rating:'BUY',pt:115,pe:28,short:5.2,
+    thesis:'<strong>42% crash in 2025 = the setup.</strong> Inventory destocking is visibly reversing — book-to-bill well above 1.0, guided +6.2% sequential revenue growth. Wall Street treats this as cyclical. It\'s structural: PCIe Gen6 switches on 3nm = 3–5 units per GPU deployed. Data center becoming fastest-growing segment. 17 buy ratings vs 6 holds. <em>May 11 earnings is the ignition event.</em>',
+    cats:['Cycle Recovery','AI Data Center','PCIe Gen6','Gross Margin Re-rate'],
+    rr:'HIGH — $82→$115 bull case. 40%+ upside. Live binary catalyst May 11, 2026.'},
+  HOOD:{n:'Robinhood Markets',sec:'Crypto/Fintech',rating:'BUY',pt:150,pe:35,short:6,
+    thesis:'<strong>Everyone is in COIN and CRCL. Nobody has rotated into HOOD yet.</strong> Robinhood is the highest-margin pure-play on crypto volume expansion — 94.96% gross margin — and they\'re diversifying away from PFOF risk faster than the market realizes. $143.5B AUC, Gold subscription compounding, international expansion via Bitstamp. <em>Same crypto tailwind as COIN, without stablecoin regulatory overhang.</em>',
+    cats:['Crypto Volume Surge','Zero Stablecoin Risk','Margin Expansion','Bitstamp Synergy'],
+    rr:'STRONG — Not in anyone\'s COIN/CRCL rotation yet. First mover advantage window closing.'},
+  AGX:{n:'Argan Inc.',sec:'Power Infra',rating:'TOP PICK',pt:130,pe:18,short:4,
+    thesis:'<strong>POWL ran 99% YTD. AGX is the POWL before POWL ran.</strong> Same power plant construction + data center electrical infrastructure exposure. Almost zero institutional coverage. Net cash balance sheet. Every hyperscaler AI buildout needs the custom electrical systems Argan builds. <em>POWL trades at 7x EV/EBITDA after the run — AGX hasn\'t been discovered yet.</em>',
+    cats:['Power Infrastructure','Data Center Build','Pre-Discovery','POWL Proxy'],
+    rr:'ASYMMETRIC — Pre-institutional-discovery phase. POWL showed what happens when this theme gets attention.'},
+  VPG:{n:'Vishay Precision Group',sec:'Precision Sensors',rating:'BUY',pt:63,pe:22,short:5,
+    thesis:'<strong>Physical AI sensors nobody is talking about.</strong> VPG makes precision sensors going inside humanoid robots and autonomous logistics systems. Robot component orders hit $37.8M in 2025, beating $30M target. Sensors book-to-bill 1.15 — highest since 2022. <em>Nobody is narrating this as a Physical AI play.</em> That\'s the edge. November expiry = 6+ months of runway.',
+    cats:['Physical AI Sensors','Humanoid Robotics','Industrial Automation','Under-narrated'],
+    rr:'STRONG — Still early innings. Narrative not priced. November expiry gives full runway.'},
+  UCTT:{n:'Ultra Clean Holdings',sec:'Semi Materials',rating:'WATCH',pt:58,pe:16,short:9,
+    thesis:'<strong>Every leading-edge fab needs UCTT\'s chemistry.</strong> Specialty cleaning chemicals and gas delivery systems for 2nm/3nm wafer production. Trading at 16x P/E while semi equipment cycle accelerates. Similar to ENTG but smaller, less covered, larger valuation gap. <em>When TSMC/Samsung capacity ramps, UCTT volumes scale directly.</em>',
+    cats:['Semi Materials','Advanced Node Ramp','ENTG Peer','Undercovered'],
+    rr:'MODERATE-HIGH — High probability of positive return as advanced node cycle accelerates.'},
+  IESC:{n:'IES Holdings',sec:'Power Infra',rating:'TOP PICK',pt:180,pe:19,short:3,
+    thesis:'<strong>POWL ran 99% YTD after the market found this theme. IESC hasn\'t had that moment yet.</strong> Electrical infrastructure installation for data centers being built for AI. Appears in POWL\'s Yahoo Finance peer comps. Clean balance sheet, growing backlog, strong recurring service revenue. <em>Same structural tailwind, earlier institutional discovery stage.</em>',
+    cats:['Data Center Electrical','POWL Proxy','AI Infra Adjacent','Under-discovered'],
+    rr:'HIGH — Same theme as POWL at a much earlier stage of institutional discovery.'},
+  ACHR:{n:'Archer Aviation',sec:'eVTOL',rating:'WATCH',pt:12,pe:null,short:18,
+    thesis:'<strong>Binary FAA certification play with short squeeze mechanics.</strong> United Airlines and Stellantis backing. 18% float short. FAA Part 135 approval is the catalyst — if it comes before the short position unwinds, the squeeze mechanics are textbook. <em>High risk, high reward — not a valuation story, a milestone story.</em>',
+    cats:['Binary Catalyst','Short Squeeze Setup','Institutional Backing','Pre-Revenue'],
+    rr:'SPECULATIVE — Binary. FAA approval = squeeze. No approval = thesis waits. Size accordingly.'},
+  ON:{n:'ON Semiconductor',sec:'Analog Semi',rating:'WATCH',pt:78,pe:22,short:18,
+    thesis:'<strong>EV cycle recovery coiling.</strong> Automotive headwinds crushed ON in 2025. SiC content per vehicle expanding even as EV growth slows — ASP increases compensate for volume. Same SiC theme as ACLS but on the device side. 18% short float creates a squeeze setup if auto recovery surprises.',
+    cats:['EV Recovery','SiC Content Ramp','High Short %','Auto Cycle'],
+    rr:'MODERATE — Requires EV/auto recovery confirmation. High short % = explosive if thesis plays.'},
+  COHU:{n:'Cohu Inc.',sec:'Semi Test',rating:'WATCH',pt:50,pe:null,short:12,
+    thesis:'<strong>Already up 90% YTD but still has runway.</strong> B. Riley raised to $50 on 4/20. AI datacenter chip testing demand + memory recovery tailwind. Recent $30M follow-on HPC test order validates the ramp. <em>Be careful — COHU is later in the run than ACLS. Better as a hedge/complement than a primary position.</em>',
+    cats:['Semi Test Recovery','HPC Test Orders','Memory Demand','Already Running'],
+    rr:'LOWER — Already ran 90%. Remaining upside narrower. Better as satellite position.'},
+  ENTG:{n:'Entegris',sec:'Semi Materials',rating:'BUY',pt:120,pe:28,short:10,
+    thesis:'<strong>Every 2nm/3nm wafer needs Entegris chemistry.</strong> High quality at below-average valuation after the 2023-2024 correction. CMC acquisition adds scale. TSMC Arizona ramp is a direct catalyst — Entegris goes in every fab line. <em>Market underestimates the moat: switching costs are near-infinite at advanced nodes.</em>',
+    cats:['Advanced Node Moat','TSMC Arizona','High Switching Costs','Semi Materials'],
+    rr:'STRONG — Quality compounder at attractive entry. Earnings visibility high through 2027.'},
+  SMTC:{n:'Semtech Corp',sec:'Semis',rating:'BUY',pt:104,pe:null,short:15,
+    thesis:'<strong>Same setup as CRDO months before CRDO ran.</strong> FiberEdge 1.6T DSPs for AI data center interconnects. 14/14 analysts Buy consensus — unanimous conviction. ~$104 consensus vs current price. <em>May 26 earnings is the ignition event.</em> LoRa IoT business recovering simultaneously.',
+    cats:['AI Data Center Interconnect','Unanimous Buy','CRDO Parallel','May 26 Catalyst'],
+    rr:'HIGH — 14/14 analysts Buy. May 26 earnings binary. Unanimous conviction setup.'},
+};
+
+var FOCUS_MAP = {
+  not_run:   ['ACLS','AGX','IESC','SMTC'],
+  high_rr:   ['ACLS','MCHP','AGX','SMTC'],
+  undervalued:['ACLS','MCHP','UCTT','ENTG'],
+  catalyst:  ['MCHP','SMTC','ACLS','HOOD'],
+  recovery:  ['MCHP','ON','UCTT','ACLS'],
+  ai_infra:  ['MCHP','IESC','AGX','SMTC'],
+  crypto_fintech:['HOOD','COIN','CRCL'],
+  power_infra:['AGX','IESC'],
+};
+
+var qMode = 'search';
+var qSelSectors = new Set();
+var qSelFocus   = new Set(['not_run']);
+var qSearchSyms = [];
+var qIsRunning  = false;
+var qChartData  = {}; // sym -> candle data
+var qChartRange = {}; // sym -> '1M','3M','6M','1Y'
+
+// ── Search UI ──────────────────────────────────────────────────
+function onQSearch(v) {
+  var btn = document.getElementById('qsClearBtn');
+  if (btn) btn.style.display = v ? '' : 'none';
+}
+
+function onQSearchKey(e) {
+  var inp = document.getElementById('qSearchInp');
+  var v = inp.value.trim().toUpperCase();
+  if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
+    e.preventDefault();
+    if (v) { qAddTicker(v.replace(',','').trim()); inp.value = ''; onQSearch(''); }
+  }
+  if (e.key === 'Escape') { inp.value = ''; onQSearch(''); }
+}
+
+function clearQSearch() {
+  var inp = document.getElementById('qSearchInp');
+  if (inp) { inp.value = ''; onQSearch(''); }
+}
+
+function qAddTicker(sym) {
+  sym = sym.toUpperCase().replace(/[^A-Z.]/g,'');
+  if (!sym || qSearchSyms.includes(sym)) return;
+  qSearchSyms.push(sym);
+  renderQTags();
+  updateQRunSub();
+  var inp = document.getElementById('qSearchInp');
+  if (inp) { inp.value = ''; onQSearch(''); inp.focus(); }
+}
+
+function qRemoveTicker(sym) {
+  qSearchSyms = qSearchSyms.filter(function(s){return s!==sym;});
+  renderQTags();
+  updateQRunSub();
+}
+
+function renderQTags() {
+  var el = document.getElementById('qSearchTags');
+  if (!el) return;
+  if (!qSearchSyms.length) { el.innerHTML = ''; return; }
+  el.innerHTML = qSearchSyms.map(function(s){
+    return '<div class="qstag">'+s+
+      '<span class="qstag-rm" onclick="qRemoveTicker(\''+s+'\')">✕</span></div>';
+  }).join('');
+}
+
+function setQMode(m, el) {
+  qMode = m;
+  document.querySelectorAll('[data-qm]').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  ['search','sector','focus'].forEach(function(id){
+    var el2 = document.getElementById('qm-'+id);
+    if (el2) el2.style.display = m===id ? '' : 'none';
+  });
+  updateQRunSub();
+}
+
+function toggleSect(id, el) {
+  if (qSelSectors.has(id)) { qSelSectors.delete(id); el.classList.remove('on'); }
+  else { qSelSectors.add(id); el.classList.add('on'); }
+  updateQRunSub();
+}
+
+function toggleFocus(f, el) {
+  if (qSelFocus.has(f)) { qSelFocus.delete(f); el.classList.remove('on'); }
+  else { qSelFocus.add(f); el.classList.add('on'); }
+  updateQRunSub();
+}
+
+function updateQRunSub() {
+  var sub = document.getElementById('qRunSub');
+  if (!sub) return;
+  var syms = getQuantTickers();
+  sub.textContent = syms.length ? syms.length+' ticker(s) ready — tap Analyze' : 'Add tickers or select a sector/filter above';
+}
+
+function getQuantTickers() {
+  var syms = new Set();
+  if (qMode === 'search') {
+    qSearchSyms.forEach(function(s){syms.add(s);});
+    // also add from input if user hasn't pressed enter
+    var inp = document.getElementById('qSearchInp');
+    if (inp && inp.value.trim()) {
+      inp.value.trim().toUpperCase().split(/[,\s]+/).forEach(function(s){
+        if (s) syms.add(s);
+      });
+    }
+  } else if (qMode === 'sector') {
+    qSelSectors.forEach(function(sid) {
+      var s = QUANT_SECTORS.find(function(x){return x.id===sid;});
+      if (s) s.tickers.forEach(function(t){syms.add(t);});
+    });
+  } else {
+    qSelFocus.forEach(function(f){
+      (FOCUS_MAP[f]||[]).forEach(function(s){syms.add(s);});
+    });
+  }
+  return Array.from(syms);
+}
+
+// ── Chart rendering ───────────────────────────────────────────
+function drawChart(canvasId, candles, color, range) {
+  try {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas || !candles || candles.length < 2) return;
+    var data = candles;
+    if (range === '1M') data = candles.slice(-22);
+    else if (range === '3M') data = candles.slice(-66);
+    else if (range === '6M') data = candles.slice(-132);
+    else data = candles.slice(-252);
+    if (data.length < 2) data = candles;
+    if (data.length < 2) return;
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.offsetWidth || (canvas.parentElement ? canvas.parentElement.offsetWidth : 0) || (window.innerWidth - 56);
+    var h = 150;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+    var closes = data.map(function(d){ return +d.c; });
+    var minP = Math.min.apply(null, closes);
+    var maxP = Math.max.apply(null, closes);
+    var priceRange = maxP - minP;
+    if (priceRange < 0.001) priceRange = maxP * 0.05 || 1;
+    var padL = 6, padR = 6, padT = 16, padB = 22;
+    var pw = w - padL - padR;
+    var ph = h - padT - padB;
+    var n = data.length;
+    function xAt(i) { return padL + (n < 2 ? 0 : (i / (n - 1)) * pw); }
+    function yAt(v) { return padT + ph - ((v - minP) / priceRange) * ph; }
+    var isUp = closes[n-1] >= closes[0];
+    var lineColor = isUp ? '#00e87a' : '#ff334e';
+    // Grid
+    ctx.strokeStyle = 'rgba(34,44,58,.5)';
+    ctx.lineWidth = 0.5;
+    [0.33, 0.66].forEach(function(f) {
+      var y = padT + ph * (1-f);
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+pw, y); ctx.stroke();
+    });
+    // Gradient fill
+    var grad = ctx.createLinearGradient(0, padT, 0, padT+ph);
+    grad.addColorStop(0, isUp ? 'rgba(0,232,122,.2)' : 'rgba(255,51,78,.2)');
+    grad.addColorStop(1, 'rgba(7,9,13,0)');
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), yAt(closes[0]));
+    for (var i=1; i<n; i++) ctx.lineTo(xAt(i), yAt(closes[i]));
+    ctx.lineTo(xAt(n-1), padT+ph);
+    ctx.lineTo(xAt(0), padT+ph);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), yAt(closes[0]));
+    for (var j=1; j<n; j++) ctx.lineTo(xAt(j), yAt(closes[j]));
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1.8;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    // Labels
+    ctx.font = '9px monospace';
+    ctx.fillStyle = '#8899aa';
+    ctx.textAlign = 'left';
+    ctx.fillText('L:$'+minP.toFixed(minP<10?2:0), padL, h-4);
+    ctx.textAlign = 'right';
+    ctx.fillText('H:$'+maxP.toFixed(maxP<10?2:0), padL+pw, h-4);
+    // Current price label + dot
+    var lastY = yAt(closes[n-1]);
+    ctx.fillStyle = lineColor;
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('$'+closes[n-1].toFixed(2), padL+pw, Math.max(lastY-5, padT+10));
+    ctx.beginPath();
+    ctx.arc(xAt(n-1), lastY, 4, 0, Math.PI*2);
+    ctx.fillStyle = lineColor;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(xAt(n-1), lastY, 2, 0, Math.PI*2);
+    ctx.fillStyle = '#07090d';
+    ctx.fill();
+  } catch(e) { /* silently fail */ }
+}
+
+function changeChartRange(sym, range) {
+  try {
+    qChartRange[sym] = range;
+    document.querySelectorAll('[data-crange="'+sym+'"]').forEach(function(el){
+      el.classList.toggle('on', el.dataset.r === range);
+    });
+    var candles = qChartData[sym];
+    if (candles && candles.length > 1) {
+      // Small delay to let DOM settle after class toggle
+      setTimeout(function(){ drawChart('qc-'+sym, candles, null, range); }, 30);
+    }
+  } catch(e) {}
+}
+
+// ── Main analysis runner ──────────────────────────────────────
+async function runQuant() {
+  if (qIsRunning) return;
+  var syms = getQuantTickers();
+  if (!syms.length) {
+    var out = document.getElementById('qOut');
+    if (out) out.innerHTML = '<div class="qempty">Enter at least one ticker symbol — or select a sector / focus filter.</div>';
+    return;
+  }
+
+  qIsRunning = true;
+  var btn = document.getElementById('qRunBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+  var out = document.getElementById('qOut');
+  if (out) out.innerHTML = '<div class="qloading"><div class="qspin"></div>'+
+    '<div class="qlt">Fetching live data for '+syms.join(', ')+'</div>'+
+    '<div class="qls">Prices · Candles · AI quant analysis</div></div>';
+
+  // Fetch quote + candles in parallel for all tickers
+  var priceMap = {}, candleMap = {}, profileMap = {};
+  await Promise.all(syms.map(async function(sym) {
+    try {
+      var results = await Promise.all([fetchQ(sym), fetchPro(sym), fetchCandles(sym)]);
+      var q = results[0], pro = results[1], candles = results[2];
+      if (q) { prices[sym] = q; priceMap[sym] = q; }
+      if (pro) profileMap[sym] = pro;
+      if (candles && candles.s === 'ok' && candles.c && candles.c.length > 0) {
+        var arr = [];
+        for (var i=0; i<candles.c.length; i++) {
+          arr.push({c:candles.c[i], h:candles.h[i], l:candles.l[i], o:candles.o[i], t:candles.t[i], v:candles.v?candles.v[i]:0});
+        }
+        candleMap[sym] = arr;
+        qChartData[sym] = arr;
+        qChartRange[sym] = '6M';
+      }
+    } catch(e){}
+  }));
+
+  // Build AI prompt covering all tickers
+  var tickerLines = syms.map(function(sym) {
+    var q = priceMap[sym];
+    var db = QUANT_DB[sym];
+    var pro = profileMap[sym];
+    var candles = candleMap[sym];
+    var priceTxt = q ? '$'+q.p.toFixed(2)+' ('+(q.ch>=0?'+':'')+q.ch.toFixed(2)+'% today)' : 'price unavailable';
+    var sector = (db&&db.sec) || (pro&&pro.finnhubIndustry) || 'Unknown';
+    var name = (db&&db.n) || (pro&&pro.name) || sym;
+    // Compute quick technicals if we have candles
+    var techTxt = '';
+    if (candles && candles.length >= 50) {
+      var closes = candles.map(function(d){return d.c;});
+      var rsiV = calcRSI(closes);
+      var ma50v = closes.slice(-50).reduce(function(a,b){return a+b;},0)/50;
+      var curV = closes[closes.length-1];
+      var ma50pV = ((curV-ma50v)/ma50v*100).toFixed(1);
+      var ytdStartV = closes[Math.max(0,closes.length-252)];
+      var ytdV = ((curV-ytdStartV)/ytdStartV*100).toFixed(1);
+      var h52v = Math.max.apply(null, closes.slice(-252));
+      var fromHV = ((curV-h52v)/h52v*100).toFixed(1);
+      techTxt = ' RSI='+rsiV+', vs50dMA='+ma50pV+'%, YTD='+ytdV+'%, from52wHigh='+fromHV+'%.';
+    }
+    var dbTxt = db ? ' Known thesis: '+db.thesis.replace(/<[^>]+>/g,'') : '';
+    return sym+' ('+name+', '+sector+'): '+priceTxt+'.'+techTxt+dbTxt;
+  }).join('\n\n');
+
+  var prompt = 'You are a senior quant analyst and options trader. Analyze these stocks for a sophisticated trader looking for the BEST risk/reward setups. For EACH ticker:\n\n1. Rate it: TOP PICK / BUY / WATCH / AVOID\n2. Give a 2-3 sentence quant thesis focused on WHY it hasn\'t run yet (or has)\n3. Name the specific catalyst and timing\n4. Give a precise R/R assessment with upside/downside levels\n5. Flag any key risks\n\nBe direct, sharp, and data-driven. No generic commentary. Start each ticker analysis with **TICKER:**\n\nTickers to analyze:\n\n'+tickerLines+'\n\nDate: April 23, 2026. These are for options trading consideration.';
+
+  var aiText = '';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{role:'user', content: prompt}]
+      })
+    });
+    var data = await resp.json();
+    if (data.content && data.content[0]) aiText = data.content[0].text || '';
+  } catch(e) { aiText = ''; }
+
+  // Parse AI text into per-ticker sections
+  var aiByTicker = {};
+  if (aiText) {
+    var parts = aiText.split(/\*\*([A-Z.]+):\*\*/);
+    for (var i=1; i<parts.length; i+=2) {
+      var sym2 = parts[i].trim();
+      var body = parts[i+1] ? parts[i+1].trim() : '';
+      aiByTicker[sym2] = body;
+    }
+    // fallback: assign whole text to all if parsing failed
+    if (!Object.keys(aiByTicker).length && syms.length === 1) {
+      aiByTicker[syms[0]] = aiText;
+    }
+  }
+
+  // Render all ticker cards
+  var html = '';
+
+  // Summary bar
+  html += '<div class="qsumbar">'+
+    '<div class="qsumt">LIVE ANALYSIS — '+syms.length+' TICKER'+(syms.length>1?'S':'')+' · '+new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})+' ET</div>'+
+    '<div class="qsumrow">'+
+      syms.map(function(sym){
+        var q = priceMap[sym];
+        var chgV = q ? q.ch : null;
+        var chgC = chgV!=null ? (chgV>=0?'var(--g)':'var(--r)') : 'var(--t2)';
+        return '<div class="qsumc">'+
+          '<div class="qsumv" style="color:'+chgC+'">'+(q?'$'+q.p.toFixed(2):'—')+'</div>'+
+          '<div class="qsuml">'+sym+(chgV!=null?' '+(chgV>=0?'▲':'▼')+Math.abs(chgV).toFixed(1)+'%':'')+'</div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+  '</div>';
+
+  syms.forEach(function(sym) {
+    var q = priceMap[sym];
+    var db = QUANT_DB[sym];
+    var pro = profileMap[sym];
+    var candles = candleMap[sym];
+    var aiSection = aiByTicker[sym] || '';
+
+    var name = (db&&db.n)||(pro&&pro.name)||sym;
+    var sector = (db&&db.sec)||(pro&&pro.finnhubIndustry)||'—';
+    var rating = db ? db.rating : 'WATCH';
+    var ratingC = rating==='TOP PICK'?'var(--p)':rating==='BUY'?'var(--g)':rating==='WATCH'?'var(--y)':'var(--r)';
+
+    var price = q ? q.p : 0;
+    var chg = q ? q.ch : null;
+    var chgC = chg!=null?(chg>=0?'var(--g)':'var(--r)'):'var(--t2)';
+    var hiDay = q ? q.h : 0;
+    var loDay = q ? q.l : 0;
+    var pc = q ? q.pc : 0;
+
+    var pt = db ? db.pt : null;
+    var upside = pt && price ? ((pt-price)/price*100).toFixed(0) : null;
+
+    // Compute live technicals from candles
+    var rsiVal = null, ma50pVal = null, ytdVal = null, fromHVal = null;
+    if (candles && candles.length >= 50) {
+      var closes = candles.map(function(d){return d.c;});
+      var vols = candles.map(function(d){return d.v||0;});
+      rsiVal = calcRSI(closes);
+      var ma50val = closes.slice(-50).reduce(function(a,b){return a+b;},0)/50;
+      ma50pVal = ((price-ma50val)/ma50val*100).toFixed(1);
+      var ytdSval = closes[Math.max(0,closes.length-252)];
+      ytdVal = ((price-ytdSval)/ytdSval*100).toFixed(1);
+      var h52val = Math.max.apply(null, closes.slice(-252));
+      fromHVal = ((price-h52val)/h52val*100).toFixed(1);
+    }
+
+    html += '<div class="qcard '+(rating.replace(' ',''))+'" id="qcard-'+sym+'">'+
+
+      // Header
+      '<div class="qchdr">'+
+        '<div class="qclogo" id="qlogo-'+sym+'">'+
+          '<img src="https://logo.clearbit.com/'+sym.toLowerCase()+'.com" alt="'+sym+'"'+
+          ' onload="this.style.opacity=1" style="opacity:0;transition:opacity .2s"'+
+          ' onerror="var p=this.parentNode;if(p){p.innerHTML=\'<div style=\"font-family:var(--mono);font-size:10px;color:var(--t1);font-weight:700\">\'+(sym.slice(0,4)+\'</div>\');}">'+
+        '</div>'+
+        '<div class="qcinfo">'+
+          '<div class="qcsym">'+sym+'</div>'+
+          '<div class="qcname">'+name+'</div>'+
+          '<div class="qcbdg" style="border-color:'+ratingC+'40;color:'+ratingC+'">'+rating+'</div>'+
+        '</div>'+
+        '<div class="qcright">'+
+          (pt?'<div class="qcpt">PT $'+pt+'</div>':'')+
+          (upside!=null?'<div class="qcup">'+(upside>0?'+':'')+upside+'% upside</div>':'')+
+          '<div style="font-family:var(--mono);font-size:8px;color:var(--t2)">'+sector+'</div>'+
+        '</div>'+
+      '</div>'+
+
+      // Live price strip
+      '<div class="qlivestrip">'+
+        '<div class="qlprice" style="color:'+(q?(chg>=0?'var(--g)':'var(--r)'):'var(--t2)')+'">'+
+          (q?'$'+price.toFixed(2):'Loading…')+'</div>'+
+        (q&&chg!=null?'<div class="qlchg" style="color:'+chgC+'">'+(chg>=0?'+':'')+chg.toFixed(2)+'%</div>':'')+
+        '<div class="qlhl">'+
+          (q&&hiDay?'H $'+hiDay.toFixed(2):'')+(q&&hiDay&&loDay?' · ':'')+
+          (q&&loDay?'L $'+loDay.toFixed(2):'')+
+          (q&&pc?'<br>Prev $'+pc.toFixed(2):'')+
+        '</div>'+
+      '</div>'+
+
+      // Chart
+      (candles && candles.length > 10 ?
+        '<div class="qchart-wrap">'+
+          '<div class="qchart-ranges">'+
+            ['1M','3M','6M','1Y'].map(function(r){
+              return '<div class="qcrange'+(r==='6M'?' on':'')+'" data-crange="'+sym+'" data-r="'+r+'"'+
+                ' onclick="changeChartRange(\''+sym+'\',\''+r+'\')">'+r+'</div>';
+            }).join('')+
+          '</div>'+
+          '<canvas class="qcanvas" id="qc-'+sym+'" height="140"></canvas>'+
+          '<div class="qchart-stats">'+
+            '<div class="qcst"><div class="qcstl">RSI(14)</div><div class="qcstv" style="color:'+(rsiVal?rsiColor(rsiVal):'var(--t2)')+'">'+( rsiVal||'—')+'</div></div>'+
+            '<div class="qcst"><div class="qcstl">VS 50D MA</div><div class="qcstv" style="color:'+(ma50pVal!=null?( parseFloat(ma50pVal)>0?'var(--g)':'var(--r)'):'var(--t2)')+'">'+( ma50pVal!=null?(parseFloat(ma50pVal)>0?'+':'')+ma50pVal+'%':'—')+'</div></div>'+
+            '<div class="qcst"><div class="qcstl">YTD</div><div class="qcstv" style="color:'+(ytdVal!=null?( parseFloat(ytdVal)>0?'var(--g)':'var(--r)'):'var(--t2)')+'">'+( ytdVal!=null?(parseFloat(ytdVal)>0?'+':'')+ytdVal+'%':'—')+'</div></div>'+
+            '<div class="qcst"><div class="qcstl">FROM 52W H</div><div class="qcstv" style="color:var(--r)">'+( fromHVal!=null?fromHVal+'%':'—')+'</div></div>'+
+          '</div>'+
+        '</div>'
+      : '') +
+
+      // Thesis from DB
+      (db ?
+        '<div class="qthesis">'+
+          '<div class="qtt">QUANT THESIS</div>'+
+          '<div class="qtb">'+db.thesis+'</div>'+
+        '</div>'+
+        (db.cats ? '<div class="qcats">'+db.cats.map(function(c){
+          return '<span class="qcat" style="border-color:'+ratingC+'33;color:'+ratingC+'">'+c+'</span>';
+        }).join('')+'</div>' : '')+
+        '<div style="padding:0 12px 10px;font-family:var(--mono);font-size:9px;color:var(--t1);line-height:1.6">'+
+          '<span style="color:var(--t2)">R/R: </span>'+db.rr+
+        '</div>'
+      : '') +
+
+      // AI analysis block
+      (aiSection ?
+        '<div class="qaib">'+
+          '<div class="qaib-lbl">🤖 LIVE AI QUANT ANALYSIS</div>'+
+          '<div class="qaib-txt">'+aiSection.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')+'</div>'+
+        '</div>'
+      :
+        // For unknown tickers with no DB entry and no AI, show a note
+        (!db && !aiSection ?
+          '<div class="qaib" style="border-color:rgba(61,142,255,.2);background:rgba(61,142,255,.04)">'+
+            '<div class="qaib-lbl" style="color:var(--b)">📊 LIVE DATA ONLY</div>'+
+            '<div class="qaib-txt">No pre-loaded thesis for '+sym+'. Live price, chart and technicals above. Run again with a named ticker from our database for full quant analysis.</div>'+
+          '</div>'
+        : '')
+      ) +
+
+    '</div>';
+  });
+
+  if (out) {
+    out.innerHTML = html;
+    out.scrollIntoView({behavior:'smooth', block:'start'});
+    // Draw charts after layout settles
+    function drawAllCharts() {
+      syms.forEach(function(sym) {
+        var candles = candleMap[sym];
+        if (candles && candles.length > 1) {
+          drawChart('qc-'+sym, candles, null, qChartRange[sym]||'6M');
+        }
+      });
+    }
+    setTimeout(drawAllCharts, 120);
+    setTimeout(drawAllCharts, 400); // second pass for any that missed
+  }
+
+  qIsRunning = false;
+  if (btn) { btn.disabled = false; btn.textContent = 'ANALYZE →'; }
+}
+
+function initQuant() {
+  // Render sector grid
+  var sg = document.getElementById('qSectGrid');
+  if (!sg || sg.innerHTML) return; // avoid re-init
+  var html = '';
+  QUANT_SECTORS.forEach(function(s) {
+    html += '<div class="qscard" data-sid="'+s.id+'" onclick="toggleSect(\''+s.id+'\',this)">'+
+      '<div class="qschk">✓</div>'+
+      '<div class="qsn">'+s.emoji+' '+s.label+'</div>'+
+      '<div class="qsd">'+s.peers+'</div>'+
+    '</div>';
+  });
+  sg.innerHTML = html;
+  updateQRunSub();
+}
+
 // ─── INIT ────────────────────────────────────────────────────
 function init(){
   render();
   renderEdu();
+  initQuant();
   loadPrices().then(function(){
     render();
     loadTech();
