@@ -6,1473 +6,1446 @@
 <title>Squeeze // Intel</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ── RESET ── */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
   --bg:#07090d;--card:#0d1018;--card2:#12161f;--card3:#171c27;
-  --line:#1a2030;--line2:#222c3a;--line3:#2a3545;
-  --g:#00e87a;--g2:#00b85f;--r:#ff334e;--y:#f5a623;--b:#3d8eff;--p:#a78bfa;--pk:#f472b6;
-  --t0:#f0f4f8;--t1:#8899aa;--t2:#445566;--t3:#1e2a38;
+  --line:#1a2030;--line2:#222c3a;
+  --g:#00e87a;--r:#ff334e;--y:#f5a623;--b:#3d8eff;--p:#a78bfa;--pk:#f472b6;
+  --t0:#f0f4f8;--t1:#8899aa;--t2:#445566;
   --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
   --safe-b:env(safe-area-inset-bottom,16px);
-  --nav-h:56px;--tab-h:48px;
+  --nav:52px;--tabs:52px;
 }
 html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--sans);overflow-x:hidden;}
 button{font-family:var(--sans);cursor:pointer;border:none;background:none;}
+a{color:inherit;text-decoration:none;}
 ::-webkit-scrollbar{width:2px;height:2px;}
 ::-webkit-scrollbar-thumb{background:var(--line2);}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,232,122,.5);}50%{opacity:.4;box-shadow:0 0 0 4px rgba(0,232,122,0);}}
+@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes blink{50%{opacity:0;}}
 
-/* ── TOP NAV ── */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  height:var(--nav-h);
-  background:rgba(7,9,13,0.92);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;
-}
-.nav-logo{font-family:var(--sans);font-weight:800;font-size:17px;letter-spacing:-0.5px;color:var(--t0);}
-.nav-logo em{color:var(--g);font-style:normal;}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--g);}
-.nav-dot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pulse 1.6s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,232,122,.5);}50%{opacity:.5;box-shadow:0 0 0 4px rgba(0,232,122,0);}}
-.nav-mkt{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:20px;border:1px solid;letter-spacing:.5px;}
-.mkt-o{border-color:rgba(0,232,122,.3);color:var(--g);background:rgba(0,232,122,.07);}
-.mkt-c{border-color:var(--line2);color:var(--t2);}
-.nav-clock{font-family:var(--mono);font-size:10px;color:var(--t2);}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav);
+  background:rgba(7,9,13,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+.logo{font-weight:800;font-size:17px;letter-spacing:-.5px;}
+.logo em{color:var(--g);font-style:normal;}
+.nav-r{display:flex;align-items:center;gap:10px;}
+.live{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--g);}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pulse 1.6s ease-in-out infinite;}
+.clk{font-family:var(--mono);font-size:10px;color:var(--t2);}
+.mkt{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:20px;border:1px solid;}
+.mo{border-color:rgba(0,232,122,.3);color:var(--g);background:rgba(0,232,122,.07);}
+.mc{border-color:var(--line2);color:var(--t2);}
 
-/* ── PAGE WRAPPER ── */
-.pages{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;overflow:hidden;}
-.page{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;padding-bottom:calc(var(--tab-h) + var(--safe-b) + 8px);}
+/* STATUS BAR */
+.sbar{position:fixed;top:var(--nav);left:0;right:0;z-index:200;height:26px;
+  background:var(--card2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:14px;overflow-x:auto;}
+.si{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
+.sdot{width:5px;height:5px;border-radius:50%;transition:background .3s;}
+.stxt{font-family:var(--mono);font-size:8px;color:var(--t2);}
+.ok .sdot{background:var(--g)!important;} .ok .stxt{color:var(--g)!important;}
+.loading .sdot{background:var(--y)!important;} .loading .stxt{color:var(--y)!important;}
+.err .sdot{background:var(--r)!important;} .err .stxt{color:var(--r)!important;}
+.sup{margin-left:auto;font-family:var(--mono);font-size:8px;color:var(--t2);}
+
+/* PAGES */
+.pages{position:fixed;top:calc(var(--nav) + 26px);left:0;right:0;bottom:0;overflow:hidden;}
+.page{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:none;padding-bottom:calc(var(--tabs) + var(--safe-b) + 8px);}
 .page.active{display:block;}
 
-/* ── BOTTOM TAB BAR ── */
-.tabbar{
-  position:fixed;bottom:0;left:0;right:0;z-index:200;
-  height:calc(var(--tab-h) + var(--safe-b));
-  padding-bottom:var(--safe-b);
-  background:rgba(7,9,13,0.96);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--line);
-  display:flex;align-items:stretch;
-}
-.tab-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;color:var(--t2);transition:color .2s;position:relative;
-}
-.tab-btn.on{color:var(--g);}
-.tab-btn .tab-icon{font-size:18px;line-height:1;}
-.tab-btn .tab-label{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;font-family:var(--mono);}
-.tab-btn.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;background:var(--g);border-radius:0 0 2px 2px;}
+/* BOTTOM TABS */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:300;
+  height:calc(var(--tabs) + var(--safe-b));padding-bottom:var(--safe-b);
+  background:rgba(7,9,13,.98);backdrop-filter:blur(24px);
+  border-top:1px solid var(--line);display:flex;align-items:stretch;}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;color:var(--t2);transition:color .2s;position:relative;}
+.tb.on{color:var(--g);}
+.tb.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:2px;background:var(--g);border-radius:0 0 2px 2px;}
+.tb-i{font-size:18px;line-height:1;}
+.tb-l{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;font-family:var(--mono);}
 
-/* ── SECTION HEADER ── */
-.sec-hdr{padding:20px 16px 12px;display:flex;align-items:baseline;justify-content:space-between;}
-.sec-title{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t1);}
-.sec-action{font-family:var(--mono);font-size:10px;color:var(--g);padding:5px 10px;border:1px solid rgba(0,232,122,.25);border-radius:20px;background:rgba(0,232,122,.06);}
+/* SHARED */
+.phdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;}
+.ptitle{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t1);}
+.rfbtn{font-family:var(--mono);font-size:9px;padding:5px 12px;border:1px solid rgba(0,232,122,.3);
+  border-radius:20px;color:var(--g);background:rgba(0,232,122,.06);}
+.rfbtn:disabled{opacity:.4;}
 
-/* ── STATS STRIP ── */
-.stats-strip{padding:0 16px 16px;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none;}
-.stats-strip::-webkit-scrollbar{display:none;}
-.stat-chip{flex-shrink:0;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:80px;}
-.stat-chip .sc-val{font-family:var(--mono);font-size:18px;font-weight:500;line-height:1;}
-.stat-chip .sc-lbl{font-size:9px;color:var(--t1);margin-top:3px;letter-spacing:.5px;}
-.sc-green{color:var(--g);}
-.sc-red{color:var(--r);}
-.sc-amber{color:var(--y);}
-.sc-blue{color:var(--b);}
+/* CHIPS */
+.chips{padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:72px;}
+.cv{font-family:var(--mono);font-size:19px;font-weight:500;line-height:1;}
+.cl{font-size:9px;color:var(--t1);margin-top:3px;}
+.cg{color:var(--g);}.cr{color:var(--r);}.cy{color:var(--y);}.cb{color:var(--b);}
 
-/* ── SEARCH ROW ── */
-.search-row{padding:0 16px 12px;display:flex;gap:8px;}
-.search-box{
-  flex:1;display:flex;align-items:center;gap:8px;
-  background:var(--card);border:1px solid var(--line2);border-radius:10px;
-  padding:10px 12px;
-}
-.search-box input{
-  flex:1;background:none;border:none;outline:none;
-  font-family:var(--mono);font-size:13px;color:var(--t0);
-  caret-color:var(--g);
-}
-.search-box input::placeholder{color:var(--t2);}
-.search-icon{color:var(--t2);font-size:14px;}
-.search-dd{
-  position:absolute;top:calc(100% + 4px);left:16px;right:16px;
+/* FILTER PILLS */
+.pills{padding:0 16px 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.pills::-webkit-scrollbar{display:none;}
+.pill{flex-shrink:0;padding:6px 12px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t1);white-space:nowrap;cursor:pointer;transition:all .15s;}
+.pill.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.08);}
+.pill.ro.on{border-color:var(--r);color:var(--r);background:rgba(255,51,78,.08);}
+.pill.yo.on{border-color:var(--y);color:var(--y);background:rgba(245,166,35,.08);}
+.pill.bo.on{border-color:var(--b);color:var(--b);background:rgba(61,142,255,.08);}
+.pill.po.on{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+
+/* SORT BAR */
+.sortbar{padding:0 16px 10px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.sortbar::-webkit-scrollbar{display:none;}
+.slbl{font-family:var(--mono);font-size:9px;color:var(--t2);flex-shrink:0;}
+.spill{flex-shrink:0;padding:5px 11px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:8px;color:var(--t2);cursor:pointer;transition:all .15s;}
+.spill.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.06);}
+
+/* SEARCH */
+.sw{position:relative;padding:0 16px 10px;}
+.sb{display:flex;align-items:center;gap:8px;background:var(--card);
+  border:1px solid var(--line2);border-radius:10px;padding:10px 12px;}
+.sb input{flex:1;background:none;border:none;outline:none;
+  font-family:var(--mono);font-size:13px;color:var(--t0);caret-color:var(--g);}
+.sb input::placeholder{color:var(--t2);}
+.sdd{position:absolute;top:calc(100% - 4px);left:16px;right:16px;
   background:var(--card2);border:1px solid var(--line2);border-radius:10px;
   z-index:100;max-height:240px;overflow-y:auto;
-  box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;
-}
-.search-row-wrap{position:relative;}
-.dd-row{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);cursor:pointer;}
-.dd-row:last-child{border-bottom:none;}
-.dd-row:active{background:var(--card3);}
-.dd-sym{font-family:var(--mono);font-size:14px;color:var(--g);width:52px;}
-.dd-rest{flex:1;}
-.dd-name{font-size:11px;color:var(--t1);}
-.dd-badge{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:6px;}
-.analyze-fab{padding:10px 14px;background:var(--g);color:var(--bg);border-radius:10px;font-weight:700;font-size:12px;letter-spacing:.5px;white-space:nowrap;}
+  box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;}
+.ddr{padding:10px 14px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--line);cursor:pointer;}
+.ddr:last-child{border-bottom:none;}
+.ddr:active{background:var(--card3);}
+.ddsym{font-family:var(--mono);font-size:14px;color:var(--g);width:52px;}
+.ddname{font-size:11px;color:var(--t1);flex:1;}
+.ddbdg{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:6px;}
 
-/* ── FILTER CHIPS ── */
-.filter-row{padding:0 16px 12px;display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none;}
-.filter-row::-webkit-scrollbar{display:none;}
-.fchip{
-  flex-shrink:0;scroll-snap-align:start;
-  padding:6px 12px;border-radius:20px;border:1px solid var(--line2);
-  font-family:var(--mono);font-size:9px;color:var(--t1);letter-spacing:.5px;
-  white-space:nowrap;transition:all .15s;
-}
-.fchip.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.08);}
-.fchip.r.on{border-color:var(--r);color:var(--r);background:rgba(255,51,78,.08);}
-.fchip.y.on{border-color:var(--y);color:var(--y);background:rgba(245,166,35,.08);}
-.fchip.b.on{border-color:var(--b);color:var(--b);background:rgba(61,142,255,.08);}
-.fchip.p.on{border-color:var(--p);color:var(--p);background:rgba(167,139,250,.08);}
+/* WATCHLIST STRIP */
+.wstrip{padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.wstrip::-webkit-scrollbar{display:none;}
+.wcard{flex-shrink:0;width:96px;background:var(--card);border:1px solid var(--line);
+  border-left:3px solid var(--p);border-radius:12px;padding:10px;cursor:pointer;position:relative;}
+.wsym{font-weight:800;font-size:14px;color:var(--p);}
+.wprice{font-family:var(--mono);font-size:11px;margin-top:4px;}
+.wchg{font-family:var(--mono);font-size:9px;margin-top:1px;}
+.wstage{font-family:var(--mono);font-size:7px;margin-top:3px;}
+.wrm{position:absolute;top:5px;right:5px;color:var(--t2);font-size:10px;cursor:pointer;padding:2px;}
+.wadd{flex-shrink:0;width:76px;background:var(--card);border:1px dashed var(--line2);
+  border-radius:12px;padding:10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;color:var(--t2);cursor:pointer;}
 
-/* ── TICKER CARD ── */
-.card-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
-.tcard{
-  background:var(--card);border:1px solid var(--line);border-radius:14px;
-  overflow:hidden;transition:transform .18s;
-}
-.tcard:active{transform:scale(.98);}
+/* TICKER CARDS */
+.clist{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;animation:fadein .3s ease both;}
 .tcard.EXTREME{border-left:3px solid var(--r);}
 .tcard.HIGH{border-left:3px solid var(--y);}
 .tcard.ELEVATED{border-left:3px solid var(--b);}
 .tcard.WATCHLIST{border-left:3px solid var(--t2);}
 
-/* CARD HEADER — always visible */
-.card-hdr{
-  padding:14px 14px 12px;
-  display:flex;align-items:center;gap:12px;
-  cursor:pointer;
-}
-.card-logo{
-  width:40px;height:40px;border-radius:10px;
-  background:var(--card2);border:1px solid var(--line2);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;flex-shrink:0;
-}
-.card-logo img{width:100%;height:100%;object-fit:contain;padding:6px;}
-.card-logo .sym-fb{font-family:var(--mono);font-size:10px;color:var(--t1);}
-.card-main{flex:1;min-width:0;}
-.card-sym{font-weight:800;font-size:18px;letter-spacing:-.3px;line-height:1;}
-.card-name{font-size:10px;color:var(--t1);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-lane{display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
-.lane-dot{width:5px;height:5px;border-radius:50%;}
-.lane-txt{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:.5px;}
-.card-right{text-align:right;flex-shrink:0;}
-.card-price{font-family:var(--mono);font-size:16px;font-weight:500;}
-.card-chg{font-family:var(--mono);font-size:10px;margin-top:2px;}
-.up{color:var(--g);}
-.dn{color:var(--r);}
-.nc{color:var(--t2);}
-.card-expand-icon{color:var(--t2);font-size:11px;margin-left:6px;transition:transform .2s;}
-.card-expand-icon.open{transform:rotate(180deg);}
+/* Card header */
+.chdr{padding:14px 14px 10px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.clogo{width:40px;height:40px;border-radius:10px;background:var(--card2);
+  border:1px solid var(--line2);display:flex;align-items:center;
+  justify-content:center;overflow:hidden;flex-shrink:0;}
+.clogo img{width:100%;height:100%;object-fit:contain;padding:6px;}
+.cfb{font-family:var(--mono);font-size:9px;color:var(--t1);}
+.cmain{flex:1;min-width:0;}
+.csym{font-weight:800;font-size:18px;letter-spacing:-.3px;line-height:1;}
+.cname{font-size:10px;color:var(--t1);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cmeta{display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap;}
+.ldot2{width:5px;height:5px;border-radius:50%;}
+.ltxt{font-family:var(--mono);font-size:8px;color:var(--t2);}
+.cright{text-align:right;flex-shrink:0;}
+.cprice{font-family:var(--mono);font-size:15px;font-weight:500;}
+.cchg{font-family:var(--mono);font-size:9px;margin-top:2px;}
+.up{color:var(--g);}.dn{color:var(--r);}.nc{color:var(--t2);}
+.chev{color:var(--t2);font-size:10px;margin-left:4px;transition:transform .2s;flex-shrink:0;}
+.chev.open{transform:rotate(180deg);}
 
-/* FLS SCORE BAR — minimal, always visible */
-.card-score-row{padding:0 14px 10px;display:flex;align-items:center;gap:10px;}
-.fls-track{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;}
-.fls-fill{height:100%;border-radius:2px;transition:width 1s ease;}
-.fls-val{font-family:var(--mono);font-size:10px;font-weight:500;width:36px;text-align:right;}
+/* Tech row */
+.trow{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:0 12px 8px;}
+.tc{background:var(--card2);border-radius:8px;padding:6px 8px;text-align:center;}
+.tl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:2px;}
+.tv{font-family:var(--mono);font-size:10px;font-weight:500;}
 
-/* SIGNAL PILLS — always visible */
-.card-sigs{padding:0 14px 12px;display:flex;gap:5px;flex-wrap:wrap;}
-.spill{
-  font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:20px;
-  border:1px solid;cursor:pointer;transition:all .12s;letter-spacing:.3px;
-}
-.spill:active{transform:scale(.95);}
-.sp-swap{border-color:rgba(255,51,78,.4);color:var(--r);background:rgba(255,51,78,.07);}
-.sp-puts{border-color:rgba(245,166,35,.4);color:var(--y);background:rgba(245,166,35,.07);}
-.sp-family{border-color:rgba(61,142,255,.4);color:var(--b);background:rgba(61,142,255,.07);}
-.sp-tiger{border-color:rgba(167,139,250,.4);color:var(--p);background:rgba(167,139,250,.07);}
-.sp-activist{border-color:rgba(0,232,122,.4);color:var(--g);background:rgba(0,232,122,.07);}
-.sp-buyback{border-color:rgba(244,114,182,.4);color:var(--pk);background:rgba(244,114,182,.07);}
-.sp-gap{border-color:rgba(245,166,35,.3);color:#f0c060;background:rgba(245,166,35,.05);}
+/* FLS bar */
+.frow{padding:0 12px 8px;display:flex;align-items:center;gap:8px;}
+.ftrack{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;}
+.ffill{height:100%;border-radius:2px;}
+.fval{font-family:var(--mono);font-size:10px;font-weight:500;width:36px;text-align:right;}
 
-/* EXPANDED DETAIL */
-.card-detail{
-  border-top:1px solid var(--line);overflow:hidden;
-  max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1);
-}
-.card-detail.open{max-height:600px;}
-.detail-tabs{display:flex;border-bottom:1px solid var(--line);}
-.dtab{flex:1;padding:10px 6px;font-family:var(--mono);font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--t2);border-bottom:2px solid transparent;text-align:center;transition:all .15s;}
+/* Signal tags */
+.stags{padding:0 12px 12px;display:flex;gap:4px;flex-wrap:wrap;}
+.stag{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:20px;
+  border:1px solid;cursor:pointer;letter-spacing:.3px;}
+
+/* Expandable detail */
+.cdetail{border-top:1px solid var(--line);max-height:0;overflow:hidden;
+  transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.cdetail.open{max-height:900px;}
+.dtabs{display:flex;border-bottom:1px solid var(--line);}
+.dtab{flex:1;padding:9px 4px;font-family:var(--mono);font-size:8px;
+  letter-spacing:.5px;text-transform:uppercase;color:var(--t2);
+  border-bottom:2px solid transparent;text-align:center;cursor:pointer;transition:all .15s;}
 .dtab.on{color:var(--g);border-bottom-color:var(--g);}
-.dtab-pane{display:none;padding:14px;}
-.dtab-pane.on{display:block;}
-.drow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);}
+.dpane{padding:12px;}
+.drow{display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--line);}
 .drow:last-child{border-bottom:none;}
-.drow-l{font-family:var(--mono);font-size:9px;color:var(--t1);}
-.drow-v{font-family:var(--mono);font-size:10px;font-weight:500;}
-.thesis-txt{font-size:11px;color:var(--t1);line-height:1.7;background:var(--card2);padding:12px;border-radius:8px;border-left:3px solid var(--g);}
-.thesis-txt strong{color:var(--t0);}
-.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.sg-item{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px;}
-.sg-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:.5px;margin-bottom:4px;}
-.sg-val{font-family:var(--mono);font-size:16px;font-weight:500;}
-.sg-bar{height:2px;background:var(--line2);border-radius:1px;margin-top:6px;overflow:hidden;}
-.sg-fill{height:100%;border-radius:1px;}
-.links-row{display:flex;flex-wrap:wrap;gap:6px;}
-.ext-link{font-family:var(--mono);font-size:9px;padding:5px 10px;border:1px solid var(--line2);border-radius:8px;color:var(--t1);}
+.drl{font-family:var(--mono);font-size:9px;color:var(--t1);}
+.drv{font-family:var(--mono);font-size:10px;font-weight:500;}
+.thesis{font-size:11px;color:var(--t1);line-height:1.75;
+  background:var(--card2);padding:12px;border-radius:8px;border-left:3px solid var(--g);}
+.thesis strong{color:var(--t0);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.sgi{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:9px;}
+.sgl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:3px;}
+.sgv{font-family:var(--mono);font-size:14px;font-weight:500;}
+.sgbar{height:2px;background:var(--line2);border-radius:1px;margin-top:5px;overflow:hidden;}
+.sgfill{height:100%;border-radius:1px;}
+.links{display:flex;flex-wrap:wrap;gap:6px;}
+.lnk{font-family:var(--mono);font-size:9px;padding:5px 10px;
+  border:1px solid var(--line2);border-radius:8px;color:var(--t1);}
 
-/* ── SORT BAR ── */
-.sort-bar{padding:0 16px 10px;display:flex;align-items:center;gap:8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.sort-bar::-webkit-scrollbar{display:none;}
-.sort-lbl{font-family:var(--mono);font-size:9px;color:var(--t2);flex-shrink:0;}
-.sort-chip{flex-shrink:0;padding:5px 11px;border-radius:20px;border:1px solid var(--line2);font-family:var(--mono);font-size:9px;color:var(--t2);transition:all .15s;}
-.sort-chip.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.06);}
-.rfbtn{margin-left:auto;flex-shrink:0;font-family:var(--mono);font-size:9px;padding:5px 12px;border:1px solid rgba(0,232,122,.3);border-radius:20px;color:var(--g);background:rgba(0,232,122,.06);}
-.rfbtn:disabled{opacity:.4;}
-
-/* ── CUSTOM WATCHLIST ── */
-.custom-strip{padding:0 16px 16px;display:flex;gap:8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.custom-strip::-webkit-scrollbar{display:none;}
-.cwcard{flex-shrink:0;width:110px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--p);border-radius:12px;padding:10px;cursor:pointer;position:relative;}
-.cwcard .cw-sym{font-weight:800;font-size:15px;color:var(--p);}
-.cwcard .cw-price{font-family:var(--mono);font-size:11px;margin-top:4px;}
-.cwcard .cw-chg{font-family:var(--mono);font-size:9px;margin-top:2px;}
-.cwcard .cw-rm{position:absolute;top:6px;right:6px;color:var(--t2);font-size:10px;padding:2px;}
-.cw-add{flex-shrink:0;width:80px;background:var(--card);border:1px dashed var(--line2);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--t2);cursor:pointer;}
-.cw-add-icon{font-size:20px;}
-.cw-add-txt{font-family:var(--mono);font-size:8px;text-align:center;letter-spacing:.3px;}
-
-/* ── EMPTY/LOADING ── */
-.empty{text-align:center;padding:48px 16px;color:var(--t2);font-family:var(--mono);font-size:11px;line-height:1.8;}
-@keyframes blink{50%{opacity:0;}}
+/* EMPTY */
+.empty{text-align:center;padding:40px 16px;color:var(--t2);
+  font-family:var(--mono);font-size:11px;line-height:1.8;}
 .blink{animation:blink 1s step-end infinite;}
+.disc{margin:16px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;}
+.dtxt{font-family:var(--mono);font-size:8px;color:var(--t2);line-height:1.6;text-align:center;}
 
-/* ─────────────────────────────────────────────────────
-   RUN RADAR PAGE
-───────────────────────────────────────────────────── */
-.rr-hero{padding:20px 16px 16px;}
-.rr-hero-title{font-size:24px;font-weight:800;letter-spacing:-1px;line-height:1.1;}
-.rr-hero-title em{color:var(--g);font-style:normal;}
-.rr-hero-sub{font-family:var(--mono);font-size:10px;color:var(--t1);margin-top:6px;line-height:1.5;}
-
-/* Sentiment gauge */
-.sent-gauge-wrap{margin:0 16px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
-.sg-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
-.sg-title{font-family:var(--mono);font-size:9px;color:var(--t1);letter-spacing:1px;text-transform:uppercase;}
-.sg-reading{font-family:var(--mono);font-size:11px;font-weight:500;}
-.gauge-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--r),var(--y),var(--g));position:relative;margin-bottom:6px;}
-.gauge-thumb{position:absolute;top:-4px;width:14px;height:14px;background:var(--t0);border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:left .8s cubic-bezier(.4,0,.2,1);}
-.gauge-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--t2);}
-
-/* Stage slider */
-.stage-scroll{padding:0 16px 12px;display:flex;gap:6px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.stage-scroll::-webkit-scrollbar{display:none;}
-.stpill{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1px solid var(--line2);font-size:11px;font-weight:600;color:var(--t2);transition:all .15s;display:flex;align-items:center;gap:5px;}
-.stpill.on{color:var(--t0);}
-.stp-RAN.on{border-color:var(--r);background:rgba(255,51,78,.12);}
-.stp-RUNNING.on{border-color:var(--y);background:rgba(245,166,35,.12);}
-.stp-NOTYET.on{border-color:var(--g);background:rgba(0,232,122,.12);}
-.stp-COILING.on{border-color:var(--b);background:rgba(61,142,255,.12);}
-.stp-WATCH.on{border-color:var(--p);background:rgba(167,139,250,.12);}
-.stp-ALL.on{border-color:var(--line3);background:var(--card2);}
-
-/* Runway visual */
-.runway-wrap{margin:0 16px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
-.runway-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px;margin-bottom:10px;}
-.runway-track{height:6px;border-radius:3px;display:flex;gap:2px;overflow:hidden;margin-bottom:10px;}
+/* ── RUN RADAR ── */
+.rrhero{padding:16px 16px 12px;}
+.rrtitle{font-size:22px;font-weight:800;letter-spacing:-1px;}
+.rrtitle em{color:var(--g);font-style:normal;}
+.rrsub{font-family:var(--mono);font-size:9px;color:var(--t1);margin-top:4px;line-height:1.5;}
+.method{margin:0 16px 12px;background:var(--card2);border:1px solid var(--line2);
+  border-radius:12px;padding:12px;}
+.mttl{font-family:var(--mono);font-size:8px;color:var(--g);letter-spacing:1.5px;margin-bottom:8px;}
+.mrules{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.mr{background:var(--card3);border-radius:8px;padding:8px;}
+.mrc{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:3px;}
+.mrs{font-size:10px;font-weight:700;}
+.gauge-card{margin:0 16px 12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.gtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.glbl{font-family:var(--mono);font-size:8px;color:var(--t1);letter-spacing:1px;}
+.gval{font-family:var(--mono);font-size:12px;font-weight:500;}
+.gtrack{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--r),var(--y),var(--g));position:relative;margin-bottom:6px;}
+.gthumb{position:absolute;top:-4px;width:14px;height:14px;background:var(--t0);
+  border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg);
+  box-shadow:0 2px 8px rgba(0,0,0,.5);transition:left .8s cubic-bezier(.4,0,.2,1);}
+.glbls{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;}
+.rwycard{margin:0 16px 12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;}
+.rwylbl{font-family:var(--mono);font-size:7px;color:var(--t2);letter-spacing:1.5px;margin-bottom:8px;}
+.rwytrack{height:6px;border-radius:3px;display:flex;gap:2px;overflow:hidden;margin-bottom:10px;}
 .rz{flex:1;border-radius:2px;}
-.rz-RAN{background:rgba(255,51,78,.35);}
-.rz-RUNNING{background:rgba(245,166,35,.35);}
-.rz-NOTYET{background:rgba(0,232,122,.35);}
-.rz-COILING{background:rgba(61,142,255,.35);}
-.rz-WATCH{background:rgba(167,139,250,.35);}
-.runway-dots{display:flex;flex-wrap:wrap;gap:5px;}
-.rdot{font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:10px;border:1px solid;cursor:pointer;transition:transform .12s;}
-.rdot:active{transform:scale(.9);}
-.rdot-RAN{border-color:rgba(255,51,78,.4);color:var(--r);}
-.rdot-RUNNING{border-color:rgba(245,166,35,.4);color:var(--y);}
-.rdot-NOTYET{border-color:rgba(0,232,122,.4);color:var(--g);}
-.rdot-COILING{border-color:rgba(61,142,255,.4);color:var(--b);}
-.rdot-WATCH{border-color:rgba(167,139,250,.4);color:var(--p);}
-
-/* RR Sort */
-.rr-sort-row{padding:0 16px 10px;display:flex;align-items:center;gap:6px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.rr-sort-row::-webkit-scrollbar{display:none;}
-
-/* RR Cards */
-.rr-card-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
-.rrcard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rwyDots{display:flex;flex-wrap:wrap;gap:5px;}
+.rdot{font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:10px;border:1px solid;cursor:pointer;}
+.rrlist{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.rrcard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;animation:fadein .3s ease both;}
 .rrcard.RAN{border-left:3px solid var(--r);}
 .rrcard.RUNNING{border-left:3px solid var(--y);}
 .rrcard.NOTYET{border-left:3px solid var(--g);}
 .rrcard.COILING{border-left:3px solid var(--b);}
 .rrcard.WATCH{border-left:3px solid var(--p);}
-.rrcard-hdr{padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
-.rr-logo{width:38px;height:38px;border-radius:10px;background:var(--card2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
-.rr-logo img{width:100%;height:100%;object-fit:contain;padding:5px;}
-.rr-logo .fb{font-family:var(--mono);font-size:9px;color:var(--t2);}
-.rr-info{flex:1;min-width:0;}
-.rr-sym{font-weight:800;font-size:17px;letter-spacing:-.3px;line-height:1;}
-.rr-name{font-size:10px;color:var(--t1);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.rr-stage-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:10px;border:1px solid;margin-top:4px;letter-spacing:.3px;}
+.rrhdr{padding:14px 14px 10px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.rrlogo{width:38px;height:38px;border-radius:10px;background:var(--card2);
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.rrlogo img{width:100%;height:100%;object-fit:contain;padding:5px;}
+.rrinfo{flex:1;min-width:0;}
+.rrsym{font-weight:800;font-size:17px;letter-spacing:-.3px;line-height:1;}
+.rrname{font-size:10px;color:var(--t1);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sbadge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;
+  padding:2px 7px;border-radius:10px;border:1px solid;margin-top:4px;letter-spacing:.3px;}
 .sb-RAN{border-color:var(--r);color:var(--r);}
 .sb-RUNNING{border-color:var(--y);color:var(--y);}
 .sb-NOTYET{border-color:var(--g);color:var(--g);}
 .sb-COILING{border-color:var(--b);color:var(--b);}
 .sb-WATCH{border-color:var(--p);color:var(--p);}
-.rr-right{text-align:right;flex-shrink:0;}
-.rr-price{font-family:var(--mono);font-size:15px;font-weight:500;}
-.rr-chg{font-family:var(--mono);font-size:9px;margin-top:2px;}
-.rr-upside{font-family:var(--mono);font-size:8px;color:var(--t2);margin-top:2px;}
-/* RR quick bars */
-.rr-bars{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;}
-.rr-bar-row{display:flex;align-items:center;gap:8px;}
-.rr-bar-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);width:72px;flex-shrink:0;}
-.rr-bar-track{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;}
-.rr-bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
-.rr-bar-val{font-family:var(--mono);font-size:8px;width:24px;text-align:right;}
-/* RR detail */
-.rr-detail{border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
-.rr-detail.open{max-height:700px;}
-.rr-detail-inner{padding:14px;}
-.rr-thesis{font-size:11px;color:var(--t1);line-height:1.7;background:var(--card2);padding:12px;border-radius:8px;border-left:3px solid var(--g);margin-bottom:12px;}
-.rr-thesis strong{color:var(--t0);}
-.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.tg-item{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:9px;}
-.tg-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);margin-bottom:3px;}
-.tg-val{font-family:var(--mono);font-size:12px;font-weight:500;}
+.rrright{text-align:right;flex-shrink:0;}
+.rrprice{font-family:var(--mono);font-size:14px;font-weight:500;}
+.rrchg{font-family:var(--mono);font-size:9px;margin-top:2px;}
+.rrupt{font-family:var(--mono);font-size:8px;color:var(--t2);margin-top:2px;}
+.rrbars{padding:0 12px 8px;display:flex;flex-direction:column;gap:5px;cursor:pointer;}
+.rrbr{display:flex;align-items:center;gap:8px;}
+.rrbrl{font-family:var(--mono);font-size:8px;color:var(--t2);width:70px;flex-shrink:0;}
+.rrtrack{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;}
+.rrfill{height:100%;border-radius:2px;}
+.rrbval{font-family:var(--mono);font-size:8px;width:28px;text-align:right;}
+.sreason{margin:0 12px 10px;padding:8px 10px;background:var(--card2);border-radius:8px;
+  font-family:var(--mono);font-size:8px;color:var(--t2);line-height:1.6;}
+.rrdetail{border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.rrdetail.open{max-height:900px;}
+.rrinner{padding:12px;}
+.rrt{font-size:11px;color:var(--t1);line-height:1.75;background:var(--card2);
+  padding:12px;border-radius:8px;border-left:3px solid var(--g);margin-bottom:10px;}
+.rrt strong{color:var(--t0);}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.tgi{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:9px;}
+.tgl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:3px;}
+.tgv{font-family:var(--mono);font-size:12px;font-weight:500;}
 
-/* ─────────────────────────────────────────────────────
-   EDUCATION PAGE
-───────────────────────────────────────────────────── */
-.edu-hero{padding:20px 16px 16px;}
-.edu-hero-title{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1.1;}
-.edu-hero-title em{color:var(--b);font-style:normal;}
-.edu-hero-sub{font-family:var(--mono);font-size:10px;color:var(--t1);margin-top:6px;line-height:1.5;}
-
-/* Category tabs */
-.edu-cats{padding:0 16px 14px;display:flex;gap:6px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
-.edu-cats::-webkit-scrollbar{display:none;}
-.ecat{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--line2);font-family:var(--mono);font-size:9px;color:var(--t2);transition:all .15s;letter-spacing:.5px;}
+/* ── EDUCATION ── */
+.eduhero{padding:16px 16px 12px;}
+.edutitle{font-size:22px;font-weight:800;letter-spacing:-1px;}
+.edutitle em{color:var(--b);font-style:normal;}
+.edusub{font-family:var(--mono);font-size:9px;color:var(--t1);margin-top:4px;line-height:1.5;}
+.fwcard{margin:0 16px 14px;background:linear-gradient(135deg,rgba(0,232,122,.07),rgba(61,142,255,.07));
+  border:1px solid rgba(0,232,122,.2);border-radius:14px;padding:14px;}
+.fwtitle{font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.fwbdg{font-family:var(--mono);font-size:8px;padding:2px 8px;border-radius:10px;
+  background:rgba(0,232,122,.15);color:var(--g);border:1px solid rgba(0,232,122,.3);}
+.fws{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.fwn{width:20px;height:20px;border-radius:50%;background:rgba(0,232,122,.15);
+  border:1px solid rgba(0,232,122,.3);color:var(--g);font-family:var(--mono);
+  font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fwt{font-size:11px;color:var(--t1);line-height:1.5;padding-top:1px;}
+.fwt strong{color:var(--t0);}
+.educats{padding:0 16px 12px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.educats::-webkit-scrollbar{display:none;}
+.ecat{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t2);cursor:pointer;transition:all .15s;}
 .ecat.on{border-color:var(--b);color:var(--b);background:rgba(61,142,255,.08);}
-
-/* Glossary cards */
-.edu-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.edulist{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
 .ecard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.ecard-hdr{padding:16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
-.ecard-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.ecard-text{flex:1;}
-.ecard-term{font-size:15px;font-weight:700;line-height:1.2;}
-.ecard-one{font-size:11px;color:var(--t1);margin-top:3px;line-height:1.4;}
-.ecard-chevron{color:var(--t2);font-size:11px;margin-top:2px;transition:transform .2s;flex-shrink:0;}
-.ecard-chevron.open{transform:rotate(180deg);}
-.ecard-body{border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
-.ecard-body.open{max-height:1200px;}
-.ecard-inner{padding:16px;}
-.ecard-full{font-size:12px;color:var(--t1);line-height:1.75;margin-bottom:12px;}
-.ecard-full strong{color:var(--t0);}
-.ecard-full em{color:var(--y);font-style:normal;}
-/* Example box */
-.ecard-example{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:12px;margin-bottom:10px;}
-.ex-label{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px;margin-bottom:6px;}
-.ex-text{font-size:11px;color:var(--t1);line-height:1.6;}
-.ex-text strong{color:var(--t0);}
-/* Key points */
-.kp-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
-.kp{display:flex;gap:8px;align-items:flex-start;}
-.kp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-.kp-txt{font-size:11px;color:var(--t1);line-height:1.5;}
-/* Risk badge */
-.risk-row{display:flex;align-items:center;gap:8px;}
-.risk-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:.5px;}
-.risk-badge{font-family:var(--mono);font-size:9px;padding:3px 10px;border-radius:20px;border:1px solid;}
-.risk-high{border-color:rgba(255,51,78,.4);color:var(--r);}
-.risk-med{border-color:rgba(245,166,35,.4);color:var(--y);}
-.risk-low{border-color:rgba(0,232,122,.4);color:var(--g);}
-/* Related terms */
-.related{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;}
-.rel-chip{font-family:var(--mono);font-size:8px;padding:3px 9px;border-radius:10px;border:1px solid var(--line2);color:var(--t2);cursor:pointer;}
+.echdr{padding:14px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+.eicon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;}
+.etext{flex:1;}
+.eterm{font-size:14px;font-weight:700;line-height:1.2;}
+.eone{font-size:11px;color:var(--t1);margin-top:3px;line-height:1.4;}
+.echev{color:var(--t2);font-size:10px;margin-top:2px;transition:transform .2s;flex-shrink:0;}
+.echev.open{transform:rotate(180deg);}
+.ebody{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);border-top:1px solid var(--line);}
+.ebody.open{max-height:1600px;}
+.einner{padding:14px;}
+.efull{font-size:11px;color:var(--t1);line-height:1.8;margin-bottom:12px;}
+.efull strong{color:var(--t0);}
+.efull em{color:var(--y);font-style:normal;}
+.eex{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:12px;margin-bottom:10px;}
+.eexl{font-family:var(--mono);font-size:7px;color:var(--t2);letter-spacing:1px;margin-bottom:6px;}
+.eext{font-size:11px;color:var(--t1);line-height:1.6;}
+.eext strong{color:var(--t0);}
+.ekp{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;}
+.ekpd{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ekpt{font-size:11px;color:var(--t1);line-height:1.5;}
+.erisk{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.eriskl{font-family:var(--mono);font-size:8px;color:var(--t2);}
+.eriskb{font-family:var(--mono);font-size:9px;padding:3px 10px;border-radius:20px;border:1px solid;}
+.rh{border-color:rgba(255,51,78,.4);color:var(--r);}
+.rm{border-color:rgba(245,166,35,.4);color:var(--y);}
+.rl{border-color:rgba(0,232,122,.4);color:var(--g);}
+.erel{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;}
+.erelc{font-family:var(--mono);font-size:8px;padding:3px 9px;border-radius:10px;
+  border:1px solid var(--line2);color:var(--t2);cursor:pointer;}
 
-/* AR SS Framework summary card */
-.framework-card{margin:0 16px 14px;background:linear-gradient(135deg,rgba(0,232,122,.08),rgba(61,142,255,.08));border:1px solid rgba(0,232,122,.2);border-radius:14px;padding:16px;}
-.fw-title{font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-.fw-badge{font-family:var(--mono);font-size:8px;padding:2px 8px;border-radius:10px;background:rgba(0,232,122,.15);color:var(--g);border:1px solid rgba(0,232,122,.3);}
-.fw-steps{display:flex;flex-direction:column;gap:6px;}
-.fw-step{display:flex;gap:10px;align-items:flex-start;}
-.fw-num{width:20px;height:20px;border-radius:50%;background:rgba(0,232,122,.15);border:1px solid rgba(0,232,122,.3);color:var(--g);font-family:var(--mono);font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.fw-step-txt{font-size:11px;color:var(--t1);line-height:1.5;padding-top:1px;}
-.fw-step-txt strong{color:var(--t0);}
-
-/* ── BOTTOM DISCLAIMER ── */
-.disclaimer{margin:20px 16px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;}
-.disc-txt{font-family:var(--mono);font-size:9px;color:var(--t2);line-height:1.6;text-align:center;}
-
-/* ── MODAL (shared) ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:flex-end;backdrop-filter:blur(4px);}
-.modal-bg.open{display:flex;}
-.modal-sheet{
-  width:100%;max-height:85vh;overflow-y:auto;
-  background:var(--card);border-radius:20px 20px 0 0;
-  border-top:1px solid var(--line2);
-  padding-bottom:var(--safe-b);
-  animation:slideUp .25s cubic-bezier(.4,0,.2,1);
-}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-handle{width:36px;height:4px;border-radius:2px;background:var(--line2);margin:12px auto 0;}
-.modal-hdr{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
-.modal-sym{font-size:22px;font-weight:800;letter-spacing:-.5px;}
-.modal-close{width:30px;height:30px;border-radius:50%;background:var(--card2);color:var(--t1);font-size:14px;display:flex;align-items:center;justify-content:center;}
-.modal-body{padding:0 20px 20px;}
-
-/* ── RESPONSIVE ── */
-@media(min-width:640px){
-  .card-list,.rr-card-list,.edu-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .stats-strip .stat-chip{min-width:100px;}
-}
-@media(min-width:1024px){
-  .card-list,.rr-card-list,.edu-list{grid-template-columns:repeat(3,1fr);}
-}
+@media(min-width:640px){.clist,.rrlist,.edulist{display:grid;grid-template-columns:1fr 1fr;gap:12px;}}
+@media(min-width:1024px){.clist,.rrlist,.edulist{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
 
-<!-- ── TOP NAV ── -->
 <nav class="nav">
-  <div class="nav-logo">Squeeze<em>//</em>Intel</div>
-  <div class="nav-right">
-    <div class="nav-live"><div class="nav-dot"></div>LIVE</div>
-    <div class="nav-clock" id="clock">--:--</div>
-    <div class="nav-mkt mkt-c" id="mktBadge">MKT</div>
+  <div class="logo">Squeeze<em>//</em>Intel</div>
+  <div class="nav-r">
+    <div class="live"><div class="ldot"></div>LIVE</div>
+    <div class="clk" id="clk">--:--</div>
+    <div class="mkt mc" id="mktB">MKT</div>
   </div>
 </nav>
 
-<!-- ── PAGES ── -->
+<div class="sbar">
+  <div class="si loading" id="si-price"><div class="sdot"></div><span class="stxt">PRICES: LOADING</span></div>
+  <div class="si loading" id="si-tech"><div class="sdot"></div><span class="stxt">TECHNICALS: LOADING</span></div>
+  <div class="si" id="si-short"><div class="sdot" style="background:var(--t2)"></div><span class="stxt">SHORT DATA: MANUAL</span></div>
+  <div class="si loading" id="si-stage"><div class="sdot"></div><span class="stxt">STAGE: PENDING</span></div>
+  <div class="sup" id="sup"></div>
+</div>
+
 <div class="pages">
 
-<!-- ════════════════════════════════════
-     PAGE 1: SQUEEZE INTEL
-════════════════════════════════════ -->
+<!-- ═══════ SQUEEZE ═══════ -->
 <div class="page active" id="pg-squeeze">
-
-  <!-- Stats strip -->
-  <div class="sec-hdr">
-    <span class="sec-title">AR SS FRAMEWORK</span>
+  <div class="phdr">
+    <span class="ptitle">AR SS FRAMEWORK</span>
     <button class="rfbtn" id="rfBtn" onclick="doRefresh()">↻ REFRESH</button>
   </div>
-  <div class="stats-strip" id="statsStrip">
-    <div class="stat-chip"><div class="sc-val sc-amber" id="st-short">—</div><div class="sc-lbl">AVG SHORT %</div></div>
-    <div class="stat-chip"><div class="sc-val sc-red" id="st-extreme">—</div><div class="sc-lbl">EXTREME</div></div>
-    <div class="stat-chip"><div class="sc-val sc-blue" id="st-swaps">—</div><div class="sc-lbl">SWAP SIGNALS</div></div>
-    <div class="stat-chip"><div class="sc-val sc-green" id="st-score">—</div><div class="sc-lbl">AVG FLS</div></div>
-    <div class="stat-chip"><div class="sc-val" id="st-loaded" style="color:var(--t1)">—</div><div class="sc-lbl">PRICES LIVE</div></div>
+  <div class="chips" id="statChips">
+    <div class="chip"><div class="cv cy" id="s0">—</div><div class="cl">AVG SHORT %</div></div>
+    <div class="chip"><div class="cv cr" id="s1">—</div><div class="cl">EXTREME</div></div>
+    <div class="chip"><div class="cv cb" id="s2">—</div><div class="cl">SWAP SIGNALS</div></div>
+    <div class="chip"><div class="cv cg" id="s3">—</div><div class="cl">AVG FLS</div></div>
+    <div class="chip"><div class="cv" id="s4" style="color:var(--t1)">—</div><div class="cl">PRICES</div></div>
+    <div class="chip"><div class="cv" id="s5" style="color:var(--t1)">—</div><div class="cl">TECH</div></div>
   </div>
 
-  <!-- Custom watchlist -->
-  <div class="sec-hdr" style="padding-top:4px;">
-    <span class="sec-title">MY WATCHLIST</span>
-  </div>
-  <div class="custom-strip" id="cwStrip">
-    <div class="cw-add" onclick="promptCustom()">
-      <div class="cw-add-icon">＋</div>
-      <div class="cw-add-txt">ADD ANY TICKER</div>
+  <div class="phdr" style="padding-top:4px"><span class="ptitle">MY WATCHLIST</span></div>
+  <div class="wstrip" id="wstrip">
+    <div class="wadd" onclick="focusSrch()">
+      <div style="font-size:20px">＋</div>
+      <div style="font-family:var(--mono);font-size:8px;text-align:center">ADD TICKER</div>
     </div>
   </div>
 
-  <!-- Search -->
-  <div class="search-row-wrap">
-    <div class="search-row">
-      <div class="search-box">
-        <span class="search-icon">⌕</span>
-        <input id="qInput" placeholder="Search ticker or name…" autocomplete="off" oninput="onQInput(this.value)" onkeydown="onQKey(event)">
-      </div>
+  <div class="sw">
+    <div class="sb">
+      <span style="color:var(--t2);font-size:14px">⌕</span>
+      <input id="qInp" placeholder="Search or add any ticker…" autocomplete="off"
+        oninput="onQI(this.value)" onkeydown="onQK(event)">
     </div>
-    <div class="search-dd" id="qDd"></div>
+    <div class="sdd" id="qDd"></div>
   </div>
 
-  <!-- Signal filter -->
-  <div class="filter-row" id="sigFilters">
-    <div class="fchip on" data-sig="ALL" onclick="setSigFilter('ALL',this)">ALL SIGNALS</div>
-    <div class="fchip r" data-sig="swap" onclick="setSigFilter('swap',this)">⚡ SWAP</div>
-    <div class="fchip y" data-sig="puts" onclick="setSigFilter('puts',this)">📉 PUT LADDER</div>
-    <div class="fchip b" data-sig="family" onclick="setSigFilter('family',this)">🏛 FAMILY LOCK</div>
-    <div class="fchip p" data-sig="tiger" onclick="setSigFilter('tiger',this)">🐯 TIGER DNA</div>
-    <div class="fchip" data-sig="activist" onclick="setSigFilter('activist',this)">🎯 ACTIVIST</div>
-    <div class="fchip" data-sig="buyback" onclick="setSigFilter('buyback',this)">🔄 BUYBACK</div>
+  <div class="pills" id="sigPills">
+    <div class="pill on" data-s="ALL" onclick="setSig('ALL',this)">All Signals</div>
+    <div class="pill ro" data-s="swap" onclick="setSig('swap',this)">⚡ Swap</div>
+    <div class="pill yo" data-s="puts" onclick="setSig('puts',this)">📉 Put Ladder</div>
+    <div class="pill bo" data-s="family" onclick="setSig('family',this)">🏛 Family Lock</div>
+    <div class="pill po" data-s="tiger" onclick="setSig('tiger',this)">🐯 Tiger DNA</div>
+    <div class="pill" data-s="activist" onclick="setSig('activist',this)">🎯 Activist</div>
+    <div class="pill" data-s="buyback" onclick="setSig('buyback',this)">🔄 Buyback</div>
   </div>
 
-  <!-- Lane filter -->
-  <div class="filter-row" id="laneFilters">
-    <div class="fchip on" data-lane="ALL" onclick="setLane('ALL',this)">ALL</div>
-    <div class="fchip r" data-lane="EXTREME" onclick="setLane('EXTREME',this)">🔴 EXTREME</div>
-    <div class="fchip y" data-lane="HIGH" onclick="setLane('HIGH',this)">🟠 HIGH RISK</div>
-    <div class="fchip b" data-lane="ELEVATED" onclick="setLane('ELEVATED',this)">🔵 ELEVATED</div>
-    <div class="fchip" data-lane="WATCHLIST" onclick="setLane('WATCHLIST',this)">⚪ WATCHLIST</div>
-    <div class="fchip p" data-lane="CUSTOM" onclick="setLane('CUSTOM',this)">🟣 CUSTOM</div>
+  <div class="pills" id="lanePills">
+    <div class="pill on" data-l="ALL" onclick="setLane('ALL',this)">All</div>
+    <div class="pill ro" data-l="EXTREME" onclick="setLane('EXTREME',this)">🔴 Extreme</div>
+    <div class="pill yo" data-l="HIGH" onclick="setLane('HIGH',this)">🟠 High</div>
+    <div class="pill bo" data-l="ELEVATED" onclick="setLane('ELEVATED',this)">🔵 Elevated</div>
+    <div class="pill" data-l="WATCHLIST" onclick="setLane('WATCHLIST',this)">⚪ Watch</div>
+    <div class="pill po" data-l="CUSTOM" onclick="setLane('CUSTOM',this)">🟣 Custom</div>
   </div>
 
-  <!-- Sort -->
-  <div class="sort-bar">
-    <span class="sort-lbl">SORT:</span>
-    <div class="sort-chip on" data-sort="score" onclick="setSort('score',this)">FLS SCORE</div>
-    <div class="sort-chip" data-sort="short" onclick="setSort('short',this)">SHORT %</div>
-    <div class="sort-chip" data-sort="dtc" onclick="setSort('dtc',this)">DAYS/CVR</div>
-    <div class="sort-chip" data-sort="float" onclick="setSort('float',this)">FLOAT</div>
-    <div class="sort-chip" data-sort="chg" onclick="setSort('chg',this)">CHANGE</div>
+  <div class="sortbar">
+    <span class="slbl">SORT:</span>
+    <div class="spill on" data-sort="score" onclick="setSort('score',this)">FLS Score</div>
+    <div class="spill" data-sort="short" onclick="setSort('short',this)">Short %</div>
+    <div class="spill" data-sort="dtc" onclick="setSort('dtc',this)">DTC</div>
+    <div class="spill" data-sort="rsi" onclick="setSort('rsi',this)">RSI</div>
+    <div class="spill" data-sort="chg" onclick="setSort('chg',this)">Day Chg</div>
   </div>
 
-  <!-- Card list -->
-  <div class="card-list" id="tGrid">
-    <div class="empty"><span class="blink">LOADING DATA…</span></div>
-  </div>
+  <div class="clist" id="tGrid"><div class="empty"><span class="blink">LOADING…</span></div></div>
+  <div class="disc"><div class="dtxt">AR SS Framework is research analysis only. Not investment advice. Always do your own due diligence.</div></div>
+</div>
 
-  <div class="disclaimer">
-    <div class="disc-txt">AR SS Framework is research analysis. Not investment advice. Short squeezes are highly speculative. Always do your own due diligence.</div>
-  </div>
-</div><!-- /pg-squeeze -->
-
-<!-- ════════════════════════════════════
-     PAGE 2: RUN RADAR
-════════════════════════════════════ -->
+<!-- ═══════ RADAR ═══════ -->
 <div class="page" id="pg-radar">
-
-  <div class="rr-hero">
-    <div class="rr-hero-title">Run <em>Radar</em></div>
-    <div class="rr-hero-sub">Stage classification · Sentiment · Technicals<br>Identify what's already run vs what's next</div>
+  <div class="rrhero">
+    <div class="rrtitle">Run <em>Radar</em></div>
+    <div class="rrsub">Auto-classified stages from live RSI · MACD · Moving averages</div>
   </div>
-
-  <!-- Sentiment gauge -->
-  <div class="sent-gauge-wrap">
-    <div class="sg-top">
-      <span class="sg-title">MARKET SENTIMENT INDEX</span>
-      <span class="sg-reading" id="rrSentReading" style="color:var(--g)">LOADING…</span>
+  <div class="method">
+    <div class="mttl">AUTO STAGE CLASSIFIER — LIVE RULES</div>
+    <div class="mrules">
+      <div class="mr"><div class="mrc">RSI&gt;70 · MA+15% · YTD&gt;40%</div><div class="mrs" style="color:var(--r)">🔴 Already Ran</div></div>
+      <div class="mr"><div class="mrc">RSI 58-70 · MACD Bullish · Breaking out</div><div class="mrs" style="color:var(--y)">🟠 Running Now</div></div>
+      <div class="mr"><div class="mrc">RSI&lt;55 · Big upside to PT · Catalyst</div><div class="mrs" style="color:var(--g)">🟢 Not Yet Run</div></div>
+      <div class="mr"><div class="mrc">RSI 42-58 · Near MA · MACD flat</div><div class="mrs" style="color:var(--b)">🔵 Coiling</div></div>
+      <div class="mr"><div class="mrc">RSI&lt;42 · Below MA · Thesis forming</div><div class="mrs" style="color:var(--p)">🟣 On Watch</div></div>
     </div>
-    <div class="gauge-track">
-      <div class="gauge-thumb" id="rrGaugeThumb" style="left:60%"></div>
+  </div>
+  <div class="gauge-card">
+    <div class="gtop">
+      <span class="glbl">UNIVERSE SENTIMENT</span>
+      <span class="gval" id="gval" style="color:var(--g)">COMPUTING…</span>
     </div>
-    <div class="gauge-labels"><span style="color:var(--r)">BEARISH</span><span>NEUTRAL</span><span style="color:var(--g)">BULLISH</span></div>
+    <div class="gtrack"><div class="gthumb" id="gthumb" style="left:60%"></div></div>
+    <div class="glbls"><span style="color:var(--r)">BEARISH</span><span style="color:var(--t2)">NEUTRAL</span><span style="color:var(--g)">BULLISH</span></div>
   </div>
-
-  <!-- Stat chips -->
-  <div class="stats-strip">
-    <div class="stat-chip"><div class="sc-val sc-green" id="rr-notyet">—</div><div class="sc-lbl">NOT YET RUN</div></div>
-    <div class="stat-chip"><div class="sc-val sc-amber" id="rr-running">—</div><div class="sc-lbl">RUNNING NOW</div></div>
-    <div class="stat-chip"><div class="sc-val sc-red" id="rr-ran">—</div><div class="sc-lbl">ALREADY RAN</div></div>
-    <div class="stat-chip"><div class="sc-val sc-green" id="rr-avgup">—</div><div class="sc-lbl">AVG UPSIDE %</div></div>
+  <div class="chips">
+    <div class="chip"><div class="cv cg" id="rr0">—</div><div class="cl">NOT YET RUN</div></div>
+    <div class="chip"><div class="cv cy" id="rr1">—</div><div class="cl">RUNNING</div></div>
+    <div class="chip"><div class="cv cr" id="rr2">—</div><div class="cl">ALREADY RAN</div></div>
+    <div class="chip"><div class="cv cg" id="rr3">—</div><div class="cl">AVG UPSIDE</div></div>
   </div>
-
-  <!-- Runway -->
-  <div class="runway-wrap">
-    <div class="runway-lbl">RUN RUNWAY — CLICK ANY TICKER</div>
-    <div class="runway-track">
-      <div class="rz rz-RAN"></div>
-      <div class="rz rz-RUNNING"></div>
-      <div class="rz rz-NOTYET"></div>
-      <div class="rz rz-COILING"></div>
-      <div class="rz rz-WATCH"></div>
+  <div class="rwycard">
+    <div class="rwylbl">RUN RUNWAY — TAP ANY TICKER</div>
+    <div class="rwytrack">
+      <div class="rz" style="background:rgba(255,51,78,.4)"></div>
+      <div class="rz" style="background:rgba(245,166,35,.4)"></div>
+      <div class="rz" style="background:rgba(0,232,122,.4)"></div>
+      <div class="rz" style="background:rgba(61,142,255,.4)"></div>
+      <div class="rz" style="background:rgba(167,139,250,.4)"></div>
     </div>
-    <div class="runway-dots" id="rrDots"></div>
+    <div class="rwyDots" id="rwyDots"></div>
   </div>
-
-  <!-- Stage pills -->
-  <div class="stage-scroll">
-    <div class="stpill stp-ALL on" data-stage="ALL" onclick="rrSetStage('ALL',this)">All Stages</div>
-    <div class="stpill stp-NOTYET" data-stage="NOTYET" onclick="rrSetStage('NOTYET',this)">🟢 Not Yet Run</div>
-    <div class="stpill stp-RUNNING" data-stage="RUNNING" onclick="rrSetStage('RUNNING',this)">🟠 Running Now</div>
-    <div class="stpill stp-RAN" data-stage="RAN" onclick="rrSetStage('RAN',this)">🔴 Already Ran</div>
-    <div class="stpill stp-COILING" data-stage="COILING" onclick="rrSetStage('COILING',this)">🔵 Coiling</div>
-    <div class="stpill stp-WATCH" data-stage="WATCH" onclick="rrSetStage('WATCH',this)">🟣 On Watch</div>
+  <div class="pills" id="rrStagePills">
+    <div class="pill on" data-st="ALL" onclick="rrStage('ALL',this)">All</div>
+    <div class="pill" data-st="NOTYET" onclick="rrStage('NOTYET',this)">🟢 Not Yet</div>
+    <div class="pill yo" data-st="RUNNING" onclick="rrStage('RUNNING',this)">🟠 Running</div>
+    <div class="pill ro" data-st="RAN" onclick="rrStage('RAN',this)">🔴 Ran</div>
+    <div class="pill bo" data-st="COILING" onclick="rrStage('COILING',this)">🔵 Coiling</div>
+    <div class="pill po" data-st="WATCH" onclick="rrStage('WATCH',this)">🟣 Watch</div>
   </div>
-
-  <!-- Sort -->
-  <div class="rr-sort-row">
-    <span class="sort-lbl">SORT:</span>
-    <div class="sort-chip on" data-rrsort="stage" onclick="rrSetSort('stage',this)">STAGE</div>
-    <div class="sort-chip" data-rrsort="sentiment" onclick="rrSetSort('sentiment',this)">SENTIMENT</div>
-    <div class="sort-chip" data-rrsort="upside" onclick="rrSetSort('upside',this)">UPSIDE</div>
-    <div class="sort-chip" data-rrsort="momentum" onclick="rrSetSort('momentum',this)">MOMENTUM</div>
+  <div class="sortbar">
+    <span class="slbl">SORT:</span>
+    <div class="spill on" data-rrs="stage" onclick="rrSort('stage',this)">Stage</div>
+    <div class="spill" data-rrs="sent" onclick="rrSort('sent',this)">Sentiment</div>
+    <div class="spill" data-rrs="upside" onclick="rrSort('upside',this)">Upside</div>
     <button class="rfbtn" onclick="rrRefresh()" id="rrRfBtn">↻</button>
   </div>
+  <div class="rrlist" id="rrGrid"><div class="empty"><span class="blink">COMPUTING STAGES…</span></div></div>
+  <div class="disc"><div class="dtxt">Stage classifications computed automatically from live data. Not investment advice.</div></div>
+</div>
 
-  <div class="rr-card-list" id="rrGrid">
-    <div class="empty"><span class="blink">LOADING…</span></div>
-  </div>
-
-  <div class="disclaimer">
-    <div class="disc-txt">Stage classifications are analytical opinions, not guarantees. Past price action does not predict future performance. Not investment advice.</div>
-  </div>
-</div><!-- /pg-radar -->
-
-<!-- ════════════════════════════════════
-     PAGE 3: EDUCATION
-════════════════════════════════════ -->
+<!-- ═══════ LEARN ═══════ -->
 <div class="page" id="pg-edu">
-
-  <div class="edu-hero">
-    <div class="edu-hero-title">Learn the <em>Framework</em></div>
-    <div class="edu-hero-sub">Understand every signal, term, and mechanic<br>used in the AR SS squeeze framework</div>
+  <div class="eduhero">
+    <div class="edutitle">Learn the <em>Framework</em></div>
+    <div class="edusub">Every term, signal, and mechanic — with real examples</div>
   </div>
-
-  <!-- AR SS Framework overview -->
-  <div class="framework-card">
-    <div class="fw-title">AR SS Framework <span class="fw-badge">v2.0</span></div>
-    <div class="fw-steps">
-      <div class="fw-step"><div class="fw-num">1</div><div class="fw-step-txt"><strong>Find the float lockup.</strong> Identify concentrated ownership through swaps, family trusts, or activist accumulation that removes shares from tradeable supply.</div></div>
-      <div class="fw-step"><div class="fw-num">2</div><div class="fw-step-txt"><strong>Measure the short burden.</strong> Quantify how many shares are sold short relative to the actual tradeable float — not the reported float.</div></div>
-      <div class="fw-step"><div class="fw-num">3</div><div class="fw-step-txt"><strong>Find the catalyst.</strong> Identify the macro or fundamental event that will force short sellers to cover into a float that mathematically cannot absorb the demand.</div></div>
-      <div class="fw-step"><div class="fw-num">4</div><div class="fw-step-txt"><strong>Watch for the tell.</strong> No gap-ups. Intraday mechanical grinding = dealer hedge unwinding, not news. The CAR tell that preceded a 5x move.</div></div>
-    </div>
+  <div class="fwcard">
+    <div class="fwtitle">AR SS Framework <span class="fwbdg">v2.0</span></div>
+    <div class="fws"><div class="fwn">1</div><div class="fwt"><strong>Find the float lockup.</strong> Swaps, family trusts, or activist accumulation removing shares from tradeable supply.</div></div>
+    <div class="fws"><div class="fwn">2</div><div class="fwt"><strong>Measure the short burden.</strong> Short % against the real tradeable float — not the reported number.</div></div>
+    <div class="fws"><div class="fwn">3</div><div class="fwt"><strong>Find the catalyst.</strong> The event that forces covering into a float that can't absorb it.</div></div>
+    <div class="fws"><div class="fwn">4</div><div class="fwt"><strong>Watch for the tell.</strong> No gap-ups. Intraday grinding = dealer hedge unwinding. The CAR signal.</div></div>
   </div>
-
-  <!-- Category filter -->
-  <div class="edu-cats">
-    <div class="ecat on" data-ecat="all" onclick="setEduCat('all',this)">All Terms</div>
-    <div class="ecat" data-ecat="mechanics" onclick="setEduCat('mechanics',this)">⚙ Mechanics</div>
-    <div class="ecat" data-ecat="signals" onclick="setEduCat('signals',this)">📡 Signals</div>
-    <div class="ecat" data-ecat="legal" onclick="setEduCat('legal',this)">📋 Legal / Filings</div>
-    <div class="ecat" data-ecat="technical" onclick="setEduCat('technical',this)">📊 Technicals</div>
-    <div class="ecat" data-ecat="people" onclick="setEduCat('people',this)">👤 Key Players</div>
+  <div class="educats">
+    <div class="ecat on" data-ec="all" onclick="setEc('all',this)">All Terms</div>
+    <div class="ecat" data-ec="mechanics" onclick="setEc('mechanics',this)">⚙ Mechanics</div>
+    <div class="ecat" data-ec="signals" onclick="setEc('signals',this)">📡 Signals</div>
+    <div class="ecat" data-ec="legal" onclick="setEc('legal',this)">📋 Legal</div>
+    <div class="ecat" data-ec="technical" onclick="setEc('technical',this)">📊 Technicals</div>
+    <div class="ecat" data-ec="people" onclick="setEc('people',this)">👤 Players</div>
   </div>
-
-  <div class="edu-list" id="eduList"></div>
-
-  <div class="disclaimer" style="margin-top:10px;">
-    <div class="disc-txt">Educational content only. Financial markets involve significant risk. Consult a licensed financial advisor before making investment decisions.</div>
-  </div>
-</div><!-- /pg-edu -->
+  <div class="edulist" id="eduList"></div>
+  <div class="disc"><div class="dtxt">Educational content only. Not investment advice.</div></div>
+</div>
 
 </div><!-- /pages -->
 
-<!-- ── BOTTOM TAB BAR ── -->
 <div class="tabbar">
-  <button class="tab-btn on" onclick="switchPage('squeeze',this)">
-    <span class="tab-icon">⚡</span>
-    <span class="tab-label">SQUEEZE</span>
-  </button>
-  <button class="tab-btn" onclick="switchPage('radar',this)">
-    <span class="tab-icon">📡</span>
-    <span class="tab-label">RADAR</span>
-  </button>
-  <button class="tab-btn" onclick="switchPage('edu',this)">
-    <span class="tab-icon">📖</span>
-    <span class="tab-label">LEARN</span>
-  </button>
-</div>
-
-<!-- ── TICKER DETAIL MODAL ── -->
-<div class="modal-bg" id="detailModal" onclick="if(event.target===this)closeModal()">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-hdr">
-      <div>
-        <div class="modal-sym" id="mdlSym">—</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t1)" id="mdlName">—</div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body" id="mdlBody"></div>
-  </div>
+  <button class="tb on" onclick="switchPg('squeeze',this)"><span class="tb-i">⚡</span><span class="tb-l">SQUEEZE</span></button>
+  <button class="tb" onclick="switchPg('radar',this)"><span class="tb-i">📡</span><span class="tb-l">RADAR</span></button>
+  <button class="tb" onclick="switchPg('edu',this)"><span class="tb-i">📖</span><span class="tb-l">LEARN</span></button>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// CONSTANTS
-// ══════════════════════════════════════════════════════════
-const API = 'cvemjnhr01qhb9f8n2a0cvemjnhr01qhb9f8n2ag';
+'use strict';
 
-const SM = {
-  swap:    {l:'Swap Exposure',    i:'⚡',c:'var(--r)',  cat:'signals'},
-  puts:    {l:'Put Ladder',       i:'📉',c:'var(--y)',  cat:'signals'},
-  family:  {l:'Family Lock',      i:'🏛',c:'var(--b)',  cat:'signals'},
-  tiger:   {l:'Tiger DNA',        i:'🐯',c:'var(--p)',  cat:'signals'},
-  activist:{l:'Activist 13G→D',   i:'🎯',c:'var(--g)',  cat:'signals'},
-  buyback: {l:'Buyback Shrink',   i:'🔄',c:'var(--pk)', cat:'signals'},
-  gap:     {l:'No-Gap Tell',      i:'📊',c:'#f0c060',   cat:'technical'},
-};
-const LC_COLOR = {EXTREME:'var(--r)',HIGH:'var(--y)',ELEVATED:'var(--b)',WATCHLIST:'var(--t2)'};
-const STAGE_META = {
-  RAN:     {label:'Already Ran',   color:'var(--r)',  emoji:'🔴'},
-  RUNNING: {label:'Running Now',   color:'var(--y)',  emoji:'🟠'},
-  NOTYET:  {label:'Not Yet Run',   color:'var(--g)',  emoji:'🟢'},
-  COILING: {label:'Coiling/Basing',color:'var(--b)',  emoji:'🔵'},
-  WATCH:   {label:'On Watch',      color:'var(--p)',  emoji:'🟣'},
-};
-const STAGE_ORD = {RAN:0,RUNNING:1,NOTYET:2,COILING:3,WATCH:4};
+// ─── API ────────────────────────────────────────────────────
+var FH = 'cvemjnhr01qhb9f8n2a0cvemjnhr01qhb9f8n2ag';
 
-// ── SQUEEZE TICKERS ──
-const TICKERS = [
-  {s:'CAR', n:'Avis Budget Group',         sec:'Consumer',   sp:62,dtc:7.3,fl:10.1,mc:17.4,sigs:['swap','puts','tiger'],    th:'<strong>The blueprint.</strong> SRS (Tiger Global alum) holds 49.3% via cash-settled swap permanently off float. Pentwater put ladder at $110–$130 forced dealer delivery of 2.8M+ shares. Float was mathematically zero before squeeze. TSA disruption was the spark.'},
-  {s:'H',   n:'Hyatt Hotels Corp',          sec:'Consumer',   sp:21,dtc:5.4,fl:41.8,mc:14.2,sigs:['family','buyback'],       th:'<strong>Top structural candidate.</strong> Pritzker family controls 54.4% economic + 88.9% voting via dual-class. $600M buyback shrinking float. Governance transition creates activist window.'},
-  {s:'CHH', n:'Choice Hotels Intl',         sec:'Consumer',   sp:52,dtc:8.1,fl:38.2,mc:4.6, sigs:['family','puts'],          th:'<strong>Same cluster as CAR.</strong> Founder family concentration. 52% float short. Q1 2026 earnings is the ignition. Derivatives layer not yet publicly unwrapped.'},
-  {s:'HTZ', n:'Hertz Global Holdings',      sec:'Consumer',   sp:44,dtc:6.2,fl:285,mc:1.8,  sigs:['puts'],                   th:'<strong>CAR peer.</strong> 44% float short. Direct rental competitor already up 65% in CAR sympathy. Elevated borrow rate signals dealer stress.'},
-  {s:'CODI',n:'Compass Diversified',        sec:'Industrials',sp:18,dtc:9.3,fl:62,mc:1.1,   sigs:['activist','puts'],         th:'<strong>ADW Capital April 2026.</strong> ADW filed 13D at 14% exposure demanding liquidation at $26+/share. Put-ladder-forces-dealer-delivery applied to activist scenario.'},
-  {s:'LCID',n:'Lucid Group',                sec:'EV',         sp:38,dtc:4.8,fl:2100,mc:6.2,  sigs:['family','puts'],          th:'<strong>Saudi PIF float lock.</strong> PIF owns ~58% of Lucid. Persistent losses = easy short, but PIF injects capital unexpectedly. Any funding into 38% short float cascades.'},
-  {s:'GRPN',n:'Groupon',                    sec:'Technology', sp:46,dtc:12.1,fl:22,mc:0.35,  sigs:['activist'],               th:'<strong>Highest short % in 2026.</strong> 46% float short, 12+ days to cover. Tiny float amplifies any buying. Turnaround narrative gaining traction.'},
-  {s:'HIMS',n:'Hims & Hers Health',         sec:'Healthcare', sp:29,dtc:5.1,fl:190,mc:3.1,   sigs:['activist'],               th:'<strong>GLP-1 binary catalyst.</strong> 29% float short. FDA ruling on compounding is the binary event. Engaged retail base amplifies any move.'},
-  {s:'BYND',n:'Beyond Meat',                sec:'Staples',    sp:41,dtc:7.8,fl:48,mc:0.22,   sigs:['activist'],               th:'<strong>Classic distressed setup.</strong> 41% float short. Tiny market cap means any catalyst moves it violently.'},
-  {s:'PLUG',n:'Plug Power',                 sec:'Energy',     sp:26,dtc:4.2,fl:520,mc:1.4,   sigs:['puts'],                   th:'<strong>Hydrogen subsidy squeeze.</strong> DOE loan guarantee is the catalyst. 26% float short — positive ruling creates violent cover into thin H2 tape.'},
-  {s:'W',   n:'Wayfair',                    sec:'Consumer',   sp:33,dtc:6.1,fl:112,mc:4.8,   sigs:['puts','buyback'],          th:'<strong>Housing recovery play.</strong> 33% float short on mortgage headwinds. Any rate decline triggers violent cover.'},
-  {s:'OPEN',n:'Opendoor Technologies',      sec:'Real Estate',sp:31,dtc:5.9,fl:620,mc:1.2,   sigs:['activist','puts'],         th:'<strong>iBuying short crowded.</strong> 31% float short. SoftBank concentrated holders reduce effective float. Activists circling asset value gap.'},
-  {s:'MARA',n:'MARA Holdings',              sec:'Crypto',     sp:28,dtc:3.2,fl:280,mc:4.1,   sigs:['puts'],                   th:'<strong>Bitcoin proxy short.</strong> Any BTC breakout forces simultaneous cover across all mining stocks. MARA is the largest miner.'},
-  {s:'CHTR',n:'Charter Communications',    sec:'Telecom',    sp:22,dtc:6.8,fl:148,mc:39.2,  sigs:['buyback','family'],        th:'<strong>Aggressive buyback compression.</strong> Liberty Media block + systematic buyback = systematically shrinking float.'},
-  {s:'SMMT',n:'Summit Therapeutics',        sec:'Biotech',    sp:35,dtc:7.2,fl:82,mc:8.4,   sigs:['activist','family'],       th:'<strong>Oncology binary catalyst.</strong> Phase 3 ivonescimab data is a binary event into 35% short float.'},
-  {s:'LKNCY',n:'Luckin Coffee',             sec:'Consumer',   sp:37,dtc:9.1,fl:185,mc:12.1,  sigs:['family','swap'],           th:'<strong>China re-rating play.</strong> Chinese institutional concentration limits available borrow — dealer stress elevated.'},
-  {s:'BETR',n:'Better Home & Finance',      sec:'Fintech',    sp:44,dtc:11.2,fl:12,mc:0.08,  sigs:['activist','puts'],         th:'<strong>Tiny float extreme short.</strong> 44% float short on 12M share float. DTC of 11 days makes covering nearly impossible.'},
-  {s:'ASTS',n:'AST SpaceMobile',            sec:'Satellite',  sp:30,dtc:4.6,fl:95,mc:8.1,   sigs:['family','puts'],           th:'<strong>Satellite squeeze candidate.</strong> Avellan founder + AT&T/Vodafone strategic blocks. Any launch success triggers forcing function.'},
-  {s:'MXL', n:'MaxLinear',                  sec:'Semis',      sp:23,dtc:7.9,fl:52,mc:0.88,  sigs:['activist','buyback'],      th:'<strong>Semi short with tight float.</strong> 23% float short, 52M shares. DOCSIS 4.0 + Wi-Fi 7 launches. Q1 2026 earnings binary catalyst.'},
-  {s:'SOFI',n:'SoFi Technologies',          sec:'Fintech',    sp:19,dtc:3.4,fl:780,mc:8.2,  sigs:['activist'],                th:'<strong>Fintech regulation uncertainty.</strong> Student loan restart + bank charter thesis. Any CFPB clarity creates covering pressure.'},
-  {s:'NKLA',n:'Nikola Corporation',         sec:'EV',         sp:44,dtc:8.4,fl:380,mc:0.18,  sigs:['activist'],               th:'<strong>Distressed squeeze candidate.</strong> 44% float short. Tiny market cap — squeeze math is extreme. Any hydrogen order triggers chain reaction.'},
-  {s:'PBF', n:'PBF Energy',                 sec:'Energy',     sp:28,dtc:5.3,fl:112,mc:2.8,  sigs:['buyback'],                 th:'<strong>Refining margin short crowded.</strong> Active buyback reducing float. Middle East tensions = same macro as CAR squeeze.'},
-  {s:'DK',  n:'Delek US Holdings',           sec:'Energy',     sp:26,dtc:6.7,fl:68,mc:1.1,  sigs:['buyback','activist'],      th:'<strong>Small cap refiner stealth setup.</strong> Same crude/geopolitical tailwind as CAR. Under the radar.'},
-  {s:'LYB', n:'LyondellBasell Industries',  sec:'Chemicals',  sp:20,dtc:5.8,fl:282,mc:8.9,  sigs:['buyback'],                th:'<strong>Industrial chemical squeeze watch.</strong> Buyback reducing float. Commodity recovery = simultaneous fundamental + forced cover.'},
-  {s:'SNAP',n:'Snap Inc.',                   sec:'Technology', sp:24,dtc:3.8,fl:1380,mc:15.2, sigs:['puts'],                  th:'<strong>Crowded ad revenue short.</strong> 24% float short. Any AI monetization beat vs bearish consensus triggers rapid covering.'},
+// ─── TICKERS ────────────────────────────────────────────────
+var TICKERS = [
+  {s:'CAR', n:'Avis Budget Group',       sec:'Consumer',   sp:62,dtc:7.3,fl:10.1,mc:17.4,sigs:['swap','puts','tiger'],  th:'<strong>The blueprint.</strong> SRS (Tiger alum) holds 49.3% via cash-settled swap locked off float. Pentwater put ladder at $110–$130 forced dealer delivery of 2.8M+ shares. Float was mathematically zero before the squeeze.'},
+  {s:'H',   n:'Hyatt Hotels Corp',        sec:'Consumer',   sp:21,dtc:5.4,fl:41.8,mc:14.2,sigs:['family','buyback'],   th:'<strong>Top structural candidate.</strong> Pritzker family: 54.4% economic + 88.9% voting power. $600M buyback shrinking float. Governance transition creates activist window.'},
+  {s:'CHH', n:'Choice Hotels Intl',       sec:'Consumer',   sp:52,dtc:8.1,fl:38.2,mc:4.6, sigs:['family','puts'],     th:'<strong>Same cluster as CAR.</strong> Founder family concentration. 52% float short. Q1 earnings is the ignition event.'},
+  {s:'HTZ', n:'Hertz Global',             sec:'Consumer',   sp:44,dtc:6.2,fl:285, mc:1.8, sigs:['puts'],              th:'<strong>CAR peer.</strong> 44% float short. Already up 65% in CAR sympathy — hasn\'t had its own moment yet.'},
+  {s:'CODI',n:'Compass Diversified',      sec:'Industrials',sp:18,dtc:9.3,fl:62,  mc:1.1, sigs:['activist','puts'],  th:'<strong>ADW Capital play.</strong> 13D filed at 14% exposure demanding liquidation at $26+/share. Put-ladder mechanic applied to activist scenario.'},
+  {s:'LCID',n:'Lucid Group',              sec:'EV',         sp:38,dtc:4.8,fl:2100,mc:6.2, sigs:['family','puts'],    th:'<strong>Saudi PIF float lock.</strong> PIF owns ~58%. Any capital injection into 38% short float cascades.'},
+  {s:'GRPN',n:'Groupon',                  sec:'Technology', sp:46,dtc:12.1,fl:22, mc:0.35,sigs:['activist'],         th:'<strong>Highest short % in 2026.</strong> 12+ days to cover. Tiny float amplifies any catalyst.'},
+  {s:'HIMS',n:'Hims & Hers Health',       sec:'Healthcare', sp:29,dtc:5.1,fl:190, mc:3.1, sigs:['activist'],         th:'<strong>GLP-1 binary catalyst.</strong> 29% float short. FDA ruling on compounding is the binary event.'},
+  {s:'BYND',n:'Beyond Meat',              sec:'Staples',    sp:41,dtc:7.8,fl:48,  mc:0.22,sigs:['activist'],         th:'<strong>Classic distressed setup.</strong> 41% float short. Tiny cap means any catalyst moves it violently.'},
+  {s:'PLUG',n:'Plug Power',               sec:'Energy',     sp:26,dtc:4.2,fl:520, mc:1.4, sigs:['puts'],             th:'<strong>Hydrogen subsidy squeeze.</strong> DOE loan guarantee is the catalyst into 26% short float.'},
+  {s:'W',   n:'Wayfair',                  sec:'Consumer',   sp:33,dtc:6.1,fl:112, mc:4.8, sigs:['puts','buyback'],  th:'<strong>Housing recovery play.</strong> 33% float short. Any rate decline triggers violent cover.'},
+  {s:'OPEN',n:'Opendoor Technologies',    sec:'Real Estate',sp:31,dtc:5.9,fl:620, mc:1.2, sigs:['activist','puts'], th:'<strong>iBuying short crowded.</strong> 31% float. Activists circling asset value gap.'},
+  {s:'MARA',n:'MARA Holdings',            sec:'Crypto',     sp:28,dtc:3.2,fl:280, mc:4.1, sigs:['puts'],            th:'<strong>Bitcoin proxy short.</strong> Any BTC breakout forces simultaneous cover across mining stocks.'},
+  {s:'CHTR',n:'Charter Communications',  sec:'Telecom',    sp:22,dtc:6.8,fl:148, mc:39.2,sigs:['buyback','family'],th:'<strong>Systematic float compression.</strong> Liberty Media block + aggressive buyback.'},
+  {s:'SMMT',n:'Summit Therapeutics',      sec:'Biotech',    sp:35,dtc:7.2,fl:82,  mc:8.4, sigs:['activist','family'],th:'<strong>Oncology binary.</strong> Phase 3 ivonescimab data into 35% short float = textbook squeeze ignition.'},
+  {s:'LKNCY',n:'Luckin Coffee',           sec:'Consumer',   sp:37,dtc:9.1,fl:185, mc:12.1,sigs:['family','swap'],   th:'<strong>China re-rating play.</strong> Chinese institutional concentration limits borrow — dealer stress elevated.'},
+  {s:'BETR',n:'Better Home & Finance',    sec:'Fintech',    sp:44,dtc:11.2,fl:12, mc:0.08,sigs:['activist','puts'], th:'<strong>Tiny float extreme short.</strong> 44% on 12M float. DTC 11 days = near impossible cover without explosion.'},
+  {s:'ASTS',n:'AST SpaceMobile',          sec:'Satellite',  sp:30,dtc:4.6,fl:95,  mc:8.1, sigs:['family','puts'],  th:'<strong>Satellite squeeze.</strong> Avellan + AT&T/Vodafone blocks. Any launch success triggers forcing function.'},
+  {s:'MXL', n:'MaxLinear',                sec:'Semis',      sp:23,dtc:7.9,fl:52,  mc:0.88,sigs:['activist','buyback'],th:'<strong>Semi short tight float.</strong> DOCSIS 4.0 + Wi-Fi 7 launches. Q1 2026 earnings binary catalyst.'},
+  {s:'SOFI',n:'SoFi Technologies',        sec:'Fintech',    sp:19,dtc:3.4,fl:780, mc:8.2, sigs:['activist'],        th:'<strong>Fintech regulatory.</strong> Student loan restart + bank charter thesis.'},
+  {s:'NKLA',n:'Nikola Corporation',       sec:'EV',         sp:44,dtc:8.4,fl:380, mc:0.18,sigs:['activist'],        th:'<strong>Distressed squeeze.</strong> 44% short. Tiny cap — squeeze math is extreme on any hydrogen order.'},
+  {s:'PBF', n:'PBF Energy',               sec:'Energy',     sp:28,dtc:5.3,fl:112, mc:2.8, sigs:['buyback'],         th:'<strong>Refining short crowded.</strong> Buyback reducing float. Middle East tensions = same CAR macro.'},
+  {s:'DK',  n:'Delek US Holdings',         sec:'Energy',     sp:26,dtc:6.7,fl:68,  mc:1.1, sigs:['buyback','activist'],th:'<strong>Stealth refiner setup.</strong> Same crude tailwind as CAR. Under the radar.'},
+  {s:'LYB', n:'LyondellBasell',           sec:'Chemicals',  sp:20,dtc:5.8,fl:282, mc:8.9, sigs:['buyback'],         th:'<strong>Industrial chemical watch.</strong> Buyback compressing float. Commodity recovery = simultaneous catalyst.'},
+  {s:'SNAP',n:'Snap Inc.',                 sec:'Technology', sp:24,dtc:3.8,fl:1380,mc:15.2,sigs:['puts'],           th:'<strong>Ad revenue short crowded.</strong> 24% float. Any AI monetization beat triggers rapid covering.'},
+  {s:'SMTC',n:'Semtech Corp',              sec:'Semis',      sp:15,dtc:4.2,fl:93,  mc:8.1, sigs:['activist'],       th:'<strong>Not yet run — same as CRDO months ago.</strong> FiberEdge 1.6T DSPs. 14/14 analysts Buy. $104 consensus vs ~$87 price. May 26 earnings is the ignition.'},
+  {s:'CRDO',n:'Credo Technology',          sec:'Semis',      sp:8, dtc:2.1,fl:190, mc:14.2,sigs:[],                 th:'<strong>Already ran — multi-year ramp just beginning.</strong> 800G to 1.6T content ramp. Jefferies $175 target.'},
+  {s:'MU',  n:'Micron Technology',         sec:'Semis',      sp:12,dtc:3.1,fl:1100,mc:29.3,sigs:[],                 th:'<strong>Running with upside left.</strong> HBM3E/HBM4 sold out 2026. DRAM +162% YoY. Morgan Stanley top pick.'},
+  {s:'NVDA',n:'Nvidia',                    sec:'AI/GPU',     sp:3, dtc:1.2,fl:2400,mc:455, sigs:[],                 th:'<strong>Already ran — compounding business.</strong> $500B orders. BofA: still 0.6x PEG vs S&P 2x.'},
+  {s:'AMD', n:'Advanced Micro Devices',    sec:'Semis',      sp:11,dtc:2.4,fl:1600,mc:170, sigs:[],                 th:'<strong>Coiling at key level.</strong> MI300X ramp underappreciated. EPYC dominating cloud CPU.'},
+  {s:'ON',  n:'ON Semiconductor',          sec:'Semis',      sp:18,dtc:5.1,fl:430, mc:12.4,sigs:[],                 th:'<strong>EV cycle recovery coiling.</strong> Automotive headwinds punished ON. Recovery setup building.'},
+  {s:'QCOM',n:'Qualcomm',                  sec:'Semis',      sp:9, dtc:2.2,fl:1070,mc:175, sigs:[],                 th:'<strong>Three catalysts not yet priced.</strong> AI PCs, automotive wins, edge AI inference.'},
+  {s:'INTC',n:'Intel Corp',                sec:'Semis',      sp:14,dtc:3.8,fl:4200,mc:88,  sigs:[],                 th:'<strong>Turnaround binary on watch.</strong> 18A process validation is the entire thesis.'},
+  {s:'ENTG',n:'Entegris',                  sec:'Semi Matls', sp:10,dtc:4.6,fl:150, mc:12.4,sigs:[],                 th:'<strong>High quality at below-average valuation.</strong> Every 2nm/3nm wafer needs Entegris chemistry.'},
+  {s:'WOLF',n:'Wolfspeed',                 sec:'SiC/Power',  sp:31,dtc:7.4,fl:125, mc:1.1, sigs:[],                th:'<strong>Distressed SiC — high risk watch.</strong> Only domestic SiC wafer manufacturer at scale.'},
 ];
 
-// ── RUN RADAR DATA ──
-const RR_DATA = [
-  {s:'SMTC',n:'Semtech Corp',      sec:'Semis',      stage:'NOTYET', sent:72,rsi:48,momentum:62,upside:28,pt:104,cur:87,
-   tech:{rsi:48,macd:'BULLISH CROSS',ma50:'NEAR',vol:'RISING'},
-   th:'<strong>The one that hasn\'t run yet.</strong> Doing the exact same thing as CRDO — FiberEdge 1.6T DSPs, 10x revenue/transceiver as data rates scale — but pulled back 20%. 14/14 analysts Buy. $104 consensus vs $87 price. May 26 earnings is the ignition event.'},
-  {s:'MXL', n:'MaxLinear',          sec:'Semis',      stage:'RUNNING',sent:61,rsi:72,momentum:78,upside:8, pt:24,cur:31,
-   tech:{rsi:72,macd:'OVERBOUGHT',ma50:'FAR ABOVE',vol:'SURGE'},
-   th:'<strong>Already running hard.</strong> Nearly doubled from $16 to $31+ in three weeks on DOCSIS 4.0 launches. RSI extreme. Q1 earnings binary event. Entry here is chasing at peak extension.'},
-  {s:'CRDO',n:'Credo Technology',   sec:'Semis',      stage:'RAN',    sent:79,rsi:68,momentum:71,upside:31,pt:175,cur:133,
-   tech:{rsi:68,macd:'BULLISH',ma50:'WELL ABOVE',vol:'ELEVATED'},
-   th:'<strong>Already ran — still has legs.</strong> $87 → $200+ → pulled to $90s → back at $133. The 800G→1.6T AEC/DSP content ramp is just starting. Jefferies $175 target. First move done, multi-year ramp beginning.'},
-  {s:'CAMT',n:'Camtek Ltd',         sec:'Semis',      stage:'RUNNING',sent:74,rsi:65,momentum:69,upside:22,pt:85,cur:72,
-   tech:{rsi:65,macd:'BULLISH',ma50:'ABOVE',vol:'RISING'},
-   th:'<strong>HBM4 inspection pure play running.</strong> Record $496M revenue. Q2 2026 guidance strong. H2 2026 pickup as HBM4 chips roll from major suppliers. Still underowned.'},
-  {s:'MU',  n:'Micron Technology',  sec:'Semis',      stage:'RUNNING',sent:82,rsi:66,momentum:74,upside:15,pt:305,cur:265,
-   tech:{rsi:66,macd:'BULLISH',ma50:'ABOVE',vol:'ELEVATED'},
-   th:'<strong>Morgan Stanley\'s top semi pick — running with upside left.</strong> HBM3E/HBM4 sold out for 2026. DRAM prices +162% YoY. At 28x forward earnings — cheapest major semi by PEG.'},
-  {s:'NVDA',n:'Nvidia',             sec:'AI/GPU',     stage:'RAN',    sent:88,rsi:64,momentum:77,upside:33,pt:250,cur:187,
-   tech:{rsi:64,macd:'BULLISH',ma50:'ABOVE',vol:'ELEVATED'},
-   th:'<strong>The one that started it all — still has legs.</strong> $500B in orders. 92% GPU market share. BofA: still trading at 0.6x PEG vs S&P at 2x. Run happened but business keeps compounding.'},
-  {s:'AVGO',n:'Broadcom',           sec:'AI/Net',     stage:'RAN',    sent:81,rsi:61,momentum:70,upside:28,pt:460,cur:357,
-   tech:{rsi:61,macd:'BULLISH',ma50:'ABOVE',vol:'NORMAL'},
-   th:'<strong>The AI nervous system — structural story intact.</strong> 80% ASIC and Ethernet market share. Anthropic orders $21B combined. VMware software margin expansion.'},
-  {s:'TSM', n:'Taiwan Semiconductor',sec:'Foundry',   stage:'RAN',    sent:85,rsi:65,momentum:72,upside:58,pt:509,cur:189,
-   tech:{rsi:65,macd:'BULLISH',ma50:'ABOVE',vol:'ELEVATED'},
-   th:'<strong>The toll booth — Goldman just hiked PT 35%.</strong> 72% foundry market share. 3nm and 2nm sold out. Every major AI chip flows through TSMC.'},
-  {s:'ON',  n:'ON Semiconductor',   sec:'Semis',      stage:'COILING',sent:52,rsi:44,momentum:41,upside:35,pt:78,cur:58,
-   tech:{rsi:44,macd:'BEARISH',ma50:'BELOW',vol:'LOW'},
-   th:'<strong>EV semi cycle recovery coiling.</strong> Automotive headwinds punished ON. Below 50-day MA. But EV adoption and industrial recovery could make this 2026\'s hidden setup. Patience needed.'},
-  {s:'AMD', n:'Advanced Micro Devices',sec:'Semis',   stage:'COILING',sent:67,rsi:51,momentum:54,upside:33,pt:160,cur:107,
-   tech:{rsi:51,macd:'NEUTRAL',ma50:'NEAR',vol:'NORMAL'},
-   th:'<strong>Coiling at key level.</strong> MI300X AI GPU ramp real but underappreciated. EPYC dominating cloud CPU wins. At ~25x forward vs NVDA\'s 46x — much cheaper. Needs datacenter GPU revenue confirmation.'},
-  {s:'QCOM',n:'Qualcomm',           sec:'Semis',      stage:'NOTYET', sent:64,rsi:52,momentum:55,upside:24,pt:230,cur:162,
-   tech:{rsi:52,macd:'NEUTRAL TO BULLISH',ma50:'NEAR',vol:'NORMAL'},
-   th:'<strong>Three-pronged catalyst not yet priced.</strong> AI PCs (Snapdragon X), automotive (BMW/Mercedes wins), edge AI inference. Discount to AMD/NVDA despite comparable growth.'},
-  {s:'INTC',n:'Intel Corp',         sec:'Semis',      stage:'WATCH',  sent:48,rsi:45,momentum:43,upside:42,pt:28,cur:20,
-   tech:{rsi:45,macd:'NEUTRAL',ma50:'BELOW',vol:'DECLINING'},
-   th:'<strong>Turnaround binary on watch.</strong> 18A process validation is the entire thesis. Core Ultra Series 3 is first 18A commercial product. If manufacturing executes, extraordinary upside. High risk/reward binary.'},
-  {s:'ENTG',n:'Entegris',           sec:'Semi Matls', stage:'NOTYET', sent:61,rsi:47,momentum:48,upside:44,pt:120,cur:83,
-   tech:{rsi:47,macd:'NEUTRAL',ma50:'NEAR',vol:'LOW'},
-   th:'<strong>High quality at below-average valuation — rare combo.</strong> Semiconductor materials for advanced nodes. Every 2nm/3nm wafer requires Entegris chemistry. Institutional recognition lagging fundamentals.'},
-  {s:'LRCX',n:'Lam Research',       sec:'Semi Equip', stage:'COILING',sent:69,rsi:53,momentum:56,upside:26,pt:90,cur:72,
-   tech:{rsi:53,macd:'NEUTRAL',ma50:'NEAR',vol:'DECLINING'},
-   th:'<strong>BofA top semi equipment pick — coiling at support.</strong> Etch and deposition dominant in DRAM/3D NAND. HBM4 production requires Lam tools at every step. Equipment stocks run when memory enters upcycle.'},
-  {s:'WOLF',n:'Wolfspeed',          sec:'SiC/Power',  stage:'WATCH',  sent:39,rsi:38,momentum:32,upside:62,pt:18,cur:11,
-   tech:{rsi:38,macd:'BEARISH',ma50:'BELOW',vol:'LOW'},
-   th:'<strong>Distressed SiC play — high risk, high reward on watch.</strong> Only domestic SiC wafer manufacturer at scale. EV drivetrain secular demand. Balance sheet stress. Watching for restructuring or strategic partner.'},
-];
+var PT = {CAR:150,H:180,CHH:110,HTZ:8,CODI:26,LCID:4,GRPN:18,HIMS:24,BYND:5,PLUG:3,W:55,OPEN:3,MARA:22,CHTR:400,SMMT:65,LKNCY:28,BETR:12,ASTS:35,MXL:24,SOFI:14,NKLA:2,PBF:38,DK:28,LYB:90,SNAP:18,SMTC:104,CRDO:175,MU:305,NVDA:250,AMD:160,ON:78,QCOM:230,INTC:28,ENTG:120,WOLF:18};
 
-// ── EDUCATION DATA ──
-const EDU_DATA = [
-  {id:'short_squeeze',cat:'mechanics',icon:'💥',color:'var(--r)',
-   term:'Short Squeeze',
-   one:'When heavily shorted stocks explode higher, forcing bears to buy back at any price.',
-   full:'A short squeeze occurs when a stock\'s price rises sharply, forcing investors who had bet against it (short sellers) to buy shares to cover their positions and limit losses. This covering creates additional buying pressure, which drives the price even higher — creating a self-reinforcing feedback loop.\n\nThe classic setup requires three ingredients: (1) a large number of shares sold short, (2) a price catalyst that starts the move, and (3) a constrained float that makes it physically difficult for shorts to exit.',
-   example:{label:'REAL EXAMPLE: CAR (Avis Budget Group, 2026)',text:'CAR started the year near $100. Short interest exceeded 100% of the publicly tradeable float. When the TSA funding lapse created a "drive don\'t fly" catalyst, the stock rose 5x to over $500 in weeks. Every dollar of short covering made it harder for the next short seller to exit.'},
-   points:[
-     {c:'var(--r)',t:'Short sellers borrow shares, sell them, and must buy them back later'},
-     {c:'var(--y)',t:'When the price rises, losses mount — eventually forcing a buy-back'},
-     {c:'var(--g)',t:'Mass covering creates a cascade of forced buying that amplifies the move'},
-     {c:'var(--b)',t:'The tighter the float, the more violent the squeeze'},
-   ],
-   risk:'EXTREME',
-   related:['Float Lock','Short Interest %','Days to Cover']},
+var SIGC = {swap:'var(--r)',puts:'var(--y)',family:'var(--b)',tiger:'var(--p)',activist:'var(--g)',buyback:'var(--pk)',gap:'#f0c060'};
+var SIGL = {swap:'⚡ SWAP',puts:'📉 PUT LADDER',family:'🏛 FAMILY LOCK',tiger:'🐯 TIGER DNA',activist:'🎯 ACTIVIST',buyback:'🔄 BUYBACK',gap:'📊 NO-GAP'};
+var LC   = {EXTREME:'var(--r)',HIGH:'var(--y)',ELEVATED:'var(--b)',WATCHLIST:'var(--t2)'};
+var STCL = {RAN:'var(--r)',RUNNING:'var(--y)',NOTYET:'var(--g)',COILING:'var(--b)',WATCH:'var(--p)'};
+var STORD= {RAN:0,RUNNING:1,NOTYET:2,COILING:3,WATCH:4};
+var STEM = {RAN:'🔴',RUNNING:'🟠',NOTYET:'🟢',COILING:'🔵',WATCH:'🟣'};
 
-  {id:'swap_exposure',cat:'signals',icon:'⚡',color:'var(--r)',
-   term:'Swap Exposure (Total Return Swap)',
-   one:'A hidden contract that gives economic exposure to a stock without showing up in ownership filings.',
-   full:'A Total Return Swap (TRS) is a financial contract where one party pays another the total return of an asset (price gains + dividends) in exchange for a fixed or floating rate. The critical insight: <strong>the swap holder gets all the economic benefit of owning shares without technically "owning" them.</strong>\n\nThis matters enormously for squeezes because: (1) the dealer (usually a bank) on the other side of the swap must hedge by buying the actual stock, (2) those hedging shares are locked on the dealer\'s balance sheet and unavailable to the market, and (3) since swaps don\'t count as "ownership" under SEC rules, they don\'t trigger disclosure requirements.',
-   example:{label:'REAL EXAMPLE: SRS Investment Management & CAR',text:'<strong>Karthik Sarma\'s SRS</strong> (a Tiger Global alumnus) held 49.3% of Avis Budget Group through a combination of common stock and a 2.9 million share cash-settled swap. The swap existed specifically to extend economic exposure past a 45% voting cap in their cooperation agreement. Those 2.9M dealer hedge shares were permanently off the float — they were never coming back to the market.'},
-   points:[
-     {c:'var(--r)',t:'Swap holder gets economic exposure without triggering SEC disclosure thresholds'},
-     {c:'var(--r)',t:'Dealer must buy real shares to hedge — removing them from tradeable float'},
-     {c:'var(--y)',t:'Cash-settled swaps settle in cash, not shares — no share delivery required'},
-     {c:'var(--b)',t:'Common structure used by hedge funds to concentrate positions stealthily'},
-   ],
-   risk:'HIGH',
-   related:['Archegos Capital','Float Lock','Tiger DNA']},
+// ─── STATE ──────────────────────────────────────────────────
+var prices = {};
+var techC  = {};
+var stages = {};
+var custom = [];
+var expanded = {};
+var dtabs   = {};
+var rrExp   = {};
+var eduExp  = {};
+var activeSig  = 'ALL';
+var activeLane = 'ALL';
+var activeSort = 'score';
+var rrActiveStage = 'ALL';
+var rrActiveSort  = 'stage';
+var eduCat   = 'all';
+var qVal     = '';
+var qTimer   = null;
+var techBusy = false;
+var techDone = 0;
 
-  {id:'put_ladder',cat:'signals',icon:'📉',color:'var(--y)',
-   term:'Put Ladder',
-   one:'A series of sold put options at multiple strikes that forces dealers to deliver shares upon exercise.',
-   full:'A put ladder is a strategy where an investor <em>sells put options</em> at multiple strike prices — collecting premiums upfront and obligating themselves to buy shares if the stock falls below those strikes.\n\nThe squeeze mechanic: When these puts expire in-the-money, the counterparty (a dealer/bank) must <strong>deliver shares to the put seller</strong>. The dealer then needs to source those shares from the market or unwind a delta hedge — both actions pull supply out of the tape.\n\nAdditionally, if the put seller also sold covered calls that expire worthless as the stock rises, the dealer who sold those calls must unwind a short-gamma hedge, creating additional forced buying.',
-   example:{label:'REAL EXAMPLE: Pentwater Capital & CAR',text:'<strong>Matthew Halbower\'s Pentwater</strong> exercised short puts at strikes of $110, $120, $125, and $130 to acquire Avis Budget Group stock. Each put exercise forced the counterparty dealer to deliver shares. Separately, short calls they\'d written at $150–$310 expired worthless, leaving dealers unwinding delta hedges. Both dynamics simultaneously pulled supply off the tape. Pentwater\'s position went from 2.95M shares in Aug 2025 to 7.1M by March 2026 — largely through this put ladder.'},
-   points:[
-     {c:'var(--y)',t:'Selling puts at multiple strikes creates layered obligations to buy shares'},
-     {c:'var(--r)',t:'Each put exercise forces dealer share delivery — removing supply from float'},
-     {c:'var(--y)',t:'Expired worthless calls force dealer hedge unwinds — additional forced buying'},
-     {c:'var(--g)',t:'The put seller collects premium either way — asymmetric risk/reward'},
-   ],
-   risk:'HIGH',
-   related:['Swap Exposure','Gamma Squeeze','Float Lock']},
-
-  {id:'family_lock',cat:'signals',icon:'🏛',color:'var(--b)',
-   term:'Family Lock',
-   one:'When founding families or insiders control large share blocks that never trade — silently strangling float.',
-   full:'Family Lock describes situations where a founding family, trust, or insider group controls such a large percentage of outstanding shares that the actual tradeable float is far smaller than what\'s reported.\n\nThis typically happens through: (1) dual-class share structures (Class B = 10 votes per share), (2) irrevocable family trusts, or (3) decades-long concentrated ownership that never gets sold. The key insight is that these blocks are structurally "sticky" — they\'re not for sale at any price in normal circumstances.',
-   example:{label:'REAL EXAMPLE: Pritzker Family & Hyatt Hotels (H)',text:'The Pritzker family holds 766,775 Class A shares and 50,873,078 Class B shares — totaling 54.4% of Hyatt\'s common stock and <strong>88.9% of all voting power</strong>. Class B shares carry 10 votes each. This means the family controls the company with over half the economics and nearly all the power. Add a $600M buyback further compressing the remaining public float, and the setup mirrors CAR before Pentwater entered.'},
-   points:[
-     {c:'var(--b)',t:'Dual-class structures give insiders voting control without full economic ownership'},
-     {c:'var(--b)',t:'Family trusts are irrevocable — shares are functionally off-market permanently'},
-     {c:'var(--y)',t:'Governance transitions (founder stepping down) create activist entry windows'},
-     {c:'var(--g)',t:'Buybacks on top of a family lock = compounding float compression'},
-   ],
-   risk:'MEDIUM',
-   related:['Float Lock','Buyback Shrink','Activist 13G→D']},
-
-  {id:'tiger_dna',cat:'people',icon:'🐯',color:'var(--p)',
-   term:'Tiger DNA',
-   one:'A network of hedge funds descended from Julian Robertson\'s Tiger Management — known for concentrated, swap-based positions.',
-   full:'Tiger Management, founded by Julian Robertson in 1980, spawned dozens of successor funds when Robertson shut it down in 2000. These "Tiger Cubs" (and their cubs) share a common investing philosophy: deep fundamental research, concentrated high-conviction positions, and a willingness to use derivatives to amplify exposure.\n\nThe AR SS Framework flags "Tiger DNA" because two of the most consequential squeeze setups in recent history — Archegos Capital (Bill Hwang) and SRS Investment Management (Karthik Sarma) — were both Tiger Global alumni who used total return swaps to build massive concentrated positions that seized float.',
-   example:{label:'THE LINEAGE: Tiger → Archegos → SRS → $CAR',text:'<strong>Julian Robertson</strong> trained Tiger Global\'s partners. <strong>Bill Hwang</strong> ran Tiger Asia (Tiger Global-affiliated). Hwang\'s Archegos used TRS swaps to control $160B in stock exposure — triggering the 2021 implosion of ViacomCBS, Discovery and others. <strong>Karthik Sarma</strong> founded SRS after leaving Tiger Global. SRS used the identical swap structure on CAR, resulting in the 2026 squeeze. Two massive derivatives squeezes, same family tree.'},
-   points:[
-     {c:'var(--p)',t:'Tiger Global trained some of the most aggressive concentrated-position investors'},
-     {c:'var(--r)',t:'Archegos showed how TRS swaps can create invisible $160B exposures'},
-     {c:'var(--y)',t:'Tiger Cubs share similar playbooks — worth monitoring their SEC filings'},
-     {c:'var(--g)',t:'When Tiger-linked funds file 13Gs in small-float, high-short stocks — pay attention'},
-   ],
-   risk:'HIGH',
-   related:['Swap Exposure','Archegos Capital','13D/13G Filings']},
-
-  {id:'activist',cat:'legal',icon:'🎯',color:'var(--g)',
-   term:'Activist Investor (13G→13D Flip)',
-   one:'When a "passive" investor signals they\'re about to go activist — an independent kicker on top of squeeze mechanics.',
-   full:'Under SEC rules, investors who cross 5% ownership must file either a Schedule 13G (passive investor, limited engagement with management) or Schedule 13D (activist investor, intent to influence control). The distinction matters enormously.\n\nA 13G-to-13D flip signals that a previously passive holder is now preparing to push for strategic changes — board seats, divestitures, sales, or buybacks. This creates an <em>independent catalyst</em> entirely separate from squeeze mechanics.\n\nThe Pentwater/CAR example is instructive: Pentwater filed as a passive 13G investor while building its position. Had they flipped to 13D with an activist agenda, it would have been an additional upward catalyst independent of the squeeze.',
-   example:{label:'REAL EXAMPLE: ADW Capital & CODI (April 2026)',text:'ADW Capital spent $8.6M on call options for 3M shares of Compass Diversified and <strong>filed an amended 13D</strong> showing 14% economic exposure. Their thesis: liquidation value above $26/share — a massive premium to current price. The 13D filing itself was the declaration of war. Options structure + 13D + public letter = classic activist setup forcing the board to respond.'},
-   points:[
-     {c:'var(--g)',t:'13G = passive, 13D = activist — the flip itself is a market signal'},
-     {c:'var(--y)',t:'A 13G filer who "preserves optionality" may already be planning an activist pivot'},
-     {c:'var(--b)',t:'Activist campaigns typically follow: stake → public pressure → proxy fight or settlement'},
-     {c:'var(--r)',t:'Activist-held positions can be difficult to short against — they defend the stock'},
-   ],
-   risk:'MEDIUM',
-   related:['13D/13G Filings','Float Lock','Put Ladder']},
-
-  {id:'float_lock',cat:'mechanics',icon:'🔒',color:'var(--b)',
-   term:'Float Lock',
-   one:'When the true tradeable supply of shares is far smaller than the "official" float — the foundation of every squeeze.',
-   full:'The "float" is officially defined as shares available for public trading. But the <em>real</em> tradeable float is often dramatically smaller once you subtract:\n\n• Shares held by insiders and families (never sold)\n• Shares tied up in dealer hedges for swap positions\n• Shares locked up by institutional holders with low turnover\n• Shares recently acquired through put exercises (removed from circulation)\n\nThe AR SS Framework\'s core insight — validated by the CAR squeeze — is that most analysts look at the wrong number. They quote the reported short % of float, but ignore that the float itself has been surgically reduced through derivatives and concentrated ownership.',
-   example:{label:'REAL EXAMPLE: The CAR Float Math',text:'Avis Budget\'s reported float was ~10.1M shares. But after accounting for: SRS\'s 2.9M swap dealer hedges (locked), Pentwater\'s put exercise deliveries (2.8M+ locked), and other institutional blocks — <strong>there were essentially zero shares left to absorb short covering</strong>. The ATM offering of 5M shares couldn\'t even cover the shortfall. The float was already mathematically broken before the squeeze began.'},
-   points:[
-     {c:'var(--r)',t:'Reported float ≠ real tradeable float once swaps and locks are counted'},
-     {c:'var(--y)',t:'Every put exercise and swap position removes more shares from available supply'},
-     {c:'var(--b)',t:'Float lock can be invisible — it only becomes obvious when shorts try to cover'},
-     {c:'var(--g)',t:'FLS score is our attempt to quantify float tightness beyond reported numbers'},
-   ],
-   risk:'HIGH',
-   related:['Short Squeeze','Swap Exposure','Put Ladder']},
-
-  {id:'no_gap_tell',cat:'technical',icon:'📊',color:'#f0c060',
-   term:'No-Gap Tell',
-   one:'The CAR squeeze\'s key technical signal — price grinds up intraday with no overnight gaps.',
-   full:'In a normal news-driven rally, stocks gap up overnight as buyers react to announcements. But in a mechanically-driven squeeze powered by dealer hedge unwinding, something different happens: <strong>the price grinds steadily higher throughout the trading day with no gaps at the open.</strong>\n\nThis is because dealer hedge unwinding is a continuous, intraday process. Dealers don\'t wait for the market to open — they unwind throughout the day as delta changes. The result is a slow, relentless grind with no overnight discontinuities.\n\nThe author of the viral CAR analysis flagged this as the key tell that reminded him of the Archegos situation — both squeeezes moved the same way.',
-   example:{label:'REAL EXAMPLE: The CAR vs Normal Squeeze',text:'The author noted: <em>"Something I found very odd — we did not gap up once during this entire move higher."</em> A typical meme stock squeeze (like GameStop in 2021) had massive overnight gaps as retail piled in after hours. CAR\'s grind was different: controlled, consistent, intraday-driven. This behavioral fingerprint reveals dealer mechanics at work, not retail FOMO.'},
-   points:[
-     {c:'#f0c060',t:'No overnight gaps = dealer hedge unwinding, not news-driven buying'},
-     {c:'var(--y)',t:'Intraday grinds are a sign of continuous mechanical covering by institutions'},
-     {c:'var(--b)',t:'Same pattern appeared in Archegos-related stocks before the unwind was known'},
-     {c:'var(--g)',t:'Watch for this pattern in heavily shorted, low-float names starting to move'},
-   ],
-   risk:'MEDIUM',
-   related:['Short Squeeze','Swap Exposure','Float Lock']},
-
-  {id:'short_interest',cat:'mechanics',icon:'📉',color:'var(--y)',
-   term:'Short Interest & Days to Cover',
-   one:'The two key metrics measuring how much "squeeze fuel" is loaded in any stock.',
-   full:'<strong>Short Interest</strong> is the total number of shares that have been borrowed and sold short but not yet bought back. Expressed as a percentage of float, it tells you what fraction of available shares are betting against the stock.\n\nAbove 20% is elevated. Above 40% is extreme. Above 50% of float (especially on a thin float) is when the CAR-type math starts to apply.\n\n<strong>Days to Cover (DTC)</strong> — also called the Short Interest Ratio — divides total shares short by average daily volume. It tells you how many days of normal trading would be needed for all short sellers to exit.\n\nA DTC above 5 means shorts are trapped. Above 10 means the exit is nearly impossible without a violent price move.',
-   example:{label:'CAR BY THE NUMBERS',text:'Avis Budget Group: Short interest 54–62% of float. 9 million shares short. Days to cover: 7.3 days. But here\'s the punchline: even if 100% of the ATM offering went toward covering, there were still 4M shares short that had no shares to buy. The DTC math was already impossible before the squeeze began.'},
-   points:[
-     {c:'var(--y)',t:'Short % >20%: elevated. >40%: extreme. >50% on thin float: dangerous'},
-     {c:'var(--r)',t:'Days to Cover >5: shorts are meaningfully trapped'},
-     {c:'var(--b)',t:'Always adjust for the true float, not the reported float'},
-     {c:'var(--g)',t:'Rising short interest into a rising price = shorts adding fuel to the fire'},
-   ],
-   risk:'HIGH',
-   related:['Float Lock','Short Squeeze','No-Gap Tell']},
-
-  {id:'fls_score',cat:'mechanics',icon:'🔢',color:'var(--g)',
-   term:'FLS Score (Float Lock Score)',
-   one:'The AR SS Framework\'s proprietary squeeze potential score — 0 to 99.',
-   full:'The Float Lock Score (FLS) is a composite score developed within the AR SS Framework to quantify squeeze potential beyond simple short interest. It weights multiple factors:\n\n• <em>Short % of Float</em> (max 35 pts): the foundation\n• <em>Days to Cover</em> (max 20 pts): trap depth\n• <em>Swap Signal</em> (+30 pts): dealer hedges locking float\n• <em>Tiger DNA</em> (+12 pts): playbook recognition\n• <em>Family Lock</em> (+10 pts): structural float removal\n• <em>Put Ladder</em> (+8 pts): forced dealer delivery\n• <em>Activist 13G→D</em> (+6 pts): independent catalyst\n• <em>Buyback Shrink</em> (+4 pts): ongoing float compression\n• <em>Float Tightness Bonus</em> (+15 pts for under 15M float)',
-   example:{label:'CAR\'s FLS Score: 99/99',text:'CAR scores the maximum: Short% at 62% (21.7 pts), DTC at 7.3 (14.6 pts), Swap (+30), Tiger DNA (+12), Put Ladder (+8), and sub-15M float bonus (+15). Total: maxed out. This tells you the setup was as loaded as any in history before the move began.'},
-   points:[
-     {c:'var(--g)',t:'FLS < 35: watch. 35–50: elevated. 50–68: high risk. 68+: extreme'},
-     {c:'var(--y)',t:'Swap signal alone adds 30 points — the single most powerful predictor'},
-     {c:'var(--r)',t:'FLS measures setup potential, not timing — a catalyst is always needed'},
-     {c:'var(--b)',t:'Score is updated as new signals are detected or removed'},
-   ],
-   risk:'LOW',
-   related:['Short Interest','Float Lock','Swap Exposure']},
-
-  {id:'dtc',cat:'mechanics',icon:'⏱',color:'var(--b)',
-   term:'Days to Cover (DTC)',
-   one:'How many trading days it would take all short sellers to exit — a measure of how trapped they are.',
-   full:'Days to Cover = (Total Shares Short) ÷ (Average Daily Trading Volume)\n\nThis metric tells you how long it would take, at normal trading volume, for all short sellers to buy back their shares and close their positions. The higher the number, the more trapped the shorts are.\n\nA DTC of 3 days is manageable — shorts can exit over a week without too much market impact. A DTC of 10+ days is extreme — shorts would need to buy 10 days\' worth of average volume just to get out, which is physically impossible without driving the price violently higher.',
-   example:{label:'EXAMPLE: BETR (Better Home & Finance)',text:'BETR has 44% of its 12M share float sold short, with a Days to Cover of 11.2 days. This means short sellers would need to buy the equivalent of 11+ days of average daily volume just to exit. In practice, even 10% of them trying to cover simultaneously would move the stock significantly.'},
-   points:[
-     {c:'var(--b)',t:'DTC < 3: manageable exit. DTC 3–5: some friction. DTC 5+: trapped'},
-     {c:'var(--r)',t:'DTC 10+: near impossible to exit without triggering violent price action'},
-     {c:'var(--y)',t:'DTC rises naturally as float shrinks (via buybacks or float lock)'},
-     {c:'var(--g)',t:'DTC + high short % + thin float = maximum squeeze setup'},
-   ],
-   risk:'MEDIUM',
-   related:['Short Interest','Float Lock','Short Squeeze']},
-
-  {id:'buyback',cat:'signals',icon:'🔄',color:'var(--pk)',
-   term:'Buyback Float Shrink',
-   one:'When a company systematically buys back its own shares, silently compressing the tradeable float over time.',
-   full:'Share buybacks are when a company uses its own cash to repurchase shares from public markets. While this is typically discussed as a shareholder-friendly capital return, its mechanical effect on squeeze dynamics is profound: <strong>every share bought back disappears from the tradeable float permanently.</strong>\n\nIn the context of the AR SS Framework, a buyback program on top of existing concentrated ownership is a compounding float compression mechanism. Charter Communications is the most aggressive example — they\'ve been systematically retiring shares for years while Liberty Media holds a concentrated block.',
-   example:{label:'REAL EXAMPLE: Hyatt Hotels (H)',text:'Hyatt authorized a $600M share buyback program in late 2024. Combined with the Pritzker family\'s 54.4% block, this means that with every buyback tranche, the available float shrinks further. The remaining public float — already constrained by the family lock — gets tighter with each repurchase cycle, setting up a potential squeeze if short interest reaches critical mass.'},
-   points:[
-     {c:'var(--pk)',t:'Buybacks permanently remove shares from public float'},
-     {c:'var(--y)',t:'Compounding effect: each buyback makes the next one\'s impact larger'},
-     {c:'var(--b)',t:'Look for buybacks in stocks where insiders already hold large blocks'},
-     {c:'var(--g)',t:'Rising short interest + active buyback = converging on zero available float'},
-   ],
-   risk:'LOW',
-   related:['Family Lock','Float Lock','Short Squeeze']},
-];
-
-// ══════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════
-let prices={}, customTickers=[];
-let activeSig='ALL', activeLane='ALL', activeSort='score';
-let rrStage='ALL', rrSort='stage';
-let eduCat='all';
-let expandedCards={}, expandedDetailTabs={};
-let qVal='', busy=false, rrBusy=false;
-let searchTimer;
-
-// ══════════════════════════════════════════════════════════
-// PAGE SWITCHING
-// ══════════════════════════════════════════════════════════
-function switchPage(page, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
-  document.getElementById('pg-' + page).classList.add('active');
-  btn.classList.add('on');
-  if (page === 'radar' && !rrBusy) { rrRenderDots(); rrRender(); rrFetchAll(); }
-  if (page === 'edu') renderEdu();
-}
-
-// ══════════════════════════════════════════════════════════
-// CLOCK
-// ══════════════════════════════════════════════════════════
+// ─── CLOCK ──────────────────────────────────────────────────
 function tick() {
-  const n = new Date();
-  document.getElementById('clock').textContent =
+  var n = new Date();
+  var h = n.getHours(), m = n.getMinutes(), d = n.getDay();
+  document.getElementById('clk').textContent =
     n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  const h=n.getHours(),m=n.getMinutes(),d=n.getDay();
-  const open=d>=1&&d<=5&&(h>9||(h===9&&m>=30))&&h<16;
-  const b=document.getElementById('mktBadge');
-  b.textContent=open?'MKT OPEN':'CLOSED';
-  b.className='nav-mkt '+(open?'mkt-o':'mkt-c');
+  var open = d>=1 && d<=5 && (h>9||(h===9&&m>=30)) && h<16;
+  var b = document.getElementById('mktB');
+  b.textContent = open ? 'OPEN' : 'CLOSED';
+  b.className = 'mkt ' + (open ? 'mo' : 'mc');
 }
-setInterval(tick,1000);tick();
+setInterval(tick, 1000); tick();
 
-// ══════════════════════════════════════════════════════════
-// API
-// ══════════════════════════════════════════════════════════
-async function fetchQ(sym) {
-  try{
-    const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${API}`);
-    const d=await r.json();
-    if(d&&d.c>0)return{p:d.c,ch:d.dp,h:d.h,l:d.l,pc:d.pc};
-  }catch(e){}
-  return null;
-}
-async function fetchPro(sym) {
-  try{const r=await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${sym}&token=${API}`);return await r.json();}catch(e){return null;}
-}
-async function fetchAll() {
-  const all=[...TICKERS,...customTickers];
-  const res=await Promise.allSettled(all.map(t=>fetchQ(t.s)));
-  res.forEach((r,i)=>{if(r.status==='fulfilled'&&r.value)prices[all[i].s]=r.value;});
+// ─── STATUS BAR ─────────────────────────────────────────────
+function setStatus(id, txt, cls) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'si ' + (cls||'');
+  el.querySelector('.stxt').textContent = txt;
 }
 
-// ══════════════════════════════════════════════════════════
-// SQUEEZE SCORING
-// ══════════════════════════════════════════════════════════
-function score(t) {
-  let s=0;
-  s+=Math.min(t.sp*0.35,35);
-  s+=Math.min(t.dtc*2,20);
-  if(t.sigs.includes('swap'))s+=30;
-  if(t.sigs.includes('tiger'))s+=12;
-  if(t.sigs.includes('family'))s+=10;
-  if(t.sigs.includes('puts'))s+=8;
-  if(t.sigs.includes('activist'))s+=6;
-  if(t.sigs.includes('buyback'))s+=4;
-  if(t.sigs.includes('gap'))s+=5;
-  if(t.fl<15)s+=15;else if(t.fl<50)s+=10;else if(t.fl<100)s+=5;
+// ─── PAGE SWITCHING ──────────────────────────────────────────
+function switchPg(pg, btn) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('pg-'+pg).classList.add('active');
+  btn.classList.add('on');
+  if (pg === 'radar') { renderRR(); updateRwyDots(); }
+  if (pg === 'edu')   renderEdu();
+}
+
+// ─── RSI CALCULATION ────────────────────────────────────────
+function calcRSI(closes, period) {
+  period = period || 14;
+  if (closes.length < period+1) return null;
+  var gains=0, losses=0;
+  for (var i=1; i<=period; i++) {
+    var d = closes[i]-closes[i-1];
+    if (d>0) gains+=d; else losses+=Math.abs(d);
+  }
+  var ag=gains/period, al=losses/period;
+  for (var j=period+1; j<closes.length; j++) {
+    var dd = closes[j]-closes[j-1];
+    ag = (ag*(period-1)+(dd>0?dd:0))/period;
+    al = (al*(period-1)+(dd<0?Math.abs(dd):0))/period;
+  }
+  if (al===0) return 100;
+  return Math.round(100 - 100/(1+ag/al));
+}
+
+function calcEMA(data, period) {
+  var k=2/(period+1), ema=data[0];
+  for (var i=1; i<data.length; i++) ema=data[i]*k+ema*(1-k);
+  return ema;
+}
+
+function calcMACD(closes) {
+  if (closes.length < 26) return null;
+  var ema12 = calcEMA(closes.slice(-12),12);
+  var ema26 = calcEMA(closes.slice(-26),26);
+  var macd  = ema12-ema26;
+  var sig   = calcEMA([macd],9);
+  return {val:macd, hist:macd-sig, label:(macd-sig)>0?'BULLISH':'BEARISH'};
+}
+
+// ─── FETCH PRICE ────────────────────────────────────────────
+function fetchQ(sym) {
+  return fetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FH)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if (d && d.c>0) return {p:d.c,ch:d.dp,h:d.h,l:d.l,pc:d.pc};
+      return null;
+    }).catch(function(){return null;});
+}
+
+function fetchPro(sym) {
+  return fetch('https://finnhub.io/api/v1/stock/profile2?symbol='+sym+'&token='+FH)
+    .then(function(r){return r.json();})
+    .catch(function(){return null;});
+}
+
+function fetchCandles(sym) {
+  var now = Math.floor(Date.now()/1000);
+  var from = now - 300*24*3600;
+  var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+sym+'&resolution=D&from='+from+'&to='+now+'&token='+FH;
+  return fetch(url)
+    .then(function(r){return r.json();})
+    .catch(function(){return null;});
+}
+
+// ─── COMPUTE TECHNICALS ──────────────────────────────────────
+function computeTech(sym) {
+  // Use cache if fresh (15 min)
+  if (techC[sym] && (Date.now()-techC[sym].ts) < 900000) {
+    return Promise.resolve(techC[sym]);
+  }
+  return fetchCandles(sym).then(function(d) {
+    if (!d || d.s!=='ok' || !d.c || d.c.length<50) return null;
+    var closes=d.c, vols=d.v, n=closes.length;
+    var rsi    = calcRSI(closes);
+    var macdObj= calcMACD(closes);
+    var ma50   = closes.slice(-50).reduce(function(a,b){return a+b;},0)/Math.min(50,n);
+    var ma200  = closes.slice(-200).reduce(function(a,b){return a+b;},0)/Math.min(200,n);
+    var cur    = closes[n-1];
+    var ma50p  = ((cur-ma50)/ma50*100).toFixed(1);
+    var ma200p = ((cur-ma200)/ma200*100).toFixed(1);
+    var avgVol = vols.slice(-20,-1).reduce(function(a,b){return a+b;},0)/19;
+    var volR   = avgVol>0?(vols[n-1]/avgVol).toFixed(2):'1.00';
+    var h52    = Math.max.apply(null,closes.slice(-252));
+    var l52    = Math.min.apply(null,closes.slice(-252));
+    var ytdS   = closes[Math.max(0,n-252)];
+    var ytd    = ((cur-ytdS)/ytdS*100).toFixed(1);
+    var hi52p  = ((cur-h52)/h52*100).toFixed(1);
+    var result = {rsi:rsi,macdObj:macdObj,ma50p:ma50p,ma200p:ma200p,volR:volR,ytd:ytd,hi52p:hi52p,h52:h52,l52:l52,cur:cur,ts:Date.now()};
+    techC[sym] = result;
+    return result;
+  });
+}
+
+// ─── AUTO STAGE CLASSIFIER ───────────────────────────────────
+function classify(tech, ticker) {
+  if (!tech) return {stage:'WATCH',reason:'Insufficient data — monitoring',conf:30};
+  var rsi=tech.rsi, ytd=parseFloat(tech.ytd), ma50=parseFloat(tech.ma50p);
+  var macdB = tech.macdObj && tech.macdObj.label==='BULLISH';
+  var volR  = parseFloat(tech.volR);
+  var pt    = PT[ticker.s]||0;
+  var upside= pt && tech.cur ? ((pt-tech.cur)/tech.cur*100) : 0;
+
+  if (rsi>=70 && ma50>=15 && ytd>=30)
+    return {stage:'RAN',reason:'RSI '+rsi+' (overbought) · +'+ma50+'% vs 50d MA · +'+ytd+'% YTD — momentum exhausting',conf:90};
+  if (rsi>=65 && ytd>=50)
+    return {stage:'RAN',reason:'RSI '+rsi+' extended · +'+ytd+'% YTD gain priced in',conf:82};
+  if (rsi>=58 && rsi<70 && macdB && ma50>=5)
+    return {stage:'RUNNING',reason:'RSI '+rsi+' · MACD bullish · +'+ma50+'% vs 50d MA — active breakout',conf:84};
+  if (rsi>=60 && volR>=1.5)
+    return {stage:'RUNNING',reason:'RSI '+rsi+' with '+volR+'x volume surge — breakout underway',conf:76};
+  if (rsi<55 && upside>=20 && (macdB||Math.abs(ma50)<10))
+    return {stage:'NOTYET',reason:'RSI '+rsi+' (room to run) · '+Math.round(upside)+'% analyst upside · Setup primed',conf:80};
+  if (rsi<50 && upside>=30 && ticker.sp>=20)
+    return {stage:'NOTYET',reason:'RSI '+rsi+' · '+Math.round(upside)+'% upside · '+ticker.sp+'% short float — fuel loaded',conf:84};
+  if (rsi>=42 && rsi<58 && Math.abs(ma50)<8)
+    return {stage:'COILING',reason:'RSI '+rsi+' (neutral) · '+ma50+'% from 50d MA · MACD flat — energy building',conf:72};
+  if (rsi>=40 && rsi<55 && macdB && ma50<5)
+    return {stage:'COILING',reason:'RSI '+rsi+' · Early MACD bullish cross · Near 50d MA — coil tightening',conf:70};
+  if (rsi<42)
+    return {stage:'WATCH',reason:'RSI '+rsi+' (oversold) · '+ma50+'% from MA — monitoring for reversal signal',conf:60};
+  return {stage:'WATCH',reason:'RSI '+rsi+' · '+ma50+'% from MA · '+ytd+'% YTD — monitoring',conf:55};
+}
+
+// ─── FLS SCORING ────────────────────────────────────────────
+function fls(t) {
+  var tech = techC[t.s];
+  var s = 0;
+  s += Math.min(t.sp*0.35,35);
+  s += Math.min(t.dtc*2,20);
+  if (t.sigs.indexOf('swap')>=0)     s+=30;
+  if (t.sigs.indexOf('tiger')>=0)    s+=12;
+  if (t.sigs.indexOf('family')>=0)   s+=10;
+  if (t.sigs.indexOf('puts')>=0)     s+=8;
+  if (t.sigs.indexOf('activist')>=0) s+=6;
+  if (t.sigs.indexOf('buyback')>=0)  s+=4;
+  if (t.sigs.indexOf('gap')>=0)      s+=5;
+  if (t.fl<15)      s+=15;
+  else if (t.fl<50) s+=10;
+  else if (t.fl<100)s+=5;
+  if (tech && tech.rsi<45 && t.sp>20) s+=5;
   return Math.min(Math.round(s),99);
 }
-function lane4(t){
-  const sc=score(t);
-  if(sc>=68||t.sigs.includes('swap'))return'EXTREME';
-  if(sc>=48)return'HIGH';
-  if(sc>=32)return'ELEVATED';
-  return'WATCHLIST';
-}
-function meterColor(sc){
-  if(sc>=68)return'var(--r)';
-  if(sc>=48)return'var(--y)';
-  if(sc>=32)return'var(--b)';
-  return'var(--t2)';
+
+function getLane(t) {
+  var sc=fls(t);
+  if (sc>=68||t.sigs.indexOf('swap')>=0) return 'EXTREME';
+  if (sc>=48) return 'HIGH';
+  if (sc>=32) return 'ELEVATED';
+  return 'WATCHLIST';
 }
 
-// ══════════════════════════════════════════════════════════
-// SQUEEZE RENDER
-// ══════════════════════════════════════════════════════════
-function allTickers(){return[...TICKERS,...customTickers];}
+function mColor(sc) {
+  if (sc>=68) return 'var(--r)';
+  if (sc>=48) return 'var(--y)';
+  if (sc>=32) return 'var(--b)';
+  return 'var(--t2)';
+}
 
-function filtered(){
-  let list=allTickers();
-  if(qVal)list=list.filter(t=>t.s.includes(qVal)||t.n.toUpperCase().includes(qVal));
-  if(activeLane==='CUSTOM')list=list.filter(t=>t.custom);
-  else if(activeLane!=='ALL')list=list.filter(t=>lane4(t)===activeLane);
-  if(activeSig!=='ALL')list=list.filter(t=>t.sigs.includes(activeSig));
-  list.sort((a,b)=>{
-    if(activeSort==='score')return score(b)-score(a);
-    if(activeSort==='short')return b.sp-a.sp;
-    if(activeSort==='dtc')return b.dtc-a.dtc;
-    if(activeSort==='float')return a.fl-b.fl;
-    if(activeSort==='chg'){const ca=prices[a.s]?.ch||0,cb=prices[b.s]?.ch||0;return cb-ca;}
-    return score(b)-score(a);
+function rsiColor(r) {
+  if (!r) return 'var(--t2)';
+  if (r>70) return 'var(--r)';
+  if (r<40) return 'var(--g)';
+  if (r>58) return 'var(--y)';
+  return 'var(--t1)';
+}
+
+// ─── DATA LOADING ────────────────────────────────────────────
+function allT() { return TICKERS.concat(custom); }
+
+function loadPrices() {
+  setStatus('si-price','PRICES: LOADING','loading');
+  var all = allT();
+  var done=0;
+  var proms = all.map(function(t){
+    return fetchQ(t.s).then(function(q){
+      if(q){ prices[t.s]=q; done++; }
+    });
+  });
+  return Promise.all(proms).then(function(){
+    setStatus('si-price','PRICES: '+done+'/'+all.length+' LIVE','ok');
+    document.getElementById('s4').textContent = done+'/'+all.length;
+  });
+}
+
+function loadTech() {
+  if (techBusy) return Promise.resolve();
+  techBusy=true; techDone=0;
+  var all = allT();
+  setStatus('si-tech','TECHNICALS: COMPUTING','loading');
+  setStatus('si-stage','STAGE: PENDING','loading');
+
+  function nextBatch(i) {
+    if (i>=all.length) {
+      setStatus('si-tech','TECH: '+techDone+'/'+all.length+' DONE',techDone>0?'ok':'err');
+      setStatus('si-stage','STAGE: AUTO-CLASSIFIED','ok');
+      document.getElementById('s5').textContent = techDone+'/'+all.length;
+      var now=new Date();
+      document.getElementById('sup').textContent='UPDATED '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      techBusy=false;
+      render();
+      return;
+    }
+    var batch = all.slice(i,i+4);
+    Promise.all(batch.map(function(t){
+      return computeTech(t.s).then(function(tech){
+        if(tech){ techDone++; stages[t.s]=classify(tech,t); }
+      });
+    })).then(function(){
+      render();
+      setStatus('si-tech','TECH: '+(Math.min(i+4,all.length))+'/'+all.length,'loading');
+      setTimeout(function(){ nextBatch(i+4); }, 350);
+    });
+  }
+  nextBatch(0);
+  return Promise.resolve();
+}
+
+// ─── SQUEEZE RENDER ──────────────────────────────────────────
+function getFiltered() {
+  var list = allT();
+  if (qVal) list = list.filter(function(t){
+    return t.s.indexOf(qVal)>=0 || t.n.toUpperCase().indexOf(qVal)>=0;
+  });
+  if (activeLane==='CUSTOM') list=list.filter(function(t){return t.custom;});
+  else if (activeLane!=='ALL') list=list.filter(function(t){return getLane(t)===activeLane;});
+  if (activeSig!=='ALL') list=list.filter(function(t){return t.sigs.indexOf(activeSig)>=0;});
+  list.sort(function(a,b){
+    if (activeSort==='score') return fls(b)-fls(a);
+    if (activeSort==='short') return b.sp-a.sp;
+    if (activeSort==='dtc')   return b.dtc-a.dtc;
+    if (activeSort==='rsi') {
+      var ra=(techC[a.s]&&techC[a.s].rsi)||50;
+      var rb=(techC[b.s]&&techC[b.s].rsi)||50;
+      return ra-rb;
+    }
+    if (activeSort==='chg') {
+      return ((prices[b.s]&&prices[b.s].ch)||0)-((prices[a.s]&&prices[a.s].ch)||0);
+    }
+    return fls(b)-fls(a);
   });
   return list;
 }
 
 function render() {
-  const grid=document.getElementById('tGrid');
-  const list=filtered();
-  if(!list.length){grid.innerHTML='<div class="empty">No tickers match your filters</div>';updateStats();return;}
-  grid.innerHTML=list.map((t,i)=>cardHTML(t,i)).join('');
-  updateStats();updateCustomStrip();
+  var grid=document.getElementById('tGrid');
+  if (!grid) return;
+  var list=getFiltered();
+  if (!list.length){grid.innerHTML='<div class="empty">No tickers match filters</div>';updateStats();return;}
+  var html='';
+  for (var i=0;i<list.length;i++) html+=makeCard(list[i],i);
+  grid.innerHTML=html;
+  updateStats();
+  renderWstrip();
 }
 
-function cardHTML(t, idx) {
-  const sc=score(t);const l=lane4(t);const lc=LC_COLOR[l]||'var(--t2)';
-  const p=prices[t.s];
-  const price=p?'$'+p.p.toFixed(2):'—';
-  const chg=p?p.ch:null;
-  const chgStr=chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—';
-  const chgCls=chg!=null?(chg>=0?'up':'dn'):'nc';
-  const isExp=expandedCards[t.s];
-  const curTab=expandedDetailTabs[t.s]||'overview';
-  const customBadge=t.custom?'<span style="font-family:var(--mono);font-size:7px;color:var(--p);margin-left:6px">CUSTOM</span>':'';
+function makeCard(t, idx) {
+  var sc   = fls(t);
+  var lane = getLane(t);
+  var lc   = LC[lane]||'var(--t2)';
+  var p    = prices[t.s];
+  var tech = techC[t.s];
+  var stg  = stages[t.s];
+  var isExp= expanded[t.s];
+  var curTab=dtabs[t.s]||'overview';
 
-  const sigTags=t.sigs.map(s=>{
-    const m=SM[s];
-    return`<span class="spill sp-${s}" onclick="event.stopPropagation();learnTerm('${s}_exposure'||'${s}')" style="border-color:${m.c}22;color:${m.c}">${m.i} ${m.l}</span>`;
-  }).join('');
+  var price = p ? '$'+p.p.toFixed(2) : '—';
+  var chg   = p ? p.ch : null;
+  var chgStr= chg!=null ? (chg>=0?'+':'')+chg.toFixed(2)+'%' : '—';
+  var chgCls= chg!=null ? (chg>=0?'up':'dn') : 'nc';
 
-  // Detail tabs
-  const detailContent = isExp ? buildDetailTabs(t, curTab, sc, p, lc) : '';
+  var rsi   = tech ? tech.rsi : null;
+  var macdL = (tech&&tech.macdObj) ? tech.macdObj.label : null;
+  var macdC = macdL==='BULLISH'?'var(--g)':macdL==='BEARISH'?'var(--r)':'var(--t2)';
+  var ma50p = tech ? tech.ma50p : null;
+  var ma50C = !ma50p?'var(--t2)':parseFloat(ma50p)>10?'var(--r)':parseFloat(ma50p)>0?'var(--g)':'var(--y)';
+  var ytd   = tech ? tech.ytd : null;
+  var ytdC  = !ytd?'var(--t2)':parseFloat(ytd)>0?'var(--g)':'var(--r)';
 
-  return`
-<div class="tcard ${l}" style="animation:ci .3s ease ${Math.min(idx*.04,.4)}s both">
-  <div class="card-hdr" onclick="toggleCard('${t.s}')">
-    <div class="card-logo">
-      <img src="https://logo.clearbit.com/${t.s.toLowerCase()}.com" alt="${t.s}"
-        onerror="this.outerHTML='<div class=sym-fb>${t.s.slice(0,4)}</div>'">
-    </div>
-    <div class="card-main">
-      <div class="card-sym">${t.s}${customBadge}</div>
-      <div class="card-name">${t.n}</div>
-      <div class="card-lane">
-        <div class="lane-dot" style="background:${lc}"></div>
-        <span class="lane-txt">${l} · ${t.sec}</span>
-      </div>
-    </div>
-    <div class="card-right">
-      <div class="card-price">${price}</div>
-      <div class="card-chg ${chgCls}">${chgStr}</div>
-    </div>
-    <span class="card-expand-icon ${isExp?'open':''}">▾</span>
-  </div>
-  <div class="card-score-row">
-    <div class="fls-track"><div class="fls-fill" style="width:${sc}%;background:${meterColor(sc)}"></div></div>
-    <div class="fls-val" style="color:${meterColor(sc)}">${sc}/99</div>
-  </div>
-  <div class="card-sigs">${sigTags||'<span style="font-family:var(--mono);font-size:8px;color:var(--t2)">No signals detected</span>'}</div>
-  <div class="card-detail ${isExp?'open':''}">
-    ${detailContent}
-  </div>
-</div>`;
-}
-// @keyframes ci
-const styleTag=document.createElement('style');
-styleTag.textContent='@keyframes ci{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}';
-document.head.appendChild(styleTag);
-
-function buildDetailTabs(t, curTab, sc, p, lc) {
-  const tabs=['overview','thesis','score','links'];
-  const tabBar=tabs.map(tb=>`<div class="dtab ${curTab===tb?'on':''}" onclick="event.stopPropagation();switchDetailTab('${t.s}','${tb}')">${tb.toUpperCase()}</div>`).join('');
-  let content='';
-  if(curTab==='overview'){
-    const hl=p?`$${p.l.toFixed(0)}–$${p.h.toFixed(0)}`:'—';
-    content=`
-      <div class="drow"><span class="drow-l">SHORT %</span><span class="drow-v" style="color:var(--r)">${t.sp}%</span></div>
-      <div class="drow"><span class="drow-l">DAYS TO COVER</span><span class="drow-v" style="color:var(--y)">${t.dtc}d</span></div>
-      <div class="drow"><span class="drow-l">FLOAT</span><span class="drow-v">${t.fl}M shares</span></div>
-      <div class="drow"><span class="drow-l">MKT CAP</span><span class="drow-v">$${t.mc}B</span></div>
-      <div class="drow"><span class="drow-l">DAY RANGE</span><span class="drow-v" style="color:var(--t1)">${hl}</span></div>
-      <div class="drow"><span class="drow-l">PREV CLOSE</span><span class="drow-v" style="color:var(--t1)">${p?'$'+p.pc.toFixed(2):'—'}</span></div>
-      <div class="drow"><span class="drow-l">FLS SCORE</span><span class="drow-v" style="color:${lc}">${sc}/99</span></div>
-      <div class="drow"><span class="drow-l">LANE</span><span class="drow-v" style="color:${lc}">${lane4(t)}</span></div>`;
-  } else if(curTab==='thesis'){
-    content=`<div class="thesis-txt">${t.th}</div>`;
-  } else if(curTab==='score'){
-    const comps=[
-      ['Short %',Math.min(t.sp*.35,35).toFixed(1),35,'var(--r)'],
-      ['DTC',Math.min(t.dtc*2,20).toFixed(1),20,'var(--y)'],
-      ['Swap Signal',t.sigs.includes('swap')?30:0,30,'var(--r)'],
-      ['Tiger DNA',t.sigs.includes('tiger')?12:0,12,'var(--p)'],
-      ['Family Lock',t.sigs.includes('family')?10:0,10,'var(--b)'],
-      ['Put Ladder',t.sigs.includes('puts')?8:0,8,'var(--y)'],
-      ['Activist',t.sigs.includes('activist')?6:0,6,'var(--g)'],
-      ['Buyback',t.sigs.includes('buyback')?4:0,4,'var(--pk)'],
-      ['Float Size',t.fl<15?15:t.fl<50?10:t.fl<100?5:0,15,'var(--b)'],
-    ];
-    content=`<div class="score-grid">
-      ${comps.map(([l,v,mx,c])=>`<div class="sg-item"><div class="sg-lbl">${l}</div><div class="sg-val" style="color:${+v>0?c:'var(--t2)'}">+${v}</div><div class="sg-bar"><div class="sg-fill" style="width:${(+v/mx*100)||0}%;background:${c}"></div></div></div>`).join('')}
-    </div>`;
-  } else if(curTab==='links'){
-    const links=[['Fintel Short Data','fintel.io'],['MarketBeat','marketbeat.com'],['SEC EDGAR','sec.gov'],['Unusual Whales','unusualwhales.com'],['Quiver Quant','quiverquant.com']];
-    content=`<div class="links-row">${links.map(([l,u])=>`<a href="https://www.google.com/search?q=${t.s}+${encodeURIComponent(l)}" target="_blank" class="ext-link">${l} ↗</a>`).join('')}</div>`;
+  // Signal tags
+  var sigHtml='';
+  for (var k=0;k<t.sigs.length;k++) {
+    var sg=t.sigs[k];
+    var sc2=SIGC[sg]||'var(--t2)';
+    var sl=SIGL[sg]||sg.toUpperCase();
+    sigHtml+='<span class="stag" style="border-color:'+sc2+'33;color:'+sc2+';background:'+sc2+'11" onclick="event.stopPropagation();goLearn(\''+sg+'\')">'+sl+'</span>';
   }
-  return`<div class="detail-tabs">${tabBar}</div><div class="dtab-pane on">${content}</div>`;
+  if (!sigHtml) sigHtml='<span style="font-family:var(--mono);font-size:8px;color:var(--t2)">No signals</span>';
+
+  // Stage badge
+  var stgHtml='';
+  if (stg) {
+    var stgC=STCL[stg.stage]||'var(--t2)';
+    var stgE=STEM[stg.stage]||'';
+    stgHtml='<span class="sbadge sb-'+stg.stage+'">'+stgE+' '+stg.stage+'</span>';
+  }
+
+  var detailHtml = isExp ? makeDetail(t,curTab,sc,p,tech,lc,stg) : '';
+
+  return '<div class="tcard '+lane+'" style="animation-delay:'+Math.min(idx*.04,.4)+'s">'+
+    '<div class="chdr" onclick="toggleCard(\''+t.s+'\')">'+
+      '<div class="clogo">'+
+        '<img src="https://logo.clearbit.com/'+t.s.toLowerCase()+'.com" alt="'+t.s+'"'+
+        ' onerror="this.outerHTML=\'<div class=cfb>'+t.s.slice(0,4)+'</div>\'">'+
+      '</div>'+
+      '<div class="cmain">'+
+        '<div class="csym">'+t.s+(t.custom?'<span style="font-family:var(--mono);font-size:7px;color:var(--p);margin-left:5px">CUSTOM</span>':'')+'</div>'+
+        '<div class="cname">'+t.n+'</div>'+
+        '<div class="cmeta">'+
+          '<div class="ldot2" style="background:'+lc+'"></div>'+
+          '<span class="ltxt">'+lane+' · '+t.sec+'</span>'+
+          stgHtml+
+        '</div>'+
+      '</div>'+
+      '<div class="cright">'+
+        '<div class="cprice">'+price+'</div>'+
+        '<div class="cchg '+chgCls+'">'+chgStr+'</div>'+
+      '</div>'+
+      '<span class="chev'+(isExp?' open':'')+'">▾</span>'+
+    '</div>'+
+    '<div class="trow">'+
+      '<div class="tc"><div class="tl">RSI(14)</div><div class="tv" style="color:'+rsiColor(rsi)+'">'+
+        (rsi!=null?rsi:'<span class="blink" style="font-size:9px">…</span>')+'</div></div>'+
+      '<div class="tc"><div class="tl">MACD</div><div class="tv" style="color:'+macdC+';font-size:9px">'+
+        (macdL||'<span class="blink" style="font-size:9px">…</span>')+'</div></div>'+
+      '<div class="tc"><div class="tl">VS 50d MA</div><div class="tv" style="color:'+ma50C+';font-size:9px">'+
+        (ma50p!=null?(parseFloat(ma50p)>0?'+':'')+ma50p+'%':'<span class="blink" style="font-size:9px">…</span>')+'</div></div>'+
+      '<div class="tc"><div class="tl">YTD</div><div class="tv" style="color:'+ytdC+';font-size:9px">'+
+        (ytd!=null?(parseFloat(ytd)>0?'+':'')+ytd+'%':'<span class="blink" style="font-size:9px">…</span>')+'</div></div>'+
+    '</div>'+
+    '<div class="frow">'+
+      '<div class="ftrack"><div class="ffill" style="width:'+sc+'%;background:'+mColor(sc)+'"></div></div>'+
+      '<div class="fval" style="color:'+mColor(sc)+'">'+sc+'/99</div>'+
+    '</div>'+
+    '<div class="stags">'+sigHtml+'</div>'+
+    '<div class="cdetail'+(isExp?' open':'')+'">'+detailHtml+'</div>'+
+  '</div>';
+}
+
+function makeDetail(t,tab,sc,p,tech,lc,stg) {
+  var tabs=['OVERVIEW','THESIS','SCORE','LINKS'];
+  var tabKeys=['overview','thesis','score','links'];
+  var tabBar='<div class="dtabs">';
+  for (var i=0;i<tabs.length;i++) {
+    tabBar+='<div class="dtab'+(tab===tabKeys[i]?' on':'')+'" onclick="event.stopPropagation();switchDTab(\''+t.s+'\',\''+tabKeys[i]+'\')">'+tabs[i]+'</div>';
+  }
+  tabBar+='</div>';
+
+  var body='<div class="dpane">';
+  var pt=PT[t.s]||0;
+  var upside=pt&&p?((pt-p.p)/p.p*100).toFixed(0):'—';
+
+  if (tab==='overview') {
+    var rows=[
+      ['PRICE', p?'$'+p.p.toFixed(2):'—', p&&p.ch>=0?'var(--g)':'var(--r)'],
+      ['DAY CHANGE', p?(p.ch>=0?'+':'')+p.ch.toFixed(2)+'%':'—', p&&p.ch>=0?'var(--g)':'var(--r)'],
+      ['ANALYST PT', pt?'$'+pt:'—','var(--b)'],
+      ['UPSIDE TO PT', upside!=='—'?(upside>0?'+':'')+upside+'%':'—','var(--g)'],
+      ['SHORT % FLOAT', t.sp+'%','var(--r)'],
+      ['DAYS TO COVER', t.dtc+'d','var(--y)'],
+      ['FLOAT', t.fl+'M shares','var(--t1)'],
+      ['MKT CAP', '$'+t.mc+'B','var(--t1)'],
+      ['FLS SCORE', sc+'/99', mColor(sc)],
+    ];
+    if (tech) {
+      rows.push(['RSI (14)', tech.rsi, rsiColor(tech.rsi)]);
+      rows.push(['MACD', tech.macdObj?tech.macdObj.label:'—', tech.macdObj&&tech.macdObj.label==='BULLISH'?'var(--g)':'var(--r)']);
+      rows.push(['VS 50d MA', (parseFloat(tech.ma50p)>=0?'+':'')+tech.ma50p+'%','var(--t1)']);
+      rows.push(['VS 200d MA',(parseFloat(tech.ma200p)>=0?'+':'')+tech.ma200p+'%','var(--t1)']);
+      rows.push(['VOL RATIO', tech.volR+'x avg', parseFloat(tech.volR)>1.5?'var(--g)':'var(--t1)']);
+      rows.push(['YTD RETURN', (parseFloat(tech.ytd)>=0?'+':'')+tech.ytd+'%', parseFloat(tech.ytd)>=0?'var(--g)':'var(--r)']);
+      rows.push(['FROM 52W HIGH', tech.hi52p+'%','var(--r)']);
+    }
+    if (stg) {
+      rows.push(['AUTO STAGE', STEM[stg.stage]+' '+stg.stage, STCL[stg.stage]||'var(--t2)']);
+    }
+    for (var r=0;r<rows.length;r++) {
+      body+='<div class="drow"><span class="drl">'+rows[r][0]+'</span><span class="drv" style="color:'+rows[r][2]+'">'+rows[r][1]+'</span></div>';
+    }
+    if (stg) {
+      body+='<div style="background:var(--card2);border-radius:8px;padding:8px 10px;margin-top:8px;font-family:var(--mono);font-size:8px;color:var(--t2);line-height:1.6">'+stg.reason+'</div>';
+    }
+  } else if (tab==='thesis') {
+    body+='<div class="thesis">'+t.th+'</div>';
+  } else if (tab==='score') {
+    var comps=[
+      ['Short % (×0.35)',Math.min(t.sp*.35,35).toFixed(1),35,'var(--r)'],
+      ['DTC (×2)',Math.min(t.dtc*2,20).toFixed(1),20,'var(--y)'],
+      ['Swap Signal',t.sigs.indexOf('swap')>=0?30:0,30,'var(--r)'],
+      ['Tiger DNA',t.sigs.indexOf('tiger')>=0?12:0,12,'var(--p)'],
+      ['Family Lock',t.sigs.indexOf('family')>=0?10:0,10,'var(--b)'],
+      ['Put Ladder',t.sigs.indexOf('puts')>=0?8:0,8,'var(--y)'],
+      ['Activist',t.sigs.indexOf('activist')>=0?6:0,6,'var(--g)'],
+      ['Buyback',t.sigs.indexOf('buyback')>=0?4:0,4,'var(--pk)'],
+      ['Float Bonus',t.fl<15?15:t.fl<50?10:t.fl<100?5:0,15,'var(--b)'],
+    ];
+    body+='<div class="sgrid">';
+    for (var c=0;c<comps.length;c++) {
+      var cv=comps[c][1], cmax=comps[c][2], cc=comps[c][3];
+      body+='<div class="sgi"><div class="sgl">'+comps[c][0]+'</div>'+
+        '<div class="sgv" style="color:'+(+cv>0?cc:'var(--t2)')+'">+'+cv+'</div>'+
+        '<div class="sgbar"><div class="sgfill" style="width:'+(+cv/cmax*100).toFixed(0)+'%;background:'+cc+'"></div></div></div>';
+    }
+    body+='</div>';
+    body+='<div style="background:var(--card2);border-radius:8px;padding:10px;margin-top:10px;text-align:center">'+
+      '<div style="font-family:var(--mono);font-size:8px;color:var(--t2);margin-bottom:4px">TOTAL FLS SCORE</div>'+
+      '<div style="font-family:var(--mono);font-size:32px;font-weight:700;color:'+mColor(sc)+'">'+sc+'/99</div>'+
+    '</div>';
+  } else if (tab==='links') {
+    var lnks=[['Fintel Short','fintel.io'],['MarketBeat','marketbeat.com'],['SEC EDGAR','sec.gov'],['Unusual Whales','unusualwhales.com'],['Quiver Quant','quiverquant.com']];
+    body+='<div class="links">';
+    for (var ln=0;ln<lnks.length;ln++) {
+      body+='<a href="https://www.google.com/search?q='+t.s+'+'+encodeURIComponent(lnks[ln][0])+'" target="_blank" class="lnk">'+lnks[ln][0]+' ↗</a>';
+    }
+    body+='</div>';
+  }
+
+  body+='</div>';
+  return tabBar+body;
+}
+
+function updateStats() {
+  var all=allT();
+  var tot=all.length||1;
+  document.getElementById('s0').textContent=(all.reduce(function(a,t){return a+t.sp;},0)/tot).toFixed(0)+'%';
+  document.getElementById('s1').textContent=all.filter(function(t){return getLane(t)==='EXTREME';}).length;
+  document.getElementById('s2').textContent=all.filter(function(t){return t.sigs.indexOf('swap')>=0;}).length;
+  document.getElementById('s3').textContent=(all.map(fls).reduce(function(a,b){return a+b;},0)/tot).toFixed(0);
 }
 
 function toggleCard(sym) {
-  expandedCards[sym]=!expandedCards[sym];
-  if(!expandedDetailTabs[sym])expandedDetailTabs[sym]='overview';
+  expanded[sym]=!expanded[sym];
+  if (!dtabs[sym]) dtabs[sym]='overview';
   render();
 }
-function switchDetailTab(sym,tab){
-  expandedDetailTabs[sym]=tab;
-  render();
-}
+function switchDTab(sym,tab){ dtabs[sym]=tab; render(); }
 
-function updateStats(){
-  const all=allTickers();
-  document.getElementById('st-short').textContent=(all.reduce((a,t)=>a+t.sp,0)/all.length).toFixed(0)+'%';
-  document.getElementById('st-extreme').textContent=all.filter(t=>lane4(t)==='EXTREME').length;
-  document.getElementById('st-swaps').textContent=all.filter(t=>t.sigs.includes('swap')).length;
-  document.getElementById('st-score').textContent=(all.map(score).reduce((a,b)=>a+b,0)/all.length).toFixed(0);
-  document.getElementById('st-loaded').textContent=Object.keys(prices).length+'/'+all.length;
+// ─── WATCHLIST STRIP ─────────────────────────────────────────
+function renderWstrip() {
+  var el=document.getElementById('wstrip');
+  if(!el)return;
+  var html='';
+  for(var i=0;i<custom.length;i++){
+    var t=custom[i];
+    var p=prices[t.s];
+    var chg=p?p.ch:null;
+    var stg=stages[t.s];
+    var stgC=stg?STCL[stg.stage]:'var(--t2)';
+    html+='<div class="wcard" onclick="expandSym(\''+t.s+'\')">'+
+      '<span class="wrm" onclick="event.stopPropagation();rmCustom('+i+')">✕</span>'+
+      '<div class="wsym">'+t.s+'</div>'+
+      '<div class="wprice">'+(p?'$'+p.p.toFixed(2):'—')+'</div>'+
+      '<div class="wchg '+(chg!=null?(chg>=0?'up':'dn'):'nc')+'">'+(chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—')+'</div>'+
+      (stg?'<div class="wstage" style="color:'+stgC+'">'+STEM[stg.stage]+' '+stg.stage+'</div>':'')+
+    '</div>';
+  }
+  html+='<div class="wadd" onclick="focusSrch()"><div style="font-size:20px">＋</div><div style="font-family:var(--mono);font-size:8px;text-align:center">ADD TICKER</div></div>';
+  el.innerHTML=html;
 }
+function rmCustom(i){custom.splice(i,1);render();}
+function focusSrch(){document.getElementById('qInp').focus();}
+function expandSym(sym){expanded[sym]=true;dtabs[sym]='overview';render();}
 
-// ══════════════════════════════════════════════════════════
-// SEARCH
-// ══════════════════════════════════════════════════════════
-function onQInput(val){
-  qVal=val.trim().toUpperCase();
-  clearTimeout(searchTimer);
+// ─── SEARCH ──────────────────────────────────────────────────
+function onQI(v){
+  qVal=v.trim().toUpperCase();
+  clearTimeout(qTimer);
   if(!qVal){hideDd();render();return;}
-  searchTimer=setTimeout(()=>{render();showDd();},160);
+  qTimer=setTimeout(function(){render();showDd();},160);
 }
 function showDd(){
-  const dd=document.getElementById('qDd');
-  const hits=allTickers().filter(t=>t.s.startsWith(qVal)||t.n.toUpperCase().includes(qVal)).slice(0,5);
-  let html=hits.map(t=>{
-    const p=prices[t.s];const sc=score(t);const lc=LC_COLOR[lane4(t)]||'var(--t2)';
-    return`<div class="dd-row" onclick="expandFromSearch('${t.s}')">
-      <span class="dd-sym">${t.s}</span>
-      <div class="dd-rest"><div class="dd-name">${t.n}</div></div>
-      <span class="dd-badge" style="background:${lc}18;color:${lc}">${sc}/99</span>
-    </div>`;
-  }).join('');
-  if(qVal.length>=1)html+=`<div class="dd-row" onclick="analyzeCustom()" style="background:rgba(167,139,250,.05)">
-    <span style="color:var(--p);font-family:var(--mono);font-size:10px">＋ Analyze <strong>${qVal}</strong></span>
-  </div>`;
-  if(!html){dd.style.display='none';return;}
-  dd.innerHTML=html;dd.style.display='block';
-}
-function hideDd(){document.getElementById('qDd').style.display='none';}
-function expandFromSearch(sym){
-  expandedCards[sym]=true;expandedDetailTabs[sym]='overview';
-  hideDd();qVal='';document.getElementById('qInput').value='';render();
-  setTimeout(()=>{const el=document.querySelector(`[data-sym="${sym}"]`)||document.querySelector('.tcard');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);
-}
-function onQKey(e){if(e.key==='Enter')analyzeCustom();if(e.key==='Escape'){hideDd();qVal='';document.getElementById('qInput').value='';render();}}
-document.addEventListener('click',e=>{if(!e.target.closest('.search-row-wrap'))hideDd();});
-
-async function analyzeCustom(){
-  const inp=document.getElementById('qInput');
-  const sym=(inp.value||qVal).trim().toUpperCase();
-  if(!sym)return;
-  if(allTickers().find(t=>t.s===sym)){expandFromSearch(sym);return;}
-  inp.value='Analyzing '+sym+'…';inp.disabled=true;
-  const[q,pro]=await Promise.all([fetchQ(sym),fetchPro(sym)]);
-  inp.disabled=false;
-  if(!q){inp.value='';inp.placeholder=sym+' not found';setTimeout(()=>inp.placeholder='Search ticker or name…',2500);return;}
-  prices[sym]=q;
-  customTickers.push({s:sym,n:pro?.name||sym,sec:pro?.finnhubIndustry||'Custom',sp:0,dtc:0,fl:Math.round((pro?.shareOutstanding||0)*.7),mc:Math.round((pro?.marketCapitalization||0)/100)/10,sigs:[],custom:true,th:`<strong>Custom ticker: ${sym}</strong><br>Short interest data not automatically available. Visit Fintel.io or MarketBeat for current short % float, days to cover, and borrow rate.`});
-  inp.value='';qVal='';hideDd();render();
-}
-function promptCustom(){document.getElementById('qInput').focus();}
-
-// ══════════════════════════════════════════════════════════
-// CUSTOM WATCHLIST STRIP
-// ══════════════════════════════════════════════════════════
-function updateCustomStrip(){
-  const strip=document.getElementById('cwStrip');
-  if(!strip)return;
-  const cards=customTickers.map((t,i)=>{
-    const p=prices[t.s];const chg=p?p.ch:null;
-    return`<div class="cwcard" onclick="expandFromSearch('${t.s}')">
-      <button class="cw-rm" onclick="event.stopPropagation();rmCustom(${i})">✕</button>
-      <div class="cw-sym">${t.s}</div>
-      <div class="cw-price">${p?'$'+p.p.toFixed(2):'—'}</div>
-      <div class="cw-chg ${chg!=null?(chg>=0?'up':'dn'):'nc'}">${chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—'}</div>
-    </div>`;
-  }).join('');
-  strip.innerHTML=cards+`<div class="cw-add" onclick="promptCustom()"><div class="cw-add-icon">＋</div><div class="cw-add-txt">ADD TICKER</div></div>`;
-}
-function rmCustom(i){customTickers.splice(i,1);render();}
-
-// ══════════════════════════════════════════════════════════
-// FILTER CONTROLS
-// ══════════════════════════════════════════════════════════
-function setSigFilter(sig,el){
-  activeSig=sig;
-  document.querySelectorAll('#sigFilters .fchip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');render();
-}
-function setLane(lane,el){
-  activeLane=lane;
-  document.querySelectorAll('#laneFilters .fchip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');render();
-}
-function setSort(sort,el){
-  activeSort=sort;
-  document.querySelectorAll('.sort-chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');render();
-}
-
-// ══════════════════════════════════════════════════════════
-// REFRESH
-// ══════════════════════════════════════════════════════════
-async function doRefresh(){
-  if(busy)return;busy=true;
-  const btn=document.getElementById('rfBtn');
-  btn.disabled=true;btn.textContent='…';
-  await fetchAll();render();
-  btn.disabled=false;btn.textContent='↻ REFRESH';busy=false;
-}
-
-// ══════════════════════════════════════════════════════════
-// RUN RADAR
-// ══════════════════════════════════════════════════════════
-let rrPrices={};
-
-async function rrFetchAll(){
-  rrBusy=true;
-  const res=await Promise.allSettled(RR_DATA.map(t=>fetchQ(t.s)));
-  res.forEach((r,i)=>{if(r.status==='fulfilled'&&r.value)rrPrices[RR_DATA[i].s]=r.value;});
-  rrRender();rrBusy=false;
-}
-async function rrRefresh(){
-  const btn=document.getElementById('rrRfBtn');
-  if(btn){btn.disabled=true;btn.textContent='…';}
-  await rrFetchAll();
-  if(btn){btn.disabled=false;btn.textContent='↻';}
-}
-
-function rrRenderDots(){
-  const el=document.getElementById('rrDots');if(!el)return;
-  el.innerHTML=RR_DATA.map(t=>`<span class="rdot rdot-${t.stage}" onclick="rrExpandCard('${t.s}')">${t.s}</span>`).join('');
-  // Update sentiment gauge
-  const avg=Math.round(RR_DATA.reduce((a,t)=>a+t.sent,0)/RR_DATA.length);
-  const thumb=document.getElementById('rrGaugeThumb');
-  if(thumb)thumb.style.left=avg+'%';
-  const reading=document.getElementById('rrSentReading');
-  if(reading){
-    reading.textContent=avg>=70?'BULLISH':avg>=45?'NEUTRAL':'BEARISH';
-    reading.style.color=avg>=70?'var(--g)':avg>=45?'var(--y)':'var(--r)';
+  var dd=document.getElementById('qDd');
+  var hits=allT().filter(function(t){return t.s.indexOf(qVal)===0||t.n.toUpperCase().indexOf(qVal)>=0;}).slice(0,5);
+  var html='';
+  for(var i=0;i<hits.length;i++){
+    var t=hits[i];
+    var sc2=fls(t);
+    var lc2=LC[getLane(t)]||'var(--t2)';
+    html+='<div class="ddr" onclick="expandSym(\''+t.s+'\');hideDd();clearSrch()">'+
+      '<span class="ddsym">'+t.s+'</span>'+
+      '<span class="ddname">'+t.n+'</span>'+
+      '<span class="ddbdg" style="background:'+lc2+'18;color:'+lc2+'">'+sc2+'/99</span>'+
+    '</div>';
   }
-  // Update stats
-  const fn=id=>document.getElementById(id);
-  if(fn('rr-notyet'))fn('rr-notyet').textContent=RR_DATA.filter(t=>t.stage==='NOTYET').length;
-  if(fn('rr-running'))fn('rr-running').textContent=RR_DATA.filter(t=>t.stage==='RUNNING').length;
-  if(fn('rr-ran'))fn('rr-ran').textContent=RR_DATA.filter(t=>t.stage==='RAN').length;
-  if(fn('rr-avgup'))fn('rr-avgup').textContent='+'+Math.round(RR_DATA.reduce((a,t)=>a+t.upside,0)/RR_DATA.length)+'%';
+  html+='<div class="ddr" onclick="addCustom()" style="background:rgba(167,139,250,.05)">'+
+    '<span style="color:var(--p);font-family:var(--mono);font-size:10px">＋ Analyze '+qVal+'</span>'+
+  '</div>';
+  dd.innerHTML=html;
+  dd.style.display='block';
+}
+function hideDd(){var d=document.getElementById('qDd');if(d)d.style.display='none';}
+function clearSrch(){qVal='';var i=document.getElementById('qInp');if(i)i.value='';}
+function onQK(e){if(e.key==='Enter')addCustom();if(e.key==='Escape'){hideDd();clearSrch();render();}}
+document.addEventListener('click',function(e){if(!e.target.closest('.sw'))hideDd();});
+
+function addCustom(){
+  var inp=document.getElementById('qInp');
+  var sym=(inp.value||qVal).trim().toUpperCase();
+  if(!sym)return;
+  if(allT().find(function(t){return t.s===sym;})){expandSym(sym);hideDd();clearSrch();return;}
+  inp.value='Analyzing '+sym+'…'; inp.disabled=true;
+  Promise.all([fetchQ(sym),fetchPro(sym),computeTech(sym)]).then(function(res){
+    var q=res[0],pro=res[1],tech=res[2];
+    inp.disabled=false;
+    if(!q){inp.value='';inp.placeholder=sym+' not found';setTimeout(function(){inp.placeholder='Search or add any ticker…';},2500);return;}
+    prices[sym]=q;
+    if(tech){techC[sym]=tech;stages[sym]=classify(tech,{s:sym,sp:0,dtc:0,sigs:[]});}
+    custom.push({s:sym,n:(pro&&pro.name)||sym,sec:(pro&&pro.finnhubIndustry)||'Custom',
+      sp:0,dtc:0,fl:Math.round(((pro&&pro.shareOutstanding)||0)*.7),
+      mc:Math.round(((pro&&pro.marketCapitalization)||0)/100)/10,
+      sigs:[],custom:true,
+      th:'<strong>Custom: '+sym+'</strong><br>Visit Fintel.io or MarketBeat for short interest data.'});
+    clearSrch();hideDd();render();
+  });
 }
 
-let rrExpanded={};
-function rrExpandCard(sym){rrExpanded[sym]=!rrExpanded[sym];rrRender();}
+// ─── FILTER CONTROLS ─────────────────────────────────────────
+function setSig(s,el){activeSig=s;document.querySelectorAll('#sigPills .pill').forEach(function(p){p.classList.remove('on');});el.classList.add('on');render();}
+function setLane(l,el){activeLane=l;document.querySelectorAll('#lanePills .pill').forEach(function(p){p.classList.remove('on');});el.classList.add('on');render();}
+function setSort(s,el){activeSort=s;document.querySelectorAll('[data-sort]').forEach(function(p){p.classList.remove('on');});el.classList.add('on');render();}
 
-function rrSetStage(stage,btn){
-  rrStage=stage;
-  document.querySelectorAll('.stpill').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');rrRender();
-}
-function rrSetSort(sort,btn){
-  rrSort=sort;
-  document.querySelectorAll('[data-rrsort]').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');rrRender();
-}
-
-function rrRender(){
-  let list=[...RR_DATA];
-  if(rrStage!=='ALL')list=list.filter(t=>t.stage===rrStage);
-  if(rrSort==='stage')list.sort((a,b)=>STAGE_ORD[a.stage]-STAGE_ORD[b.stage]);
-  else if(rrSort==='sentiment')list.sort((a,b)=>b.sent-a.sent);
-  else if(rrSort==='upside')list.sort((a,b)=>b.upside-a.upside);
-  else if(rrSort==='momentum')list.sort((a,b)=>b.momentum-a.momentum);
-
-  const grid=document.getElementById('rrGrid');if(!grid)return;
-  grid.innerHTML=list.map((t,i)=>rrCardHTML(t,i)).join('');
-  rrRenderDots();
+async function doRefresh(){
+  var btn=document.getElementById('rfBtn');
+  btn.disabled=true;btn.textContent='…';
+  await loadPrices();
+  render();
+  btn.disabled=false;btn.textContent='↻ REFRESH';
+  if(!techBusy)loadTech();
 }
 
-function rrCardHTML(t,idx){
-  const p=rrPrices[t.s];
-  const price=p?'$'+p.p.toFixed(2):(t.cur?'$'+t.cur:'—');
-  const chg=p?p.ch:null;
-  const chgStr=chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—';
-  const chgCls=chg!=null?(chg>=0?'up':'dn'):'nc';
-  const sm=STAGE_META[t.stage];
-  const lp=p?p.p:t.cur;
-  const upPct=lp&&t.pt?Math.round(((t.pt-lp)/lp)*100):t.upside;
-  const upColor=upPct>20?'var(--g)':upPct>0?'var(--y)':'var(--r)';
-  const sentColor=t.sent>=70?'var(--g)':t.sent>=50?'var(--y)':'var(--r)';
-  const isExp=rrExpanded[t.s];
-  const rsiColor=t.rsi>70?'var(--r)':t.rsi<40?'var(--g)':'var(--y)';
+// ─── RUN RADAR ───────────────────────────────────────────────
+var rrExpandedState = {};
 
-  return`
-<div class="rrcard ${t.stage}" style="animation:ci .3s ease ${Math.min(idx*.04,.4)}s both">
-  <div class="rrcard-hdr" onclick="rrExpandCard('${t.s}')">
-    <div class="rr-logo">
-      <img src="https://logo.clearbit.com/${t.s.toLowerCase()}.com" alt="${t.s}"
-        onerror="this.outerHTML='<div class=fb>${t.s.slice(0,4)}</div>'">
-    </div>
-    <div class="rr-info">
-      <div class="rr-sym">${t.s}</div>
-      <div class="rr-name">${t.n}</div>
-      <span class="rr-stage-badge sb-${t.stage}">${sm.emoji} ${sm.label}</span>
-    </div>
-    <div class="rr-right">
-      <div class="rr-price">${price}</div>
-      <div class="rr-chg ${chgCls}">${chgStr}</div>
-      <div class="rr-upside" style="color:${upColor}">PT $${t.pt} · ${upPct>0?'+':''}${upPct}%</div>
-    </div>
-    <span class="card-expand-icon ${isExp?'open':''}" style="margin-left:6px;color:var(--t2);font-size:11px">▾</span>
-  </div>
-  <div class="rr-bars" onclick="rrExpandCard('${t.s}')">
-    ${[['SENTIMENT',t.sent,sentColor],['MOMENTUM',t.momentum,'var(--y)'],['TECHNICAL',t.rsi,'var(--b)']].map(([l,v,c])=>
-      `<div class="rr-bar-row"><span class="rr-bar-lbl">${l}</span><div class="rr-bar-track"><div class="rr-bar-fill" style="width:${v}%;background:${c}"></div></div><span class="rr-bar-val" style="color:${c}">${v}</span></div>`
-    ).join('')}
-  </div>
-  <div class="rr-detail ${isExp?'open':''}">
-    <div class="rr-detail-inner">
-      <div class="rr-thesis">${t.th}</div>
-      <div class="tech-grid">
-        <div class="tg-item"><div class="tg-lbl">RSI</div><div class="tg-val" style="color:${rsiColor}">${t.rsi}</div></div>
-        <div class="tg-item"><div class="tg-lbl">MACD</div><div class="tg-val" style="font-size:9px;color:${t.tech.macd.includes('BULL')?'var(--g)':t.tech.macd.includes('BEAR')?'var(--r)':'var(--y)'}">${t.tech.macd.split(' ')[0]}</div></div>
-        <div class="tg-item"><div class="tg-lbl">50-DAY MA</div><div class="tg-val" style="font-size:9px;color:${t.tech.ma50.includes('ABOVE')||t.tech.ma50.includes('HIGH')?'var(--g)':t.tech.ma50==='BELOW'?'var(--r)':'var(--y)'}">${t.tech.ma50}</div></div>
-        <div class="tg-item"><div class="tg-lbl">VOLUME</div><div class="tg-val" style="font-size:9px;color:${t.tech.vol==='RISING'||t.tech.vol==='SURGE'||t.tech.vol==='ELEVATED'?'var(--g)':'var(--t1)'}">${t.tech.vol}</div></div>
-      </div>
-      <div class="links-row">
-        ${['Chart','Short Data','SEC EDGAR'].map(lb=>`<a href="https://www.google.com/search?q=${t.s}+${encodeURIComponent(lb)}" target="_blank" class="ext-link">${lb} ↗</a>`).join('')}
-      </div>
-    </div>
-  </div>
-</div>`;
+function updateRwyDots(){
+  var el=document.getElementById('rwyDots');if(!el)return;
+  var all=allT();
+  var html='';
+  for(var i=0;i<all.length;i++){
+    var t=all[i];
+    var st=(stages[t.s]&&stages[t.s].stage)||'WATCH';
+    var sc2=STCL[st]||'var(--t2)';
+    html+='<span class="rdot" style="border-color:'+sc2+'44;color:'+sc2+'" onclick="rrScrollTo(\''+t.s+'\')">'+t.s+'</span>';
+  }
+  document.getElementById('rwyDots').innerHTML=html;
+
+  // Sentiment gauge
+  var rsis=[];
+  for(var k in techC){if(techC[k]&&techC[k].rsi)rsis.push(techC[k].rsi);}
+  if(rsis.length){
+    var avg=rsis.reduce(function(a,b){return a+b;},0)/rsis.length;
+    var pct=Math.max(5,Math.min(95,((avg-30)/40*100)));
+    document.getElementById('gthumb').style.left=pct+'%';
+    var gv=document.getElementById('gval');
+    if(gv){
+      gv.textContent=avg>=60?'BULLISH ('+avg.toFixed(0)+')':avg>=45?'NEUTRAL ('+avg.toFixed(0)+')':'BEARISH ('+avg.toFixed(0)+')';
+      gv.style.color=avg>=60?'var(--g)':avg>=45?'var(--y)':'var(--r)';
+    }
+  }
+  // RR stats
+  var all2=allT();
+  var fn=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  fn('rr0',all2.filter(function(t){return(stages[t.s]&&stages[t.s].stage)==='NOTYET';}).length);
+  fn('rr1',all2.filter(function(t){return(stages[t.s]&&stages[t.s].stage)==='RUNNING';}).length);
+  fn('rr2',all2.filter(function(t){return(stages[t.s]&&stages[t.s].stage)==='RAN';}).length);
+  var ups=all2.map(function(t){var pt2=PT[t.s]||0;var p2=prices[t.s];return pt2&&p2?((pt2-p2.p)/p2.p*100):0;}).filter(function(u){return u>0;});
+  fn('rr3',ups.length?'+'+Math.round(ups.reduce(function(a,b){return a+b;},0)/ups.length)+'%':'—');
 }
 
-// ══════════════════════════════════════════════════════════
-// EDUCATION
-// ══════════════════════════════════════════════════════════
-let eduExpanded={};
-function setEduCat(cat,el){
-  eduCat=cat;
-  document.querySelectorAll('.ecat').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');renderEdu();
+function renderRR(){
+  var grid=document.getElementById('rrGrid');if(!grid)return;
+  var list=allT().slice();
+  var stageF=document.querySelector('[data-st].on');
+  var stF=stageF?stageF.dataset.st:'ALL';
+  if(stF!=='ALL')list=list.filter(function(t){return(stages[t.s]&&stages[t.s].stage)===stF;});
+  var sortF=document.querySelector('[data-rrs].on');
+  var sF=sortF?sortF.dataset.rrs:'stage';
+  list.sort(function(a,b){
+    var sa=stages[a.s],sb=stages[b.s];
+    if(sF==='stage')return(STORD[(sa&&sa.stage)||'WATCH'])-(STORD[(sb&&sb.stage)||'WATCH']);
+    if(sF==='sent')return((techC[b.s]&&techC[b.s].rsi)||50)-((techC[a.s]&&techC[a.s].rsi)||50);
+    if(sF==='upside'){
+      var ua=PT[a.s]&&prices[a.s]?((PT[a.s]-prices[a.s].p)/prices[a.s].p*100):0;
+      var ub=PT[b.s]&&prices[b.s]?((PT[b.s]-prices[b.s].p)/prices[b.s].p*100):0;
+      return ub-ua;
+    }
+    return(STORD[(sa&&sa.stage)||'WATCH'])-(STORD[(sb&&sb.stage)||'WATCH']);
+  });
+  if(!list.length){grid.innerHTML='<div class="empty">No tickers in this stage yet</div>';return;}
+  var html='';
+  for(var i=0;i<list.length;i++)html+=makeRRCard(list[i],i);
+  grid.innerHTML=html;
+  updateRwyDots();
 }
-function toggleEdu(id){eduExpanded[id]=!eduExpanded[id];renderEdu();}
+
+function makeRRCard(t,idx){
+  var tech=techC[t.s],p=prices[t.s],stg=stages[t.s]||{stage:'WATCH',reason:'Computing…',conf:0};
+  var stage=stg.stage,sc2=STCL[stage]||'var(--t2)',em=STEM[stage]||'';
+  var price=p?'$'+p.p.toFixed(2):'—';
+  var chg=p?p.ch:null;
+  var chgStr=chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—';
+  var chgCls=chg!=null?(chg>=0?'up':'dn'):'nc';
+  var pt=PT[t.s]||0;
+  var up=pt&&p?Math.round((pt-p.p)/p.p*100):null;
+  var upColor=up!=null?(up>20?'var(--g)':up>0?'var(--y)':'var(--r)'):'var(--t2)';
+  var rsi=tech?tech.rsi:null;
+  var rc=rsiColor(rsi);
+  var volR=tech?parseFloat(tech.volR):0;
+  var isExp=rrExpandedState[t.s];
+
+  var techItems='';
+  var techRows=[
+    ['RSI (14)',rsi!=null?rsi:'—',rc],
+    ['MACD',(tech&&tech.macdObj)?tech.macdObj.label:'—',(tech&&tech.macdObj&&tech.macdObj.label==='BULLISH')?'var(--g)':'var(--r)'],
+    ['VS 50d MA',tech?(parseFloat(tech.ma50p)>=0?'+':'')+tech.ma50p+'%':'—','var(--t1)'],
+    ['YTD',tech?(parseFloat(tech.ytd)>=0?'+':'')+tech.ytd+'%':'—',tech&&parseFloat(tech.ytd)>=0?'var(--g)':'var(--r)'],
+    ['Vol Ratio',tech?tech.volR+'x':'—',volR>1.5?'var(--g)':'var(--t1)'],
+    ['Analyst PT',pt?'$'+pt:'—','var(--b)'],
+    ['Upside',up!=null?(up>0?'+':'')+up+'%':'—',upColor],
+    ['Short %',t.sp+'%','var(--r)'],
+  ];
+  for(var i=0;i<techItems.length;i++){}
+  techItems='<div class="tg">';
+  for(var j=0;j<techRows.length;j++){
+    techItems+='<div class="tgi"><div class="tgl">'+techRows[j][0]+'</div><div class="tgv" style="color:'+techRows[j][2]+';font-size:11px">'+techRows[j][1]+'</div></div>';
+  }
+  techItems+='</div>';
+
+  return '<div class="rrcard '+stage+'" id="rrc-'+t.s+'" style="animation-delay:'+Math.min(idx*.04,.4)+'s">'+
+    '<div class="rrhdr" onclick="rrToggle(\''+t.s+'\')">'+
+      '<div class="rrlogo">'+
+        '<img src="https://logo.clearbit.com/'+t.s.toLowerCase()+'.com" alt="'+t.s+'"'+
+        ' onerror="this.innerHTML=\'<span style=font-family:var(--mono);font-size:9px;color:var(--t2)>'+t.s.slice(0,4)+'</span>\'">'+
+      '</div>'+
+      '<div class="rrinfo">'+
+        '<div class="rrsym">'+t.s+'</div>'+
+        '<div class="rrname">'+t.n+'</div>'+
+        '<span class="sbadge sb-'+stage+'">'+em+' '+stage+'</span>'+
+      '</div>'+
+      '<div class="rrright">'+
+        '<div class="rrprice">'+price+'</div>'+
+        '<div class="rrchg '+chgCls+'">'+chgStr+'</div>'+
+        '<div class="rrupt" style="color:'+upColor+'">PT $'+pt+(up!=null?' · '+(up>0?'+':'')+up+'%':'')+'</div>'+
+      '</div>'+
+      '<span class="chev'+(isExp?' open':'')+'">▾</span>'+
+    '</div>'+
+    '<div class="rrbars" onclick="rrToggle(\''+t.s+'\')">'+
+      '<div class="rrbr"><span class="rrbrl">RSI(14)</span><div class="rrtrack"><div class="rrfill" style="width:'+(rsi||0)+'%;background:'+rc+'"></div></div><span class="rrbval" style="color:'+rc+'">'+(rsi||'…')+'</span></div>'+
+      '<div class="rrbr"><span class="rrbrl">MOMENTUM</span><div class="rrtrack"><div class="rrfill" style="width:'+Math.min(volR*50,100)+'%;background:var(--y)"></div></div><span class="rrbval" style="color:var(--y)">'+(tech?tech.volR+'x':'…')+'</span></div>'+
+      '<div class="rrbr"><span class="rrbrl">CONFIDENCE</span><div class="rrtrack"><div class="rrfill" style="width:'+stg.conf+'%;background:'+sc2+'"></div></div><span class="rrbval" style="color:'+sc2+'">'+stg.conf+'%</span></div>'+
+    '</div>'+
+    '<div class="sreason">'+stg.reason+'</div>'+
+    '<div class="rrdetail'+(isExp?' open':'')+'">'+
+      '<div class="rrinner">'+
+        '<div class="rrt">'+t.th+'</div>'+
+        techItems+
+        '<div class="links">'+
+          '<a href="https://www.google.com/search?q='+t.s+'+chart" target="_blank" class="lnk">Chart ↗</a>'+
+          '<a href="https://www.google.com/search?q='+t.s+'+short+interest" target="_blank" class="lnk">Short Data ↗</a>'+
+          '<a href="https://finviz.com/quote.ashx?t='+t.s+'" target="_blank" class="lnk">Finviz ↗</a>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function rrToggle(sym){rrExpandedState[sym]=!rrExpandedState[sym];renderRR();}
+function rrScrollTo(sym){rrExpandedState[sym]=true;renderRR();setTimeout(function(){var el=document.getElementById('rrc-'+sym);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+function rrStage(s,el){document.querySelectorAll('[data-st]').forEach(function(b){b.classList.remove('on');});el.classList.add('on');renderRR();}
+function rrSort(s,el){document.querySelectorAll('[data-rrs]').forEach(function(b){b.classList.remove('on');});el.classList.add('on');renderRR();}
+async function rrRefresh(){var b=document.getElementById('rrRfBtn');b.disabled=true;b.textContent='…';await loadPrices();renderRR();b.disabled=false;b.textContent='↻';if(!techBusy)loadTech();}
+
+// ─── EDUCATION ───────────────────────────────────────────────
+var EDU=[
+  {id:'short_squeeze',cat:'mechanics',icon:'💥',color:'var(--r)',term:'Short Squeeze',
+   one:'When heavily shorted stocks explode higher, forcing bears to buy back at any price.',
+   full:'A short squeeze occurs when a stock rises sharply, forcing short sellers to buy shares to cover positions and limit losses. This covering creates additional buying pressure — a self-reinforcing feedback loop.\n\nClassic setup needs: (1) large short interest, (2) a price catalyst, and (3) a constrained float making exit physically difficult.',
+   ex:{l:'REAL EXAMPLE: CAR (Avis Budget Group, 2026)',t:'CAR started near $100. Short interest exceeded 100% of tradeable float. When the TSA funding lapse created a "drive don\'t fly" catalyst, the stock rose <strong>5x to over $500</strong> in weeks.'},
+   pts:[{c:'var(--r)',t:'Short sellers borrow and sell shares, betting on decline'},{c:'var(--y)',t:'Rising prices force buybacks to limit losses'},{c:'var(--g)',t:'Mass covering creates a cascade of forced buying'},{c:'var(--b)',t:'Tighter float = more violent squeeze'}],
+   risk:'HIGH',related:['Float Lock','Short Interest','Days to Cover']},
+  {id:'swap_exposure',cat:'signals',icon:'⚡',color:'var(--r)',term:'Swap Exposure (Total Return Swap)',
+   one:'A hidden contract giving economic ownership of a stock without appearing in public filings.',
+   full:'A Total Return Swap (TRS) lets one party receive all the economic return of a stock in exchange for a fixed rate — without technically "owning" the shares.\n\nThe squeeze mechanic: the dealer must <strong>buy real shares to hedge</strong>, locking them permanently off the float. Since swaps don\'t count as "ownership" under SEC rules, they don\'t trigger disclosure requirements.',
+   ex:{l:'REAL EXAMPLE: SRS Investment Management & CAR',t:'Karthik Sarma (Tiger Global alumnus) held 49.3% of Avis via common stock PLUS a <strong>2.9M share cash-settled swap</strong>. The swap extended exposure past a 45% voting cap. Those 2.9M dealer hedge shares were permanently off the float.'},
+   pts:[{c:'var(--r)',t:'Swap holder gets exposure without triggering SEC disclosure'},{c:'var(--r)',t:'Dealer buys real shares to hedge — removing them from float'},{c:'var(--y)',t:'Cash-settled = settles in cash, no share delivery'},{c:'var(--b)',t:'Used to concentrate positions stealthily'}],
+   risk:'HIGH',related:['Float Lock','Tiger DNA','Archegos Capital']},
+  {id:'put_ladder',cat:'signals',icon:'📉',color:'var(--y)',term:'Put Ladder',
+   one:'A series of sold put options that forces dealers to deliver shares — removing supply from the float.',
+   full:'A put ladder involves <em>selling put options</em> at multiple strike prices, collecting premiums and obligating yourself to buy shares if the stock falls below those strikes.\n\nWhen puts expire in-the-money, the counterparty dealer must <strong>deliver shares</strong> — pulling supply out of the tape. If the seller also wrote calls that expire worthless, the dealer must unwind delta hedges — creating additional forced buying.',
+   ex:{l:'REAL EXAMPLE: Pentwater Capital & CAR',t:'Pentwater exercised short puts at strikes of <strong>$110, $120, $125, and $130</strong> to acquire Avis shares. Each exercise forced dealer share delivery. Short calls at $150–$310 expired worthless, forcing dealer hedge unwinds simultaneously.'},
+   pts:[{c:'var(--y)',t:'Selling puts at multiple strikes creates layered obligations'},{c:'var(--r)',t:'Each put exercise forces dealer share delivery'},{c:'var(--y)',t:'Expired worthless calls force dealer hedge unwinds'},{c:'var(--g)',t:'Put seller collects premium either way — asymmetric'}],
+   risk:'HIGH',related:['Swap Exposure','Float Lock','Gamma Squeeze']},
+  {id:'family_lock',cat:'signals',icon:'🏛',color:'var(--b)',term:'Family Lock',
+   one:'When founding families control large blocks that never trade — silently strangling tradeable supply.',
+   full:'Family Lock describes founding families, trusts, or insiders controlling such a large share percentage that actual tradeable float is far smaller than reported.\n\nCommon structures: (1) dual-class shares (Class B = 10 votes each), (2) irrevocable family trusts, (3) decade-long concentrated ownership. These blocks are structurally "sticky" — not for sale in normal circumstances.',
+   ex:{l:'REAL EXAMPLE: Pritzker Family & Hyatt Hotels (H)',t:'The Pritzker family holds <strong>54.4% of Hyatt\'s economic interest</strong> and 88.9% of voting power through dual-class shares. Class B shares carry 10 votes each. Combined with Hyatt\'s $600M buyback, it mirrors CAR before Pentwater entered.'},
+   pts:[{c:'var(--b)',t:'Dual-class structures give insiders voting control'},{c:'var(--b)',t:'Family trusts are irrevocable — functionally off-market'},{c:'var(--y)',t:'Founder stepping down creates activist entry window'},{c:'var(--g)',t:'Buybacks on top of family lock = compounding compression'}],
+   risk:'MEDIUM',related:['Float Lock','Buyback Shrink','Activist 13G→D']},
+  {id:'tiger_dna',cat:'people',icon:'🐯',color:'var(--p)',term:'Tiger DNA',
+   one:'A lineage from Julian Robertson\'s Tiger Management — known for concentrated, swap-based positions.',
+   full:'Tiger Management, founded by Julian Robertson in 1980, spawned dozens of "Tiger Cubs" who share a philosophy: deep fundamental research, concentrated positions, and willingness to use derivatives.\n\nThe AR SS Framework flags Tiger DNA because two massive recent squeezes — Archegos (Bill Hwang) and SRS/CAR (Karthik Sarma) — were both Tiger Global alumni using identical TRS swap structures.',
+   ex:{l:'THE LINEAGE: Tiger → Archegos → SRS → $CAR',t:'<strong>Julian Robertson</strong> trained Tiger Global\'s partners. <strong>Bill Hwang</strong> (Tiger Asia) used TRS swaps to control $160B in exposure — triggering the 2021 ViacomCBS implosion. <strong>Karthik Sarma</strong> (SRS, ex-Tiger Global) used the identical playbook on CAR in 2026.'},
+   pts:[{c:'var(--p)',t:'Tiger Global trained the most aggressive concentrated-position investors'},{c:'var(--r)',t:'Archegos showed how TRS swaps create invisible $160B exposures'},{c:'var(--y)',t:'Tiger Cubs share similar playbooks — monitor their SEC filings'},{c:'var(--g)',t:'When Tiger-linked funds file 13Gs in small-float, high-short stocks — pay attention'}],
+   risk:'HIGH',related:['Swap Exposure','Float Lock','13D/13G Filings']},
+  {id:'activist',cat:'legal',icon:'🎯',color:'var(--g)',term:'Activist Investor (13G → 13D Flip)',
+   one:'When a "passive" investor signals they\'re about to go activist — an independent kicker.',
+   full:'Under SEC rules, investors crossing 5% ownership file either 13G (passive) or 13D (activist intent). The flip from 13G to 13D signals a previously passive holder is now pushing for changes — board seats, divestitures, or buybacks. This creates an <em>independent catalyst</em> separate from squeeze mechanics.',
+   ex:{l:'REAL EXAMPLE: ADW Capital & CODI (April 2026)',t:'ADW Capital spent $8.6M on call options and <strong>filed an amended 13D</strong> at 14% exposure, demanding liquidation at $26+/share — a 2x+ premium to market. The 13D filing itself was the declaration of intent.'},
+   pts:[{c:'var(--g)',t:'13G = passive, 13D = activist — the flip is a market signal'},{c:'var(--y)',t:'A 13G filer "preserving optionality" may already be planning a pivot'},{c:'var(--b)',t:'Campaigns: stake → public pressure → proxy fight or settlement'},{c:'var(--r)',t:'Activist-held positions are difficult to short against'}],
+   risk:'MEDIUM',related:['Float Lock','Put Ladder','13D/13G Filings']},
+  {id:'float_lock',cat:'mechanics',icon:'🔒',color:'var(--b)',term:'Float Lock',
+   one:'When the true tradeable supply is far smaller than the "official" float — the core of every major squeeze.',
+   full:'The "float" is officially defined as shares available for public trading. But the <em>real</em> tradeable float is often dramatically smaller once you subtract: swap dealer hedges, family trust blocks, recently acquired put-exercise shares, and low-turnover institutional blocks.\n\nThis was the core insight of the CAR analysis — most people looked at the wrong number.',
+   ex:{l:'THE CAR FLOAT MATH',t:'Avis\'s reported float was ~10.1M shares. After SRS\'s 2.9M swap hedges and Pentwater\'s 2.8M+ put exercises, <strong>essentially zero shares remained to absorb short covering</strong>. The 5M ATM offering couldn\'t even cover the shortfall.'},
+   pts:[{c:'var(--r)',t:'Reported float ≠ real tradeable float once swaps and locks are counted'},{c:'var(--y)',t:'Every put exercise and swap position removes more shares'},{c:'var(--b)',t:'Float lock only becomes obvious when shorts try to cover'},{c:'var(--g)',t:'FLS score attempts to quantify float tightness'}],
+   risk:'HIGH',related:['Short Squeeze','Swap Exposure','Put Ladder']},
+  {id:'no_gap',cat:'technical',icon:'📊',color:'#f0c060',term:'No-Gap Tell',
+   one:'The CAR squeeze\'s key technical fingerprint — price grinds up intraday with no overnight gaps.',
+   full:'In a news-driven rally, stocks gap up overnight as buyers react. But in a mechanically-driven squeeze powered by dealer hedge unwinding, the price grinds steadily higher intraday with <strong>no overnight gaps</strong>.\n\nThis is because dealer unwinding is a continuous intraday process — they don\'t wait for the open.',
+   ex:{l:'REAL EXAMPLE: The CAR Tell',t:'The analysis author noted: "we did not gap up <em>once</em> during this entire move higher." GameStop 2021 had massive overnight gaps. CAR\'s grind was different: controlled, consistent, intraday-driven. This behavioral fingerprint reveals dealer mechanics, not retail FOMO.'},
+   pts:[{c:'#f0c060',t:'No overnight gaps = dealer hedge unwinding, not news-driven buying'},{c:'var(--y)',t:'Intraday grinds signal continuous mechanical covering'},{c:'var(--b)',t:'Same pattern appeared in Archegos-related stocks'},{c:'var(--g)',t:'Watch for this in heavily shorted, low-float names starting to move'}],
+   risk:'MEDIUM',related:['Short Squeeze','Swap Exposure','Float Lock']},
+  {id:'short_interest',cat:'mechanics',icon:'📉',color:'var(--y)',term:'Short Interest & Days to Cover',
+   one:'The two key metrics measuring how much squeeze fuel is loaded in any stock.',
+   full:'<strong>Short Interest</strong> as % of float: above 20% is elevated, above 40% is extreme, above 50% on thin float is when CAR-type math applies.\n\n<strong>Days to Cover (DTC)</strong> = shares short ÷ average daily volume. Above 5 = shorts are meaningfully trapped. Above 10 = exit nearly impossible without a violent move.',
+   ex:{l:'CAR BY THE NUMBERS',t:'Short interest: 54–62% of float. 9M shares short. DTC: 7.3 days. Even if 100% of the ATM offering went toward covering, there were still <strong>4M shares short with no shares to buy</strong>.'},
+   pts:[{c:'var(--y)',t:'Short % >20%: elevated. >40%: extreme. >50% on thin float: dangerous'},{c:'var(--r)',t:'DTC >5: meaningfully trapped. >10: near impossible exit'},{c:'var(--b)',t:'Always adjust for the true float, not the reported float'},{c:'var(--g)',t:'Rising short interest into rising price = shorts adding fuel'}],
+   risk:'HIGH',related:['Float Lock','Short Squeeze','No-Gap Tell']},
+  {id:'fls',cat:'mechanics',icon:'🔢',color:'var(--g)',term:'FLS Score (Float Lock Score)',
+   one:'The AR SS Framework\'s proprietary squeeze potential score — 0 to 99, computed automatically.',
+   full:'FLS is a composite score computed live from: Short % of Float (max 35pts), Days to Cover (max 20pts), Swap Signal (+30pts), Tiger DNA (+12pts), Family Lock (+10pts), Put Ladder (+8pts), Activist 13G→D (+6pts), Buyback Shrink (+4pts), Float Tightness Bonus (up to +15pts).\n\nTechnical bonuses applied when RSI is oversold with high short interest.',
+   ex:{l:'CAR\'s FLS Score: 99/99',t:'Short% 62% (+21.7), DTC 7.3 (+14.6), Swap (+30), Tiger DNA (+12), Put Ladder (+8), Float Bonus (+15). Total: <strong>99/99 — maximum possible.</strong>'},
+   pts:[{c:'var(--g)',t:'FLS < 35: watch. 35–50: elevated. 50–68: high risk. 68+: extreme'},{c:'var(--y)',t:'Swap signal alone adds 30 points — most powerful single predictor'},{c:'var(--r)',t:'FLS measures setup potential, not timing — catalyst always needed'},{c:'var(--b)',t:'Score updates automatically as technicals compute'}],
+   risk:'LOW',related:['Short Interest','Float Lock','Swap Exposure']},
+  {id:'buyback',cat:'signals',icon:'🔄',color:'var(--pk)',term:'Buyback Float Shrink',
+   one:'When a company buys back its own shares, silently compressing tradeable float over time.',
+   full:'Every share repurchased disappears from the tradeable float permanently. A buyback on top of concentrated insider ownership is a compounding float compression mechanism — each tranche tightens supply further.',
+   ex:{l:'REAL EXAMPLE: Hyatt Hotels (H)',t:'Hyatt authorized a <strong>$600M buyback</strong> in late 2024. Combined with the Pritzker family\'s 54.4% block, every buyback tranche shrinks the remaining public float further.'},
+   pts:[{c:'var(--pk)',t:'Buybacks permanently remove shares from public float'},{c:'var(--y)',t:'Compounding effect — each buyback makes the next one more impactful'},{c:'var(--b)',t:'Most powerful when combined with concentrated insider blocks'},{c:'var(--g)',t:'Rising short interest + active buyback = converging on zero float'}],
+   risk:'LOW',related:['Family Lock','Float Lock','Short Squeeze']},
+  {id:'rsi',cat:'technical',icon:'📈',color:'var(--b)',term:'RSI (Relative Strength Index)',
+   one:'A momentum oscillator (0-100) measuring whether a stock is overbought or oversold.',
+   full:'RSI measures average gains vs. average losses over 14 days. Key thresholds: RSI >70 = overbought (potentially exhausted). RSI <30 = oversold (bears may be trapped). RSI 40–60 = neutral.\n\nFor squeeze setups: RSI <45 with high short interest is dangerous — the stock hasn\'t moved yet but the fuel is loaded. This is why RSI is the primary input in our auto stage classifier.',
+   ex:{l:'HOW WE USE RSI IN THE CLASSIFIER',t:'RSI >70 + stock well above 50d MA + high YTD = <strong>ALREADY RAN</strong>. RSI <55 with >20% analyst upside and >20% short float = <strong>NOT YET RUN</strong>.'},
+   pts:[{c:'var(--b)',t:'RSI > 70: overbought — momentum may be exhausting'},{c:'var(--g)',t:'RSI < 40: oversold — reversal risk rising'},{c:'var(--y)',t:'RSI 40–60: neutral — coiling or basing territory'},{c:'var(--r)',t:'RSI < 45 + high short % = maximum squeeze setup potential'}],
+   risk:'LOW',related:['MACD','No-Gap Tell','FLS Score']},
+  {id:'macd',cat:'technical',icon:'〰️',color:'var(--g)',term:'MACD (Moving Average Convergence Divergence)',
+   one:'A momentum indicator showing the relationship between two moving averages.',
+   full:'MACD = 12-day EMA minus 26-day EMA. Signal line = 9-day EMA of MACD.\n\nBullish cross: MACD crosses above signal line — momentum turning positive. Bearish cross: MACD crosses below — momentum weakening.\n\nIn the classifier: bullish MACD cross + RSI 58–70 + stock above 50d MA = RUNNING NOW classification.',
+   ex:{l:'HOW WE COMPUTE IT',t:'We pull 300 days of daily candle data from Finnhub and compute MACD entirely in-browser using EMA math — no external technical API required. The classifier runs this every 15 minutes automatically.'},
+   pts:[{c:'var(--g)',t:'Bullish cross = MACD crosses above signal — momentum turning positive'},{c:'var(--r)',t:'Bearish cross = momentum weakening'},{c:'var(--y)',t:'Histogram near zero = transitional, watch for direction'},{c:'var(--b)',t:'Most powerful when combined with RSI and volume confirmation'}],
+   risk:'LOW',related:['RSI','No-Gap Tell','Stage Classification']},
+];
+
+function setEc(cat,el){eduCat=cat;document.querySelectorAll('.ecat').forEach(function(c){c.classList.remove('on');});el.classList.add('on');renderEdu();}
+function toggleEdu(id){eduExp[id]=!eduExp[id];renderEdu();}
 
 function renderEdu(){
-  const list=document.getElementById('eduList');if(!list)return;
-  let items=EDU_DATA;
-  if(eduCat!=='all')items=items.filter(e=>e.cat===eduCat||e.related?.some(r=>r.toLowerCase().includes(eduCat)));
-  list.innerHTML=items.map(e=>eduCardHTML(e)).join('');
+  var list=document.getElementById('eduList');if(!list)return;
+  var items=eduCat==='all'?EDU:EDU.filter(function(e){return e.cat===eduCat;});
+  var html='';
+  for(var i=0;i<items.length;i++)html+=makeECard(items[i]);
+  list.innerHTML=html;
 }
 
-function eduCardHTML(e){
-  const isExp=eduExpanded[e.id];
-  const riskClass=e.risk==='HIGH'?'risk-high':e.risk==='LOW'?'risk-low':'risk-med';
-
-  const bodyContent=isExp?`
-    <div class="ecard-inner">
-      <div class="ecard-full">${e.full.replace(/\n\n/g,'<br><br>').replace(/\n/g,' ')}</div>
-      ${e.example?`<div class="ecard-example"><div class="ex-label">📌 REAL WORLD EXAMPLE</div><div class="ex-text"><strong>${e.example.label}</strong><br><br>${e.example.text}</div></div>`:''}
-      <div class="kp-list">
-        ${e.points.map(p=>`<div class="kp"><div class="kp-dot" style="background:${p.c}"></div><div class="kp-txt">${p.t}</div></div>`).join('')}
-      </div>
-      <div class="risk-row">
-        <span class="risk-lbl">COMPLEXITY:</span>
-        <span class="risk-badge ${riskClass}">${e.risk}</span>
-      </div>
-      ${e.related?`<div class="related">${e.related.map(r=>`<span class="rel-chip" onclick="searchRelated('${r}')">${r}</span>`).join('')}</div>`:''}
-    </div>
-  `:'';
-
-  return`
-<div class="ecard" id="edu-${e.id}">
-  <div class="ecard-hdr" onclick="toggleEdu('${e.id}')">
-    <div class="ecard-icon" style="background:${e.color}15">${e.icon}</div>
-    <div class="ecard-text">
-      <div class="ecard-term">${e.term}</div>
-      <div class="ecard-one">${e.one}</div>
-    </div>
-    <div class="ecard-chevron ${isExp?'open':''}">▾</div>
-  </div>
-  <div class="ecard-body ${isExp?'open':''}">${bodyContent}</div>
-</div>`;
+function makeECard(e){
+  var isExp=eduExp[e.id];
+  var rc=e.risk==='HIGH'?'rh':e.risk==='LOW'?'rl':'rm';
+  var body='';
+  if(isExp){
+    body='<div class="ebody open"><div class="einner">';
+    body+='<div class="efull">'+e.full.replace(/\n\n/g,'<br><br>').replace(/\n/g,' ')+'</div>';
+    if(e.ex)body+='<div class="eex"><div class="eexl">📌 REAL WORLD EXAMPLE</div><div class="eext"><strong>'+e.ex.l+'</strong><br><br>'+e.ex.t+'</div></div>';
+    for(var i=0;i<e.pts.length;i++)body+='<div class="ekp"><div class="ekpd" style="background:'+e.pts[i].c+'"></div><div class="ekpt">'+e.pts[i].t+'</div></div>';
+    body+='<div class="erisk"><span class="eriskl">COMPLEXITY:</span><span class="eriskb '+rc+'">'+e.risk+'</span></div>';
+    if(e.related){
+      body+='<div class="erel">';
+      for(var j=0;j<e.related.length;j++)body+='<span class="erelc" onclick="jumpTerm(\''+e.related[j]+'\')">'+e.related[j]+'</span>';
+      body+='</div>';
+    }
+    body+='</div></div>';
+  } else {
+    body='<div class="ebody"></div>';
+  }
+  return '<div class="ecard" id="edu-'+e.id+'">'+
+    '<div class="echdr" onclick="toggleEdu(\''+e.id+'\')">'+
+      '<div class="eicon" style="background:'+e.color+'15">'+e.icon+'</div>'+
+      '<div class="etext"><div class="eterm">'+e.term+'</div><div class="eone">'+e.one+'</div></div>'+
+      '<div class="echev'+(isExp?' open':'')+'">▾</div>'+
+    '</div>'+
+    body+
+  '</div>';
 }
 
-function learnTerm(sigId){
-  // Navigate to education tab and expand the relevant card
-  switchPage('edu',document.querySelectorAll('.tab-btn')[2]);
-  setTimeout(()=>{
-    const id=sigId.replace('_exposure','');
-    const match=EDU_DATA.find(e=>e.id===id||e.id===sigId||e.id.includes(id));
-    if(match){eduExpanded[match.id]=true;renderEdu();setTimeout(()=>{const el=document.getElementById('edu-'+match.id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
-  },100);
-}
-function searchRelated(term){
-  const match=EDU_DATA.find(e=>e.term.toLowerCase().includes(term.toLowerCase()));
-  if(match){eduExpanded[match.id]=true;renderEdu();setTimeout(()=>{const el=document.getElementById('edu-'+match.id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+function goLearn(sig){
+  var idMap={swap:'swap_exposure',puts:'put_ladder',family:'family_lock',tiger:'tiger_dna',activist:'activist',buyback:'buyback',gap:'no_gap'};
+  var id=idMap[sig]||sig;
+  switchPg('edu',document.querySelectorAll('.tb')[2]);
+  setTimeout(function(){
+    eduExp[id]=true;renderEdu();
+    setTimeout(function(){var el=document.getElementById('edu-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);
+  },150);
 }
 
-// ══════════════════════════════════════════════════════════
-// MODAL (shared)
-// ══════════════════════════════════════════════════════════
-function closeModal(){document.getElementById('detailModal').classList.remove('open');}
+function jumpTerm(term){
+  var match=EDU.find(function(e){return e.term.toLowerCase().indexOf(term.toLowerCase())>=0||e.id.indexOf(term.toLowerCase().replace(/\s/g,'_'))>=0;});
+  if(match){eduExp[match.id]=true;renderEdu();setTimeout(function(){var el=document.getElementById('edu-'+match.id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+}
 
-// ══════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════
-async function init(){
+// ─── INIT ────────────────────────────────────────────────────
+function init(){
   render();
   renderEdu();
-  await fetchAll();
-  render();
-  setInterval(()=>{if(!busy)fetchAll().then(render);},90000);
+  loadPrices().then(function(){
+    render();
+    loadTech();
+  });
+  setInterval(function(){
+    loadPrices().then(function(){render();if(document.getElementById('pg-radar').classList.contains('active'))renderRR();});
+  },90000);
+  setInterval(function(){if(!techBusy)loadTech();},900000);
 }
+
 init();
 </script>
 </body>
