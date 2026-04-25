@@ -629,6 +629,160 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
 .alsc-bar{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin:0 10px;}
 .alsc-fill{height:100%;border-radius:2px;}
 
+
+/* ── $5T AI INFRA MODE ── */
+.mck-banner{margin:0 16px 14px;background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(61,142,255,.08));
+  border:1px solid rgba(245,166,35,.25);border-radius:14px;padding:14px;}
+.mck-tag{font-family:var(--mono);font-size:7px;color:var(--y);letter-spacing:1.5px;margin-bottom:6px;}
+.mck-title{font-size:15px;font-weight:800;letter-spacing:-.3px;line-height:1.3;margin-bottom:8px;}
+.mck-title em{color:var(--y);font-style:normal;}
+.mck-bars{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.mck-bar-row{display:flex;align-items:center;gap:8px;}
+.mck-bar-lbl{font-family:var(--mono);font-size:8px;color:var(--t1);width:80px;flex-shrink:0;}
+.mck-bar-track{flex:1;height:6px;background:var(--line2);border-radius:3px;overflow:hidden;}
+.mck-bar-fill{height:100%;border-radius:3px;}
+.mck-bar-val{font-family:var(--mono);font-size:8px;font-weight:600;width:40px;text-align:right;}
+.mck-scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px;}
+.mcks{background:var(--card2);border-radius:8px;padding:7px;text-align:center;}
+.mcks-lbl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:3px;}
+.mcks-val{font-family:var(--mono);font-size:13px;font-weight:800;}
+.mcks-gw{font-family:var(--mono);font-size:7px;color:var(--t2);margin-top:2px;}
+
+/* Layer selector */
+.layer-sel{padding:0 16px 12px;}
+.layer-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1.5px;margin-bottom:8px;}
+.layer-grid{display:flex;gap:6px;flex-wrap:wrap;}
+.layer-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t2);cursor:pointer;transition:all .15s;flex-shrink:0;}
+.layer-btn.on{border-color:var(--y);color:var(--y);background:rgba(245,166,35,.08);}
+
+/* Infra stock cards */
+.infcard{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;margin-bottom:10px;animation:fadein .3s ease both;}
+.infcard.POWER{border-left:3px solid var(--r);}
+.infcard.PHOTONICS{border-left:3px solid var(--b);}
+.infcard.COOLING{border-left:3px solid var(--g);}
+.infcard.MEMORY{border-left:3px solid var(--p);}
+.infcard.INFRA{border-left:3px solid var(--y);}
+.infcard.NUCLEAR{border-left:3px solid #f0c060;}
+.inf-hdr{padding:12px 14px 8px;display:flex;align-items:center;gap:10px;}
+.inf-logo{width:36px;height:36px;border-radius:9px;background:var(--card2);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-family:var(--mono);font-size:8px;color:var(--t2);}
+.inf-logo img{width:100%;height:100%;object-fit:contain;padding:4px;}
+.inf-info{flex:1;min-width:0;}
+.inf-sym{font-weight:800;font-size:16px;letter-spacing:-.3px;}
+.inf-name{font-size:9px;color:var(--t1);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.inf-bdg{display:inline-flex;font-family:var(--mono);font-size:7px;padding:2px 6px;border-radius:8px;border:1px solid;margin-top:3px;}
+.inf-right{text-align:right;flex-shrink:0;}
+.inf-price{font-family:var(--mono);font-size:13px;font-weight:600;}
+.inf-chg{font-family:var(--mono);font-size:8px;margin-top:2px;}
+.inf-pt{font-family:var(--mono);font-size:8px;color:var(--g);margin-top:1px;}
+.inf-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:0 10px 8px;}
+.infm{background:var(--card2);border-radius:7px;padding:5px 6px;text-align:center;}
+.infml{font-family:var(--mono);font-size:6px;color:var(--t2);margin-bottom:2px;}
+.infmv{font-family:var(--mono);font-size:9px;font-weight:700;}
+.inf-why{padding:0 12px 8px;font-family:var(--mono);font-size:9px;color:var(--t1);line-height:1.6;
+  border-left:2px solid rgba(245,166,35,.3);margin:0 10px 8px;padding:8px 10px;
+  background:rgba(245,166,35,.04);border-radius:0 6px 6px 0;}
+.inf-setup{padding:0 12px 10px;font-family:var(--mono);font-size:8px;color:var(--y);
+  background:rgba(245,166,35,.05);margin:0 10px 10px;border-radius:6px;padding:7px 10px;line-height:1.6;}
+
+
+/* ══════════════════════════════════════
+   CHART LAB — full interactive charting
+   ══════════════════════════════════════ */
+#pg-chart{background:var(--bg);}
+.chart-topbar{position:sticky;top:0;z-index:50;background:rgba(7,9,13,.97);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:8px;padding:8px 12px;}
+.chart-sym-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:0;}
+.chart-sym-inp{background:var(--card2);border:1px solid var(--line2);border-radius:8px;
+  padding:6px 10px;font-family:var(--mono);font-size:14px;font-weight:700;
+  color:var(--t0);width:90px;outline:none;caret-color:var(--g);}
+.chart-sym-inp:focus{border-color:var(--g);}
+.chart-price-live{font-family:var(--mono);font-size:14px;font-weight:700;}
+.chart-chg-live{font-family:var(--mono);font-size:10px;}
+.chart-go{padding:6px 14px;background:var(--g);color:var(--bg);border-radius:8px;
+  font-family:var(--mono);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+
+/* Type + interval row */
+.chart-ctrls{padding:6px 12px;display:flex;align-items:center;gap:6px;
+  border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;}
+.chart-ctrls::-webkit-scrollbar{display:none;}
+.cc-pill{padding:4px 10px;border-radius:6px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:8px;color:var(--t2);cursor:pointer;
+  white-space:nowrap;flex-shrink:0;transition:all .12s;}
+.cc-pill.on{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.07);}
+.cc-pill.type-on{border-color:var(--b);color:var(--b);background:rgba(61,142,255,.07);}
+.cc-sep{width:1px;height:16px;background:var(--line2);flex-shrink:0;}
+
+/* Main chart canvas area */
+.chart-main{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;
+  touch-action:none;}
+#chartCanvas{display:block;cursor:crosshair;}
+/* Crosshair tooltip */
+.chart-tooltip{position:absolute;background:rgba(13,16,24,.95);border:1px solid var(--line2);
+  border-radius:8px;padding:8px 10px;pointer-events:none;font-family:var(--mono);
+  font-size:9px;line-height:1.8;min-width:120px;z-index:10;display:none;}
+.chart-tooltip.visible{display:block;}
+.ct-row{display:flex;justify-content:space-between;gap:12px;}
+.ct-lbl{color:var(--t2);}
+.ct-val{color:var(--t0);font-weight:600;}
+/* Price axis label that follows crosshair */
+.chart-price-axis-lbl{position:absolute;right:0;background:var(--g);color:var(--bg);
+  font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 6px;
+  border-radius:3px 0 0 3px;pointer-events:none;display:none;z-index:10;}
+/* Indicators panel */
+#indicCanvas{display:block;cursor:crosshair;border-top:1px solid var(--line2);}
+
+/* Indicator toggles */
+.chart-indics{padding:6px 12px;display:flex;align-items:center;gap:6px;
+  border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;}
+.chart-indics::-webkit-scrollbar{display:none;}
+.ci-lbl{font-family:var(--mono);font-size:7px;color:var(--t2);flex-shrink:0;}
+
+/* Compare + draw toolbar */
+.chart-tools{padding:6px 12px;display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;}
+.chart-tools::-webkit-scrollbar{display:none;}
+.ct-tool{padding:5px 10px;border-radius:6px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:8px;color:var(--t2);cursor:pointer;
+  white-space:nowrap;flex-shrink:0;transition:all .12s;}
+.ct-tool.on{border-color:var(--y);color:var(--y);background:rgba(245,166,35,.07);}
+.cmp-inp{background:var(--card2);border:1px solid var(--line2);border-radius:6px;
+  padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--t0);
+  width:70px;outline:none;caret-color:var(--p);}
+.cmp-inp:focus{border-color:var(--p);}
+.cmp-tag{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;
+  border:1px solid var(--p);background:rgba(167,139,250,.1);font-family:var(--mono);font-size:8px;color:var(--p);flex-shrink:0;}
+.cmp-rm{cursor:pointer;color:var(--t2);}
+
+/* Stats bar below chart */
+.chart-statsbar{padding:8px 12px;display:flex;gap:0;overflow-x:auto;
+  border-bottom:1px solid var(--line);scrollbar-width:none;}
+.chart-statsbar::-webkit-scrollbar{display:none;}
+.csb-item{flex-shrink:0;padding:0 14px 0 0;margin-right:14px;
+  border-right:1px solid var(--line);}
+.csb-item:last-child{border-right:none;}
+.csb-lbl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:2px;}
+.csb-val{font-family:var(--mono);font-size:11px;font-weight:700;}
+
+/* Stock screener quick-pick */
+.chart-quick{padding:8px 12px;display:flex;align-items:center;gap:6px;
+  overflow-x:auto;scrollbar-width:none;}
+.chart-quick::-webkit-scrollbar{display:none;}
+.cq-lbl{font-family:var(--mono);font-size:7px;color:var(--t2);flex-shrink:0;letter-spacing:1px;}
+.cq-chip{flex-shrink:0;padding:5px 10px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:9px;color:var(--t1);cursor:pointer;transition:all .12s;}
+.cq-chip:active{border-color:var(--g);color:var(--g);}
+
+/* Loading overlay */
+.chart-loading{position:absolute;inset:0;background:rgba(7,9,13,.85);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--t1);gap:10px;z-index:20;}
+.chart-loading-spin{width:28px;height:28px;border:2px solid var(--line2);
+  border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
+
 </style>
 </head>
 <body>
@@ -901,6 +1055,9 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
     <div class="almode" data-am="options" onclick="setAlMode('options',this)">
       <span class="almode-icon">📈</span>OPTIONS
     </div>
+    <div class="almode" data-am="infra" onclick="setAlMode('infra',this)">
+      <span class="almode-icon">🏗</span>$5T INFRA
+    </div>
     <div class="almode" data-am="puts" onclick="setAlMode('puts',this)">
       <span class="almode-icon">🐻</span>PUT HEDGE
     </div>
@@ -911,6 +1068,48 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
     <div class="alsect-wrap">
       <div class="alsect-lbl">WHICH SECTORS HAVE RUN? (SELECT ALL THAT APPLY)</div>
       <div class="alsect-grid" id="alSectGrid"></div>
+    </div>
+  </div>
+
+  <!-- $5T INFRA MODE -->
+  <div id="alm-infra" style="display:none">
+    <div class="mck-banner">
+      <div class="mck-tag">📊 McKINSEY GLOBAL INSTITUTE · 2026 REPORT</div>
+      <div class="mck-title">$5.2 <em>Trillion</em> in AI Data Center CapEx by 2030</div>
+      <div class="mck-bars">
+        <div class="mck-bar-row">
+          <span class="mck-bar-lbl">IT Equipment</span>
+          <div class="mck-bar-track"><div class="mck-bar-fill" style="width:63%;background:var(--b)"></div></div>
+          <span class="mck-bar-val" style="color:var(--b)">$3.3T</span>
+        </div>
+        <div class="mck-bar-row">
+          <span class="mck-bar-lbl">DC Infra</span>
+          <div class="mck-bar-track"><div class="mck-bar-fill" style="width:31%;background:var(--y)"></div></div>
+          <span class="mck-bar-val" style="color:var(--y)">$1.6T</span>
+        </div>
+        <div class="mck-bar-row">
+          <span class="mck-bar-lbl">Power</span>
+          <div class="mck-bar-track"><div class="mck-bar-fill" style="width:6%;background:var(--r)"></div></div>
+          <span class="mck-bar-val" style="color:var(--r)">$300B</span>
+        </div>
+      </div>
+      <div class="mck-scenarios">
+        <div class="mcks"><div class="mcks-lbl">CONSTRAINED</div><div class="mcks-val" style="color:var(--t1)">$3.7T</div><div class="mcks-gw">78 GW</div></div>
+        <div class="mcks" style="border:1px solid rgba(245,166,35,.3)"><div class="mcks-lbl">BASE CASE</div><div class="mcks-val" style="color:var(--y)">$5.2T</div><div class="mcks-gw">125 GW</div></div>
+        <div class="mcks"><div class="mcks-lbl">ACCELERATED</div><div class="mcks-val" style="color:var(--g)">$7.9T</div><div class="mcks-gw">205 GW</div></div>
+      </div>
+    </div>
+    <div class="layer-sel">
+      <div class="layer-lbl">FILTER BY LAYER</div>
+      <div class="layer-grid" id="infraLayerGrid">
+        <div class="layer-btn on" data-layer="ALL" onclick="setInfraLayer('ALL',this)">All Layers</div>
+        <div class="layer-btn" data-layer="POWER" onclick="setInfraLayer('POWER',this)">⚡ Power</div>
+        <div class="layer-btn" data-layer="PHOTONICS" onclick="setInfraLayer('PHOTONICS',this)">💡 Photonics</div>
+        <div class="layer-btn" data-layer="COOLING" onclick="setInfraLayer('COOLING',this)">❄️ Cooling</div>
+        <div class="layer-btn" data-layer="MEMORY" onclick="setInfraLayer('MEMORY',this)">🧠 Memory</div>
+        <div class="layer-btn" data-layer="INFRA" onclick="setInfraLayer('INFRA',this)">🏗 DC Infra</div>
+        <div class="layer-btn" data-layer="NUCLEAR" onclick="setInfraLayer('NUCLEAR',this)">☢️ Nuclear</div>
+      </div>
     </div>
   </div>
 
@@ -992,13 +1191,133 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
   <div class="disc"><div class="dtxt">Alpha Engine uses AI + live data. Not investment advice. Do your own due diligence.</div></div>
 </div>
 
+
+<!-- ═══════════════════════════════════
+     CHART LAB PAGE
+     ═══════════════════════════════════ -->
+<div class="page" id="pg-chart">
+
+  <!-- Top bar: symbol input + live price -->
+  <div class="chart-topbar">
+    <div class="chart-sym-wrap">
+      <input id="chartSymInp" class="chart-sym-inp" value="NVDA" maxlength="8"
+        onkeydown="if(event.key==='Enter')loadChartSym()"
+        oninput="this.value=this.value.toUpperCase()"/>
+      <div>
+        <div class="chart-price-live" id="cLivePrice">—</div>
+        <div class="chart-chg-live" id="cLiveChg"></div>
+      </div>
+    </div>
+    <button class="chart-go" onclick="loadChartSym()">GO</button>
+  </div>
+
+  <!-- Chart type + interval controls -->
+  <div class="chart-ctrls">
+    <div class="cc-pill type-on" data-ct="candle" onclick="setChartType('candle',this)">🕯 Candle</div>
+    <div class="cc-pill" data-ct="line" onclick="setChartType('line',this)">📈 Line</div>
+    <div class="cc-pill" data-ct="area" onclick="setChartType('area',this)">🏔 Area</div>
+    <div class="cc-sep"></div>
+    <div class="cc-pill" data-ci="1d" onclick="setChartInterval('1d',this)">1D</div>
+    <div class="cc-pill" data-ci="5d" onclick="setChartInterval('5d',this)">5D</div>
+    <div class="cc-pill on" data-ci="1mo" onclick="setChartInterval('1mo',this)">1M</div>
+    <div class="cc-pill" data-ci="3mo" onclick="setChartInterval('3mo',this)">3M</div>
+    <div class="cc-pill" data-ci="6mo" onclick="setChartInterval('6mo',this)">6M</div>
+    <div class="cc-pill" data-ci="1y" onclick="setChartInterval('1y',this)">1Y</div>
+    <div class="cc-pill" data-ci="2y" onclick="setChartInterval('2y',this)">2Y</div>
+    <div class="cc-sep"></div>
+    <div class="cc-pill" data-ci="5m" onclick="setChartInterval('5m',this)">5m</div>
+    <div class="cc-pill" data-ci="15m" onclick="setChartInterval('15m',this)">15m</div>
+    <div class="cc-pill" data-ci="60m" onclick="setChartInterval('60m',this)">1H</div>
+  </div>
+
+  <!-- Indicator toggles -->
+  <div class="chart-indics">
+    <span class="ci-lbl">OVERLAYS:</span>
+    <div class="cc-pill on" data-ind="ma20" onclick="toggleIndic('ma20',this)" style="border-color:rgba(245,166,35,.4);color:var(--y)">MA20</div>
+    <div class="cc-pill on" data-ind="ma50" onclick="toggleIndic('ma50',this)" style="border-color:rgba(61,142,255,.4);color:var(--b)">MA50</div>
+    <div class="cc-pill" data-ind="ma200" onclick="toggleIndic('ma200',this)" style="border-color:rgba(244,114,182,.4);color:var(--pk)">MA200</div>
+    <div class="cc-pill" data-ind="bb" onclick="toggleIndic('bb',this)">BB</div>
+    <div class="cc-sep"></div>
+    <span class="ci-lbl">BELOW:</span>
+    <div class="cc-pill on" data-ind="vol" onclick="toggleIndic('vol',this)">VOL</div>
+    <div class="cc-pill on" data-ind="rsi" onclick="toggleIndic('rsi',this)">RSI</div>
+    <div class="cc-pill" data-ind="macd" onclick="toggleIndic('macd',this)">MACD</div>
+  </div>
+
+  <!-- Compare + draw tools -->
+  <div class="chart-tools">
+    <span style="font-family:var(--mono);font-size:7px;color:var(--t2);flex-shrink:0">COMPARE:</span>
+    <input id="cmpInp" class="cmp-inp" placeholder="+ TICKER"
+      onkeydown="if(event.key==='Enter')addCompare()"
+      oninput="this.value=this.value.toUpperCase()" maxlength="6"/>
+    <div id="cmpTags" style="display:flex;gap:5px;flex-wrap:nowrap;overflow:hidden"></div>
+    <div class="cc-sep"></div>
+    <div class="ct-tool on" data-draw="none" onclick="setDrawTool('none',this)">✋ Pan</div>
+    <div class="ct-tool" data-draw="hline" onclick="setDrawTool('hline',this)">— H-Line</div>
+    <div class="ct-tool" data-draw="tline" onclick="setDrawTool('tline',this)">↗ Trend</div>
+    <div class="ct-tool" data-draw="fib" onclick="setDrawTool('fib',this)">🌀 Fib</div>
+    <div class="ct-tool" onclick="clearDrawings()">🗑 Clear</div>
+  </div>
+
+  <!-- Main chart canvas area -->
+  <div class="chart-main" id="chartMain">
+    <canvas id="chartCanvas"></canvas>
+    <canvas id="indicCanvas"></canvas>
+    <div class="chart-tooltip" id="chartTooltip">
+      <div class="ct-row"><span class="ct-lbl">DATE</span><span class="ct-val" id="ctDate">—</span></div>
+      <div class="ct-row"><span class="ct-lbl">O</span><span class="ct-val" id="ctO">—</span></div>
+      <div class="ct-row"><span class="ct-lbl">H</span><span class="ct-val" id="ctH" style="color:var(--g)">—</span></div>
+      <div class="ct-row"><span class="ct-lbl">L</span><span class="ct-val" id="ctL" style="color:var(--r)">—</span></div>
+      <div class="ct-row"><span class="ct-lbl">C</span><span class="ct-val" id="ctC">—</span></div>
+      <div class="ct-row"><span class="ct-lbl">VOL</span><span class="ct-val" id="ctV">—</span></div>
+    </div>
+    <div class="chart-price-axis-lbl" id="chartPriceAxisLbl"></div>
+    <div class="chart-loading" id="chartLoading">
+      <div class="chart-loading-spin"></div>
+      <span id="chartLoadingTxt">Loading…</span>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="chart-statsbar" id="chartStatsBar">
+    <div class="csb-item"><div class="csb-lbl">OPEN</div><div class="csb-val" id="cs-open">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">HIGH</div><div class="csb-val" id="cs-high" style="color:var(--g)">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">LOW</div><div class="csb-val" id="cs-low" style="color:var(--r)">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">CLOSE</div><div class="csb-val" id="cs-close">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">VOLUME</div><div class="csb-val" id="cs-vol">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">52W HIGH</div><div class="csb-val" id="cs-52h" style="color:var(--g)">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">52W LOW</div><div class="csb-val" id="cs-52l" style="color:var(--r)">—</div></div>
+    <div class="csb-item"><div class="csb-lbl">RSI(14)</div><div class="csb-val" id="cs-rsi">—</div></div>
+  </div>
+
+  <!-- Quick ticker picks -->
+  <div class="chart-quick">
+    <span class="cq-lbl">QUICK:</span>
+    <div class="cq-chip" onclick="quickChart('NVDA')">NVDA</div>
+    <div class="cq-chip" onclick="quickChart('AAPL')">AAPL</div>
+    <div class="cq-chip" onclick="quickChart('MCHP')">MCHP</div>
+    <div class="cq-chip" onclick="quickChart('ACLS')">ACLS</div>
+    <div class="cq-chip" onclick="quickChart('COHR')">COHR</div>
+    <div class="cq-chip" onclick="quickChart('VRT')">VRT</div>
+    <div class="cq-chip" onclick="quickChart('HOOD')">HOOD</div>
+    <div class="cq-chip" onclick="quickChart('MU')">MU</div>
+    <div class="cq-chip" onclick="quickChart('BE')">BE</div>
+    <div class="cq-chip" onclick="quickChart('VPG')">VPG</div>
+    <div class="cq-chip" onclick="quickChart('CAR')">CAR</div>
+    <div class="cq-chip" onclick="quickChart('SMTC')">SMTC</div>
+    <div class="cq-chip" onclick="quickChart('SPY')">SPY</div>
+    <div class="cq-chip" onclick="quickChart('QQQ')">QQQ</div>
+  </div>
+
+</div><!-- /pg-chart -->
+
 </div><!-- /pages -->
 
 <div class="tabbar">
   <button class="tb on" onclick="switchPg('squeeze',this)"><span class="tb-i">⚡</span><span class="tb-l">SQUEEZE</span></button>
   <button class="tb" onclick="switchPg('radar',this)"><span class="tb-i">📡</span><span class="tb-l">RADAR</span></button>
-  <button class="tb" onclick="switchPg('edu',this)"><span class="tb-i">📖</span><span class="tb-l">LEARN</span></button>
   <button class="tb" onclick="switchPg('quant',this)"><span class="tb-i">🔬</span><span class="tb-l">QUANT</span></button>
+  <button class="tb" onclick="switchPg('chart',this)"><span class="tb-i">📊</span><span class="tb-l">CHART</span></button>
   <button class="tb" onclick="switchPg('alpha',this)"><span class="tb-i">🎯</span><span class="tb-l">ALPHA</span></button>
 </div>
 
@@ -1010,21 +1329,47 @@ window.onerror = function(msg, src, line, col, err) {
   var el = document.getElementById('gErr');
   if (el) {
     el.style.display = 'block';
-    el.textContent = '⚠ ' + msg + (line?' (L'+line+')':'');
+    var detail = msg;
+    if (line && line > 0) detail += ' (L'+line+(col?':'+col:'')+')';
+    if (src && src !== window.location.href) detail += ' ['+src.split('/').pop()+']';
+    el.textContent = '⚠ ' + detail;
+    el.title = err ? (err.stack || err.toString()) : msg;
   }
-  return false; // don't suppress
+  return false;
 };
+
+// Also catch unhandled promise rejections
+window.addEventListener('unhandledrejection', function(e) {
+  var el = document.getElementById('gErr');
+  if (el) {
+    el.style.display = 'block';
+    el.textContent = '⚠ Promise: ' + (e.reason ? (e.reason.message || e.reason) : 'unknown');
+  }
+});
 
 // ─── API ────────────────────────────────────────────────────
 var FH = 'd7lmqs9r01qk7lvtlku0d7lmqs9r01qk7lvtlkug';
 
-// ─── PROXY FETCH (bypasses CORS for any URL) ─────────────────
-// Uses allorigins.win — free, no key, works from GitHub Pages
+// ─── PROXY FETCH (multi-proxy fallback) ───────────────────────
 function proxyFetch(url) {
-  var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-  return fetch(proxy)
-    .then(function(r){ return r.json(); })
-    .then(function(d){ return JSON.parse(d.contents); })
+  // Try direct first (works from GitHub Pages — Yahoo allows cross-origin)
+  return fetch(url, {cache:'no-store'})
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .catch(function() {
+      // Fallback 1: corsproxy.io
+      var p1 = 'https://corsproxy.io/?' + encodeURIComponent(url);
+      return fetch(p1).then(function(r){ return r.json(); });
+    })
+    .catch(function() {
+      // Fallback 2: allorigins
+      var p2 = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+      return fetch(p2)
+        .then(function(r){ return r.json(); })
+        .then(function(d){ return JSON.parse(d.contents); });
+    })
     .catch(function(){ return null; });
 }
 
@@ -1165,6 +1510,7 @@ function switchPg(pg, btn) {
   if (pg === 'edu')   renderEdu();
   if (pg === 'quant') initQuant();
   if (pg === 'alpha') { initAlpha(); computeStressIndicator(); }
+  if (pg === 'chart') { initChartLab(); }
 }
 
 // ─── RSI CALCULATION ────────────────────────────────────────
@@ -1208,7 +1554,8 @@ function _rlRun() {
   while (_rl.running < _rl.max && _rl.q.length) {
     _rl.running++;
     var job = _rl.q.shift();
-    job().finally(function(){ _rl.running--; setTimeout(_rlRun,120); });
+    job().then(function(){ _rl.running--; setTimeout(_rlRun,120); },
+               function(){ _rl.running--; setTimeout(_rlRun,120); });
   }
 }
 function _rlFetch(url) {
@@ -1217,14 +1564,13 @@ function _rlFetch(url) {
       return fetch(url,{cache:'no-store'})
         .then(function(r){
           if(r.status===429){
-            // Rate limited — wait and retry once
-            return new Promise(function(res2){setTimeout(res2,2000);})
+            return new Promise(function(res2){setTimeout(res2,2500);})
               .then(function(){ return fetch(url,{cache:'no-store'}); })
               .then(function(r2){ return r2.json(); });
           }
           return r.json();
         })
-        .then(res).catch(rej);
+        .then(res,rej);
     });
     _rlRun();
   });
@@ -2580,6 +2926,273 @@ function initQuant() {
 }
 
 
+
+// ─── $5T AI INFRA DATA ────────────────────────────────────────
+
+var INFRA_STOCKS = [
+  // ── POWER ──
+  {s:'VRT',  n:'Vertiv Holdings',        layer:'COOLING', ran:false, pt:145, pe:41,
+   mcap:'$34B', upside:35, conv:92,
+   why:'NVIDIA named co-engineering partner. 252% order surge as rack densities hit 100kW+. $13.5B organic revenue guided for 2026 (+28%). Co-developing cooling for Rubin architecture — tied to every GPU cycle.',
+   setup:'CALLS 3-6M · $100–$110 strikes · earnings catalyst Q2 2026',
+   mckLink:'IT Equipment + Power · $3.6T combined TAM',
+   metrics:[['Rev Growth','+28%','var(--g)'],['Order Growth','+252%','var(--g)'],['Backlog','$15B','var(--b)'],['FY26 EPS Gro','+43%','var(--g)']]},
+  {s:'BE',   n:'Bloom Energy',            layer:'POWER',   ran:false, pt:32,  pe:null,
+   mcap:'$4.1B', upside:60, conv:88,
+   why:'Behind-the-meter fuel cells solve the #1 AI bottleneck: time-to-power. Delivered Oracle Cloud in 55 days. 99.999% reliability. Modular 20MW–500MW. Every hyperscaler is in an interconnection queue — Bloom bypasses it entirely.',
+   setup:'CALLS 6M · $19–$22 strikes · hyperscaler contract announcements are the catalyst',
+   mckLink:'Power layer · $300B McKinsey TAM — but actually much larger',
+   metrics:[['Time-to-Power','55 days','var(--g)'],['Reliability','99.999%','var(--g)'],['Scale','20–500MW','var(--b)'],['Cost Trend','-10x/decade','var(--g)']]},
+  {s:'GEV',  n:'GE Vernova',              layer:'POWER',   ran:false, pt:420, pe:52,
+   mcap:'$115B', upside:25, conv:85,
+   why:'Gas turbines + grid equipment = the picks and shovels of AI power. Every data center needs grid interconnection. GE Vernova is the grid. Order backlog exploding with AI-driven demand.',
+   setup:'CALLS 3-6M · $320–$340 strikes · infrastructure bill tailwind',
+   mckLink:'Power generation · directly in the $300B power layer',
+   metrics:[['Order Backlog','Surging','var(--g)'],['Gas Turbines','#1 global','var(--b)'],['Grid Equip','AI-driven','var(--g)'],['Div Growth','Initiating','var(--y)']]},
+  {s:'ETN',  n:'Eaton Corporation',        layer:'POWER',   ran:true,  pt:380, pe:35,
+   mcap:'$155B', upside:15, conv:72,
+   why:'Power management leader already running. Data center electrical systems. Still has legs but not a fresh entry — better as a hold than a new buy after 2025 run.',
+   setup:'LEAPS only · $330–$340 strikes · 12M+ horizon',
+   mckLink:'Power infrastructure · core DC electrical systems',
+   metrics:[['YTD','Already Ran','var(--r)'],['DC Revenue','45% of mix','var(--b)'],['Div Yield','1.2%','var(--y)'],['Backlog','Record','var(--g)']]},
+
+  // ── PHOTONICS ──
+  {s:'COHR', n:'Coherent Corp',           layer:'PHOTONICS',ran:false, pt:110, pe:null,
+   mcap:'$14B', upside:55, conv:94,
+   why:'25% optical transceiver market share. NVIDIA Spectrum-X named partner. $2B NVIDIA investment. FY25 rev $5.8B growing to $10.6B by FY2028 (45% EPS CAGR). 800G→1.6T→3.2T upcycle just beginning. InP manufacturing moat. CPO demos at OFC 2026 are the next inflection.',
+   setup:'CALLS 6-9M · $68–$75 strikes · FY2027 earnings re-rate thesis',
+   mckLink:'IT Equipment layer · optical interconnects are the nervous system of AI clusters',
+   metrics:[['Mkt Share','25% optics','var(--g)'],['Rev FY28E','$10.6B','var(--g)'],['EPS CAGR','45%','var(--g)'],['NVDA Inv','$2B','var(--b)']]},
+  {s:'LITE', n:'Lumentum Holdings',        layer:'PHOTONICS',ran:false, pt:95,  pe:null,
+   mcap:'$5.1B', upside:45, conv:87,
+   why:'77% FY26 revenue growth. Laser chip performance leader for silicon photonics. Direct NVIDIA CPO supply chain. InP laser specialist — finite global capacity = pricing power through 2027.',
+   setup:'CALLS 3-6M · $60–$65 strikes · capacity constraint = multiple expansion',
+   mckLink:'IT Equipment layer · laser chips inside every optical transceiver',
+   metrics:[['Rev Growth','+77% FY26','var(--g)'],['InP Lasers','Leader','var(--b)'],['CPO Role','NVDA partner','var(--p)'],['Capacity','Constrained','var(--r)']]},
+  {s:'AAOI', n:'Applied Optoelectronics',  layer:'PHOTONICS',ran:false, pt:28,  pe:null,
+   mcap:'$0.8B', upside:120, conv:78,
+   why:'US domestic transceiver manufacturer — strategic asset as supply chain sovereignty matters. Projects 119% sales growth. Trading at fraction of peers. Tiny cap = explosive upside on any hyperscaler win.',
+   setup:'CALLS speculative · $14–$16 strikes · binary on hyperscaler contract',
+   mckLink:'IT Equipment layer · domestic optics = supply chain hedge',
+   metrics:[['Rev Growth','+119% proj','var(--g)'],['US Made','Yes','var(--b)'],['Mkt Cap','$800M','var(--y)'],['Upside','120%+','var(--g)']]},
+  {s:'POET', n:'POET Technologies',        layer:'PHOTONICS',ran:false, pt:12,  pe:null,
+   mcap:'$0.4B', upside:200, conv:65,
+   why:'Optical Interposer = laser + modulator + electronics on one chip. $50M initial production order in 2026. Foxconn partnership. $300M cash. TAM $33B by 2031. Pure speculation but asymmetric if Optical Interposer becomes standard.',
+   setup:'SPECULATIVE · small position only · $5–$6 strikes · long dated',
+   mckLink:'IT Equipment layer · next-gen co-packaged optics architecture',
+   metrics:[['Order','$50M initial','var(--g)'],['TAM 2031','$33B','var(--b)'],['Cash','$300M','var(--g)'],['Risk','EXTREME','var(--r)']]},
+  {s:'MTSI', n:'MACOM Technology',         layer:'PHOTONICS',ran:false, pt:145, pe:55,
+   mcap:'$8.2B', upside:40, conv:82,
+   why:'High-speed analog + photonic semiconductors across the DC optical chain. 800G/1.6T data center demand accelerating. Less covered than COHR but same supply chain.',
+   setup:'CALLS 3-6M · $100–$105 strikes',
+   mckLink:'IT Equipment · photonic semiconductor components',
+   metrics:[['DC Rev','Fastest seg','var(--g)'],['800G Exp','Growing','var(--b)'],['Margins','Expanding','var(--g)'],['Coverage','Limited','var(--y)']]},
+
+  // ── COOLING ──
+  {s:'MOD',  n:'Modine Manufacturing',     layer:'COOLING', ran:false, pt:135, pe:28,
+   mcap:'$3.8B', upside:65, conv:89,
+   why:'Sharpening entire business around DC thermal management. DC sales +31% sequentially in Q3 FY2026. 50-70% annual DC growth guided next 2 fiscal years. Spinning off legacy unit to become pure-play. Order book extends 5 years.',
+   setup:'CALLS 3-6M · $78–$85 strikes · pure-play catalyst on legacy spinoff close',
+   mckLink:'IT Equipment + Power · thermal management is the hidden constraint',
+   metrics:[['DC Growth','+31% seq','var(--g)'],['FY Guide','50-70% DC','var(--g)'],['Backlog','5yr+','var(--b)'],['Pure-play','Q4 2026','var(--p)']]},
+  {s:'NVT',  n:'nVent Electric',           layer:'COOLING', ran:false, pt:72,  pe:22,
+   mcap:'$9.8B', upside:30, conv:80,
+   why:'Liquid cooling distribution + high-density power distribution units. Organic orders +65% Q3 2025 from hyperscaler programs. 1GW+ of cooling deployed. NVIDIA partner network. New MN facility doubling liquid cooling footprint.',
+   setup:'CALLS 3-6M · $54–$58 strikes · liquid cooling = fastest DC infra segment',
+   mckLink:'IT Equipment layer · liquid cooling for 120-600kW racks',
+   metrics:[['Order Growth','+65% org','var(--g)'],['Deployed','1GW+','var(--b)'],['NVDA Partner','Yes','var(--p)'],['New Facility','2x capacity','var(--g)']]},
+
+  // ── MEMORY ──
+  {s:'MU',   n:'Micron Technology',        layer:'MEMORY',  ran:false, pt:120, pe:12,
+   mcap:'$115B', upside:35, conv:91,
+   why:'HBM3E/HBM4 sold out through 2026. DRAM +162% YoY. Every AI training cluster needs HBM from Micron. Trading at 12x vs sector despite being infrastructure-critical. Morgan Stanley top pick.',
+   setup:'CALLS 3-6M · $88–$95 strikes · HBM4 ramp is FY2027 catalyst',
+   mckLink:'IT Equipment layer · $3.3T in AI IT spend, memory is 15-20%',
+   metrics:[['HBM Status','Sold out 26','var(--g)'],['DRAM Growth','+162% YoY','var(--g)'],['P/E','12x','var(--b)'],['PT','$120','var(--g)']]},
+  {s:'WDC',  n:'Western Digital',          layer:'MEMORY',  ran:false, pt:85,  pe:18,
+   mcap:'$23B', upside:40, conv:74,
+   why:'Flash storage + HDD for AI training data lakes. Post-spinoff of HDD business creates pure-play flash story. AI training requires massive storage. Undervalued vs flash peers.',
+   setup:'CALLS 3M · $60 strikes · flash market recovery play',
+   mckLink:'IT Equipment layer · AI data storage is 20%+ of DC spend',
+   metrics:[['Flash Pure','Post-split','var(--b)'],['AI Storage','Growing','var(--g)'],['P/E','18x','var(--y)'],['Upside','40%','var(--g)']]},
+
+  // ── DC INFRA ──
+  {s:'DLR',  n:'Digital Realty Trust',     layer:'INFRA',   ran:false, pt:180, pe:null,
+   mcap:'$55B', upside:28, conv:78,
+   why:'Pure-play data center REIT. AI demand driving record leasing — every hyperscaler needs co-location. Occupancy at record highs. $1.6T McKinsey DC infrastructure TAM benefits DLR directly.',
+   setup:'CALLS 3-6M · $140–$148 strikes · REIT re-rate as rates decline',
+   mckLink:'Data Center Infrastructure · $1.6T McKinsey category',
+   metrics:[['Occupancy','Record high','var(--g)'],['Leasing','Record pace','var(--g)'],['AI Demand','Primary driver','var(--b)'],['Div Yield','3.2%','var(--y)']]},
+  {s:'EQIX', n:'Equinix',                  layer:'INFRA',   ran:true,  pt:1000,pe:null,
+   mcap:'$76B', upside:15, conv:68,
+   why:'Already ran. Global DC colocation leader. CEO noted "power we need isn't sitting around on the grid" — validating the power constraint thesis. Better as a benchmark than a fresh entry.',
+   setup:'LEAPS only if you must · $850+ strikes · 12M horizon',
+   mckLink:'Data Center Infrastructure · global colocation standard',
+   metrics:[['YTD','Ran','var(--r)'],['Global DCs','260+','var(--b)'],['Div Yield','1.9%','var(--y)'],['Backlog','Record','var(--g)']]},
+  {s:'NBIS', n:'Nebius Group',             layer:'INFRA',   ran:false, pt:35,  pe:null,
+   mcap:'$8B', upside:55, conv:84,
+   why:'AI-focused cloud platform. EBITDA guided $1.3B 2026 → $10B+ by 2028. 10x active power capacity in 18 months. $27B Meta deal. Trading at 21x 2026 EBITDA — reasonable for the growth rate.',
+   setup:'CALLS 3-6M · $22–$25 strikes · Meta contract ramp is the catalyst',
+   mckLink:'IT Equipment + Infrastructure — GPU cloud is the $3.3T wave',
+   metrics:[['EBITDA 28E','>$10B','var(--g)'],['Power Cap','10x in 18mo','var(--g)'],['Meta Deal','$27B','var(--b)'],['EV/EBITDA','21x','var(--y)']]},
+  {s:'IREN', n:'IREN Limited',             layer:'INFRA',   ran:false, pt:10,  pe:null,
+   mcap:'$1.2B', upside:85, conv:76,
+   why:'4.5GW renewable energy secured. 150,000+ Blackwell Ultra GPUs. Energy is the bottleneck — IREN solved it. Higher value per MW because they own the GPUs. Down 54% from highs = asymmetric entry.',
+   setup:'CALLS 3-6M · $5–$6 strikes · GPU fleet utilization is the catalyst',
+   mckLink:'Power + Infrastructure · solved the #1 AI buildout constraint',
+   metrics:[['Power Secured','4.5 GW','var(--g)'],['GPUs','150K+ BU','var(--b)'],['Down from ATH','54%','var(--r)'],['Upside','85%','var(--g)']]},
+
+  // ── NUCLEAR ──
+  {s:'CEG',  n:'Constellation Energy',     layer:'NUCLEAR', ran:false, pt:330, pe:35,
+   mcap:'$62B', upside:25, conv:84,
+   why:'Largest US nuclear operator. Microsoft 20-year PPA for Three Mile Island restart. 24/7 carbon-free power is exactly what hyperscalers need. Nuclear is the only scalable always-on clean power for AI.',
+   setup:'CALLS 3-6M · $255–$270 strikes · more hyperscaler PPAs are the catalyst',
+   mckLink:'Power layer · nuclear = the only clean 24/7 power for AI at scale',
+   metrics:[['Nuclear Op','#1 US','var(--g)'],['MSFT PPA','20yr deal','var(--b)'],['Capacity','32GW+ fleet','var(--g)'],['Clean Power','24/7','var(--g)']]},
+  {s:'NNE',  n:'Nano Nuclear Energy',      layer:'NUCLEAR', ran:false, pt:45,  pe:null,
+   mcap:'$0.9B', upside:150, conv:62,
+   why:'Microreactor company targeting modular nuclear for remote/on-site data center power. Speculative but the thesis is perfect: AI needs power, nuclear is the only scalable answer, small modular reactors solve the siting problem.',
+   setup:'SPECULATIVE · small size · $28–$32 strikes · long dated',
+   mckLink:'Power layer · SMR = next wave after Constellation/large nuclear',
+   metrics:[['Type','Microreactor','var(--b)'],['Target','On-site DC','var(--g)'],['Risk','VERY HIGH','var(--r)'],['Upside','150%+','var(--g)']]},
+];
+
+var infraActiveLayer = 'ALL';
+
+function setInfraLayer(layer, el) {
+  infraActiveLayer = layer;
+  document.querySelectorAll('[data-layer]').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  // If we're in infra mode and output is showing, re-run
+  if (document.getElementById('alm-infra').style.display !== 'none') {
+    var out = document.getElementById('alOut');
+    if (out && out.innerHTML.indexOf('infcard') >= 0) runInfra(true);
+  }
+}
+
+async function runInfra(skipAI) {
+  var out = document.getElementById('alOut');
+  if (!skipAI) {
+    if (out) out.innerHTML = '<div class="al-loading"><div class="al-spin"></div>Loading $5T AI Infrastructure Research…<br><span style="font-size:8px;color:var(--t2)">Fetching live prices · Building sector map</span></div>';
+  }
+
+  // Filter by layer
+  var stocks = infraActiveLayer === 'ALL' ? INFRA_STOCKS : INFRA_STOCKS.filter(function(s){ return s.layer === infraActiveLayer; });
+
+  // Fetch live prices
+  await Promise.all(stocks.map(function(stk){
+    return fetchYahoo(stk.s).then(function(q){ if(q) prices[stk.s]=q; }).catch(function(){});
+  }));
+
+  // AI prompt for the full infra universe if not skipping
+  var aiText = '';
+  if (!skipAI) {
+    var notYetRun = stocks.filter(function(s){ return !s.ran; }).slice(0,8);
+    var prompt = 'McKinsey projects $5.2 trillion in AI data center CapEx by 2030: $3.3T IT equipment, $1.6T DC infrastructure, $300B power. You are a sector specialist. For these infrastructure stocks that have NOT yet run, give a 1-2 sentence conviction statement on which 3 are the highest-priority buys TODAY and why. Be specific about the McKinsey spending category each plays into.
+
+Stocks:
+'+
+      notYetRun.map(function(s){ return s.s+' ('+s.n+'): '+s.layer+'. PT $'+s.pt+'. '+s.why.substring(0,120); }).join('
+')+
+      '
+
+Date: April 2026.';
+
+    try {
+      var resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800, messages:[{role:'user',content:prompt}]})
+      });
+      var data = await resp.json();
+      if (data.content && data.content[0]) aiText = data.content[0].text||'';
+    } catch(e){}
+  }
+
+  // Layer totals
+  var layers = {POWER:0,PHOTONICS:0,COOLING:0,MEMORY:0,INFRA:0,NUCLEAR:0};
+  var layerColors = {POWER:'var(--r)',PHOTONICS:'var(--b)',COOLING:'var(--g)',MEMORY:'var(--p)',INFRA:'var(--y)',NUCLEAR:'#f0c060'};
+  stocks.forEach(function(s){ if(layers[s.layer]!==undefined) layers[s.layer]++; });
+
+  var html = '';
+
+  // McKinsey summary bar
+  html += '<div style="margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;">'+
+    '<div style="padding:10px 14px 8px;background:var(--card2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">'+
+      '<span style="font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px">$5T AI INFRA UNIVERSE — '+stocks.length+' STOCKS</span>'+
+      '<span style="font-family:var(--mono);font-size:9px;color:var(--y)">'+stocks.filter(function(s){return !s.ran;}).length+' NOT YET RUN</span>'+
+    '</div>'+
+    '<div style="display:flex;gap:0;">'+
+    Object.keys(layers).map(function(l){
+      if(!layers[l]) return '';
+      return '<div style="flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--line);">'+
+        '<div style="font-family:var(--mono);font-size:14px;font-weight:800;color:'+layerColors[l]+'">'+layers[l]+'</div>'+
+        '<div style="font-family:var(--mono);font-size:6px;color:var(--t2);margin-top:2px">'+l+'</div>'+
+      '</div>';
+    }).join('')+
+    '</div></div>';
+
+  // AI insight
+  if (aiText) {
+    html += '<div class="al-ai" style="margin-bottom:14px">'+
+      '<div class="al-ai-lbl">🤖 AI TOP 3 CONVICTION PICKS FROM $5T INFRA UNIVERSE</div>'+
+      '<div class="al-ai-txt">'+aiText.replace(/
+/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--y)">$1</strong>')+'</div>'+
+    '</div>';
+  }
+
+  // Sort: not-yet-run first, then by conviction
+  stocks.sort(function(a,b){
+    if(a.ran !== b.ran) return a.ran ? 1 : -1;
+    return b.conv - a.conv;
+  });
+
+  // Render cards
+  stocks.forEach(function(stk, idx) {
+    var q = prices[stk.s];
+    var price = q ? q.p.toFixed(2) : null;
+    var chg = q ? q.ch : null;
+    var chgC = chg!=null?(chg>=0?'var(--g)':'var(--r)'):'var(--t2)';
+    var lc = layerColors[stk.layer]||'var(--y)';
+    var upPct = q && stk.pt ? Math.round((stk.pt - q.p)/q.p*100) : stk.upside;
+    var convC = stk.conv>=85?'var(--g)':stk.conv>=70?'var(--y)':'var(--r)';
+
+    html += '<div class="infcard '+stk.layer+'" style="animation-delay:'+Math.min(idx*.05,.5)+'s">'+
+      '<div class="inf-hdr">'+
+        '<div class="inf-logo">'+
+          '<img src="https://logo.clearbit.com/'+stk.s.toLowerCase()+'.com" alt="'+stk.s+'"'+
+          ' onload="this.style.opacity=1" style="opacity:0;transition:opacity .2s"'+
+          ' onerror="this.style.display='none';var f=document.createElement('div');f.style.cssText='font-family:var(--mono);font-size:8px;color:var(--t2);font-weight:700';f.textContent=''+stk.s.slice(0,4)+'';this.parentNode.appendChild(f);">'+
+        '</div>'+
+        '<div class="inf-info">'+
+          '<div class="inf-sym">'+stk.s+(stk.ran?'<span style="font-family:var(--mono);font-size:7px;color:var(--r);margin-left:5px">ALREADY RAN</span>':'')+'</div>'+
+          '<div class="inf-name">'+stk.n+'</div>'+
+          '<div class="inf-bdg" style="border-color:'+lc+'40;color:'+lc+'">'+stk.layer+'</div>'+
+        '</div>'+
+        '<div class="inf-right">'+
+          (price?'<div class="inf-price">$'+price+'</div>':'<div style="font-family:var(--mono);font-size:9px;color:var(--t2)">Loading…</div>')+
+          (chg!=null?'<div class="inf-chg" style="color:'+chgC+'">'+(chg>=0?'+':'')+chg.toFixed(2)+'%</div>':'')+
+          '<div class="inf-pt">PT $'+stk.pt+' (+'+upPct+'%)</div>'+
+        '</div>'+
+      '</div>'+
+      // Metrics
+      '<div class="inf-metrics">'+
+      stk.metrics.map(function(m){
+        return '<div class="infm"><div class="infml">'+m[0]+'</div><div class="infmv" style="color:'+m[2]+'">'+m[1]+'</div></div>';
+      }).join('')+
+      '</div>'+
+      // Why
+      '<div class="inf-why">'+stk.why+'</div>'+
+      // Options setup
+      '<div class="inf-setup">💡 '+stk.setup+'</div>'+
+      // McKinsey link
+      '<div style="margin:0 10px 10px;padding:5px 8px;background:rgba(245,166,35,.05);border-radius:6px;font-family:var(--mono);font-size:7px;color:var(--y)">📊 McKINSEY: '+stk.mckLink+'</div>'+
+    '</div>';
+  });
+
+  if (out) { out.innerHTML = html; if(!skipAI) out.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+
 // ─── ALPHA ENGINE ─────────────────────────────────────────────
 
 var ALPHA_SECTORS = [
@@ -2716,7 +3329,7 @@ function setAlMode(m, el) {
   alMode = m;
   document.querySelectorAll('[data-am]').forEach(function(b){b.classList.remove('on');});
   el.classList.add('on');
-  ['laggard','options','puts'].forEach(function(id){
+  ['laggard','options','infra','puts'].forEach(function(id){
     var e2 = document.getElementById('alm-'+id);
     if (e2) e2.style.display = m===id ? '' : 'none';
   });
@@ -2730,6 +3343,8 @@ function updateAlRunSub() {
     sub.textContent = alSelSectors.size ? alSelSectors.size+' sector(s) selected — find what hasn't run' : 'Select sectors above that have already run';
   } else if (alMode === 'options') {
     sub.textContent = 'Build optimal options strategy for your factors';
+  } else if (alMode === 'infra') {
+    sub.textContent = '$5T McKinsey AI Infrastructure — '+INFRA_STOCKS.filter(function(s){return !s.ran;}).length+' not-yet-run stocks across 6 layers';
   } else {
     sub.textContent = 'Analyze market stress + generate put hedge recommendations';
   }
@@ -2795,6 +3410,7 @@ async function runAlpha() {
 
   if (alMode === 'laggard') await runLaggard();
   else if (alMode === 'options') await runOptions();
+  else if (alMode === 'infra') await runInfra(false);
   else await runPuts();
 
   alRunning = false;
@@ -3144,6 +3760,882 @@ async function runPuts() {
   });
 
   if (out) { out.innerHTML = html; out.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+
+
+// ══════════════════════════════════════════════════════
+//  CHART LAB — interactive candlestick / line chart engine
+// ══════════════════════════════════════════════════════
+
+var CL = {
+  sym: 'NVDA',
+  interval: '1mo',   // Yahoo Finance range param
+  ivLabel:  '1M',
+  type: 'candle',    // candle | line | area
+  data: [],          // [{t,o,h,l,c,v}]
+  compareData: {},   // sym -> [{t,o,h,l,c,v}]
+  compareSym: [],
+  indics: {ma20:true, ma50:true, ma200:false, bb:false, vol:true, rsi:true, macd:false},
+  drawings: [],      // [{type, pts[]}]
+  drawTool: 'none',
+  drawActive: null,
+  // Viewport state
+  visStart: 0,       // index of first visible candle
+  visEnd:   0,       // index of last visible candle
+  candleW:  8,       // px per candle including gap
+  dragging: false,
+  dragStartX: 0,
+  dragStartVis: 0,
+  pinchDist: 0,
+  // Layout
+  mainH: 0,
+  indicH: 0,
+  w: 0,
+  PAD: {l:6, r:52, t:8, b:20},
+  loading: false,
+};
+
+// ── Yahoo range map ──────────────────────────────────
+var CL_RANGE_MAP = {
+  '5m':  {range:'1d',   interval:'5m'},
+  '15m': {range:'5d',   interval:'15m'},
+  '60m': {range:'1mo',  interval:'60m'},
+  '1d':  {range:'6mo',  interval:'1d'},
+  '5d':  {range:'1y',   interval:'1wk'},
+  '1mo': {range:'6mo',  interval:'1d'},
+  '3mo': {range:'1y',   interval:'1d'},
+  '6mo': {range:'2y',   interval:'1wk'},
+  '1y':  {range:'5y',   interval:'1wk'},
+  '2y':  {range:'5y',   interval:'1wk'},
+};
+
+// ── Fetch chart data ─────────────────────────────────
+function fetchChartData(sym, interval) {
+  var rm = CL_RANGE_MAP[interval] || {range:'1y', interval:'1d'};
+  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+sym+
+    '?interval='+rm.interval+'&range='+rm.range+'&includePrePost=false';
+  return proxyFetch(url).then(function(d) {
+    if (!d || !d.chart || !d.chart.result || !d.chart.result[0]) return null;
+    var r = d.chart.result[0];
+    var ts = r.timestamp || [];
+    var q = r.indicators.quote[0];
+    var arr = [];
+    for (var i = 0; i < ts.length; i++) {
+      if (q.close[i] == null) continue;
+      arr.push({
+        t: ts[i] * 1000,
+        o: q.open[i]  || q.close[i],
+        h: q.high[i]  || q.close[i],
+        l: q.low[i]   || q.close[i],
+        c: q.close[i],
+        v: q.volume[i] || 0,
+      });
+    }
+    return arr;
+  });
+}
+
+// ── Load chart sym ────────────────────────────────────
+async function loadChartSym() {
+  var inp = document.getElementById('chartSymInp');
+  var sym = (inp ? inp.value.trim().toUpperCase() : CL.sym) || 'NVDA';
+  CL.sym = sym;
+  if (inp) inp.value = sym;
+  showChartLoading('Loading ' + sym + '…');
+  try {
+    var data = await fetchChartData(sym, CL.interval);
+    if (!data || data.length < 2) {
+      hideChartLoading(); showChartError('No data for ' + sym); return;
+    }
+    CL.data = data;
+    CL.visStart = Math.max(0, data.length - clVisCount());
+    CL.visEnd   = data.length - 1;
+    // Fetch live quote for header
+    fetchYahoo(sym).then(function(q) {
+      if (!q) return;
+      var el = document.getElementById('cLivePrice');
+      var ec = document.getElementById('cLiveChg');
+      if (el) { el.textContent = '$' + q.p.toFixed(2); el.style.color = q.ch >= 0 ? 'var(--g)' : 'var(--r)'; }
+      if (ec) { ec.textContent = (q.ch >= 0 ? '+' : '') + q.ch.toFixed(2) + '%'; ec.style.color = q.ch >= 0 ? 'var(--g)' : 'var(--r)'; }
+    });
+    // Fetch compare data
+    await Promise.all(CL.compareSym.map(function(cs) {
+      return fetchChartData(cs, CL.interval).then(function(cd) {
+        if (cd && cd.length > 1) CL.compareData[cs] = cd;
+      }).catch(function(){});
+    }));
+    updateChartStats();
+    renderChart();
+    hideChartLoading();
+  } catch(e) {
+    hideChartLoading(); showChartError('Error loading ' + sym);
+  }
+}
+
+function showChartLoading(txt) {
+  CL.loading = true;
+  var el = document.getElementById('chartLoading');
+  var t  = document.getElementById('chartLoadingTxt');
+  if (el) el.style.display = 'flex';
+  if (t)  t.textContent = txt || 'Loading…';
+}
+function hideChartLoading() {
+  CL.loading = false;
+  var el = document.getElementById('chartLoading');
+  if (el) el.style.display = 'none';
+}
+function showChartError(msg) {
+  var el = document.getElementById('chartLoadingTxt');
+  if (el) { el.textContent = '⚠ ' + msg; }
+  var spin = document.querySelector('#chartLoading .chart-loading-spin');
+  if (spin) spin.style.display = 'none';
+  var lo = document.getElementById('chartLoading');
+  if (lo) lo.style.display = 'flex';
+}
+
+function clVisCount() {
+  return Math.max(20, Math.floor((CL.w - CL.PAD.l - CL.PAD.r) / CL.candleW));
+}
+
+// ── Controls ─────────────────────────────────────────
+function setChartType(t, el) {
+  CL.type = t;
+  document.querySelectorAll('[data-ct]').forEach(function(b){ b.classList.remove('type-on'); });
+  el.classList.add('type-on');
+  renderChart();
+}
+
+function setChartInterval(iv, el) {
+  CL.interval = iv;
+  document.querySelectorAll('[data-ci]').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  loadChartSym();
+}
+
+function toggleIndic(ind, el) {
+  CL.indics[ind] = !CL.indics[ind];
+  el.classList.toggle('on', CL.indics[ind]);
+  renderChart();
+}
+
+function setDrawTool(tool, el) {
+  CL.drawTool = tool;
+  document.querySelectorAll('[data-draw]').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+}
+
+function clearDrawings() { CL.drawings = []; renderChart(); }
+
+function quickChart(sym) {
+  var inp = document.getElementById('chartSymInp');
+  if (inp) inp.value = sym;
+  CL.sym = sym;
+  loadChartSym();
+}
+
+async function addCompare() {
+  var inp = document.getElementById('cmpInp');
+  var sym = (inp ? inp.value.trim().toUpperCase() : '');
+  if (!sym || CL.compareSym.includes(sym) || sym === CL.sym) return;
+  if (CL.compareSym.length >= 3) { CL.compareSym.shift(); }
+  CL.compareSym.push(sym);
+  if (inp) inp.value = '';
+  renderCmpTags();
+  showChartLoading('Loading comparison…');
+  try {
+    var cd = await fetchChartData(sym, CL.interval);
+    if (cd && cd.length > 1) CL.compareData[sym] = cd;
+  } catch(e) {}
+  hideChartLoading();
+  renderChart();
+}
+
+function removeCompare(sym) {
+  CL.compareSym = CL.compareSym.filter(function(s){ return s !== sym; });
+  delete CL.compareData[sym];
+  renderCmpTags();
+  renderChart();
+}
+
+function renderCmpTags() {
+  var el = document.getElementById('cmpTags');
+  if (!el) return;
+  var colors = ['var(--p)','var(--y)','var(--pk)'];
+  el.innerHTML = CL.compareSym.map(function(s, i) {
+    return '<div class="cmp-tag" style="border-color:'+colors[i]+';color:'+colors[i]+';background:'+colors[i]+'18">'+
+      s + '<span class="cmp-rm" onclick="removeCompare(\''+s+'\')"> ✕</span></div>';
+  }).join('');
+}
+
+// ── Stats bar ─────────────────────────────────────────
+function updateChartStats() {
+  var d = CL.data;
+  if (!d.length) return;
+  var last = d[d.length-1];
+  var yr = d.slice(-252);
+  var h52 = Math.max.apply(null, yr.map(function(x){return x.h;}));
+  var l52 = Math.min.apply(null, yr.map(function(x){return x.l;}));
+  var closes = d.map(function(x){return x.c;});
+  var rsi = calcRSI(closes) || '—';
+  var fmtP = function(v){ return v ? '$'+v.toFixed(v<10?3:2) : '—'; };
+  var fmtV = function(v){ return v > 1e9 ? (v/1e9).toFixed(1)+'B' : v > 1e6 ? (v/1e6).toFixed(1)+'M' : v > 1e3 ? (v/1e3).toFixed(0)+'K' : (v||0).toString(); };
+  var set = function(id, v, col) { var e = document.getElementById(id); if(e){e.textContent=v; if(col)e.style.color=col;} };
+  set('cs-open',  fmtP(last.o));
+  set('cs-high',  fmtP(last.h), 'var(--g)');
+  set('cs-low',   fmtP(last.l), 'var(--r)');
+  set('cs-close', fmtP(last.c), last.c >= last.o ? 'var(--g)' : 'var(--r)');
+  set('cs-vol',   fmtV(last.v));
+  set('cs-52h',   fmtP(h52), 'var(--g)');
+  set('cs-52l',   fmtP(l52), 'var(--r)');
+  set('cs-rsi',   rsi.toString(), rsi > 70 ? 'var(--r)' : rsi < 40 ? 'var(--g)' : 'var(--t1)');
+}
+
+// ── EMA / MA / BB helpers ────────────────────────────
+function calcMA(arr, n) {
+  var res = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (i < n - 1) { res.push(null); continue; }
+    var sum = 0;
+    for (var j = i - n + 1; j <= i; j++) sum += arr[j];
+    res.push(sum / n);
+  }
+  return res;
+}
+
+function calcEMAArr(arr, n) {
+  var k = 2 / (n + 1), res = [], ema = null;
+  for (var i = 0; i < arr.length; i++) {
+    if (ema === null) { ema = arr[i]; res.push(ema); continue; }
+    ema = arr[i] * k + ema * (1 - k);
+    res.push(ema);
+  }
+  return res;
+}
+
+function calcBB(arr, n, mult) {
+  var mid = calcMA(arr, n);
+  var upper = [], lower = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (mid[i] === null) { upper.push(null); lower.push(null); continue; }
+    var slice = arr.slice(Math.max(0, i - n + 1), i + 1);
+    var mean = mid[i];
+    var std = Math.sqrt(slice.reduce(function(s, v){ return s + (v - mean) * (v - mean); }, 0) / slice.length);
+    upper.push(mean + mult * std);
+    lower.push(mean - mult * std);
+  }
+  return { mid: mid, upper: upper, lower: lower };
+}
+
+function calcMACDArr(arr) {
+  var ema12 = calcEMAArr(arr, 12);
+  var ema26 = calcEMAArr(arr, 26);
+  var macd = ema12.map(function(v, i){ return v !== null && ema26[i] !== null ? v - ema26[i] : null; });
+  var signal = calcEMAArr(macd.filter(function(v){ return v !== null; }), 9);
+  var sIdx = 0, sigFull = [];
+  macd.forEach(function(v){ sigFull.push(v !== null ? (signal[sIdx++] || null) : null); });
+  var hist = macd.map(function(v, i){ return v !== null && sigFull[i] !== null ? v - sigFull[i] : null; });
+  return { macd: macd, signal: sigFull, hist: hist };
+}
+
+function calcRSIArr(arr) {
+  var res = [], gains = 0, losses = 0, n = 14;
+  for (var i = 1; i < arr.length; i++) {
+    var d = arr[i] - arr[i-1];
+    if (i <= n) {
+      if (d > 0) gains += d; else losses += Math.abs(d);
+      if (i === n) {
+        var ag = gains/n, al = losses/n;
+        res.push(al === 0 ? 100 : Math.round(100 - 100/(1 + ag/al)));
+      } else res.push(null);
+    } else {
+      if (typeof res._ag === 'undefined') { res._ag = gains/n; res._al = losses/n; }
+      res._ag = (res._ag * (n-1) + (d > 0 ? d : 0)) / n;
+      res._al = (res._al * (n-1) + (d < 0 ? Math.abs(d) : 0)) / n;
+      res.push(res._al === 0 ? 100 : Math.round(100 - 100/(1 + res._ag/res._al)));
+    }
+  }
+  res.unshift(null);
+  return res;
+}
+
+// ── Main render ───────────────────────────────────────
+function renderChart() {
+  try {
+    var main = document.getElementById('chartMain');
+    var canvas = document.getElementById('chartCanvas');
+    var iCanvas = document.getElementById('indicCanvas');
+    if (!main || !canvas || !iCanvas || !CL.data.length) return;
+
+    var dpr = window.devicePixelRatio || 1;
+    CL.w = main.offsetWidth || window.innerWidth;
+    var showVol  = CL.indics.vol;
+    var showRSI  = CL.indics.rsi;
+    var showMACD = CL.indics.macd;
+    var indicPanels = (showVol ? 1 : 0) + (showRSI ? 1 : 0) + (showMACD ? 1 : 0);
+    var panelH = 60;
+    CL.indicH = indicPanels * panelH;
+    var totalH = Math.max(180, window.innerHeight - 370);
+    CL.mainH = totalH;
+
+    // Size canvases
+    canvas.width  = Math.floor(CL.w * dpr);
+    canvas.height = Math.floor(CL.mainH * dpr);
+    canvas.style.width  = CL.w + 'px';
+    canvas.style.height = CL.mainH + 'px';
+    iCanvas.width  = Math.floor(CL.w * dpr);
+    iCanvas.height = Math.floor(CL.indicH * dpr);
+    iCanvas.style.width  = CL.w + 'px';
+    iCanvas.style.height = CL.indicH > 0 ? CL.indicH + 'px' : '0px';
+
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    var ictx = iCanvas.getContext('2d');
+    ictx.scale(dpr, dpr);
+
+    var data = CL.data;
+    var n = data.length;
+    var PAD = CL.PAD;
+    var pw = CL.w - PAD.l - PAD.r;
+    var ph = CL.mainH - PAD.t - PAD.b;
+
+    // Visible slice
+    var vis = Math.min(Math.floor(pw / CL.candleW), n);
+    CL.visEnd   = Math.min(n - 1, CL.visEnd);
+    CL.visStart = Math.max(0, CL.visEnd - vis + 1);
+    var slice = data.slice(CL.visStart, CL.visEnd + 1);
+    var ns = slice.length;
+    if (ns < 2) return;
+
+    // Price range
+    var minP = Math.min.apply(null, slice.map(function(d){ return d.l; }));
+    var maxP = Math.max.apply(null, slice.map(function(d){ return d.h; }));
+    var pRange = maxP - minP;
+    if (pRange < 0.001) pRange = maxP * 0.02 || 0.01;
+    // Add 8% padding
+    minP -= pRange * 0.08;
+    maxP += pRange * 0.08;
+    pRange = maxP - minP;
+
+    function xAt(i) { return PAD.l + (i + 0.5) * (pw / ns); }
+    function yAt(v) { return PAD.t + ph - ((v - minP) / pRange) * ph; }
+    var cw = Math.max(1, pw / ns - 1.5); // candle body width
+
+    ctx.clearRect(0, 0, CL.w, CL.mainH);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(34,44,58,.4)';
+    ctx.lineWidth = 0.5;
+    for (var gi = 1; gi <= 4; gi++) {
+      var gy = PAD.t + ph * gi / 4;
+      ctx.beginPath(); ctx.moveTo(PAD.l, gy); ctx.lineTo(PAD.l + pw, gy); ctx.stroke();
+      var gPrice = maxP - (pRange * gi / 4);
+      ctx.fillStyle = '#445566';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('$' + gPrice.toFixed(gPrice < 10 ? 2 : 0), PAD.l + pw + 2, gy + 3);
+    }
+
+    // Vertical time grid (every ~20% of visible candles)
+    var tStep = Math.max(1, Math.round(ns / 5));
+    for (var ti = 0; ti < ns; ti += tStep) {
+      var tx = xAt(ti);
+      ctx.strokeStyle = 'rgba(34,44,58,.3)';
+      ctx.beginPath(); ctx.moveTo(tx, PAD.t); ctx.lineTo(tx, PAD.t + ph); ctx.stroke();
+      var td = new Date(slice[ti].t);
+      ctx.fillStyle = '#445566';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(td.toLocaleDateString('en-US',{month:'short',day:'numeric'}), tx, PAD.t + ph + 14);
+    }
+
+    // MA overlays
+    var closes = data.map(function(d){ return d.c; });
+    var maColors = {ma20:'#f5a623', ma50:'#3d8eff', ma200:'#f472b6'};
+    ['ma20','ma50','ma200'].forEach(function(k) {
+      if (!CL.indics[k]) return;
+      var n2 = k === 'ma20' ? 20 : k === 'ma50' ? 50 : 200;
+      var ma = calcMA(closes, n2);
+      ctx.beginPath();
+      ctx.strokeStyle = maColors[k];
+      ctx.lineWidth = 1.2;
+      var started = false;
+      for (var mi = CL.visStart; mi <= CL.visEnd; mi++) {
+        if (ma[mi] === null) continue;
+        var mx = xAt(mi - CL.visStart);
+        var my = yAt(ma[mi]);
+        if (!started) { ctx.moveTo(mx, my); started = true; } else ctx.lineTo(mx, my);
+      }
+      ctx.stroke();
+    });
+
+    // Bollinger Bands
+    if (CL.indics.bb) {
+      var bb = calcBB(closes, 20, 2);
+      ctx.strokeStyle = 'rgba(167,139,250,.5)';
+      ctx.lineWidth = 0.8;
+      ['upper','lower'].forEach(function(key) {
+        ctx.beginPath();
+        var started = false;
+        for (var bi = CL.visStart; bi <= CL.visEnd; bi++) {
+          if (bb[key][bi] === null) continue;
+          var bx = xAt(bi - CL.visStart);
+          var by = yAt(bb[key][bi]);
+          if (!started) { ctx.moveTo(bx, by); started = true; } else ctx.lineTo(bx, by);
+        }
+        ctx.stroke();
+      });
+    }
+
+    // Compare lines (normalized to % return)
+    var cmpColors = ['rgba(167,139,250,.8)', 'rgba(245,166,35,.8)', 'rgba(244,114,182,.8)'];
+    CL.compareSym.forEach(function(cs, ci) {
+      var cd = CL.compareData[cs];
+      if (!cd || cd.length < 2) return;
+      // Find base price at same start time as main
+      var baseC = slice[0].c;
+      var baseMain = data[CL.visStart].c;
+      ctx.beginPath();
+      ctx.strokeStyle = cmpColors[ci] || 'rgba(167,139,250,.7)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      var started = false;
+      for (var si = 0; si < ns; si++) {
+        var mainT = slice[si].t;
+        // Find closest compare candle
+        var cc = cd.reduce(function(prev, cur) { return Math.abs(cur.t - mainT) < Math.abs(prev.t - mainT) ? cur : prev; });
+        if (!cc) continue;
+        var norm = baseMain * (cc.c / (cd[0] && cd[0].c || cc.c));
+        var cx2 = xAt(si), cy = yAt(norm);
+        if (!started) { ctx.moveTo(cx2, cy); started = true; } else ctx.lineTo(cx2, cy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Label
+      if (started) {
+        ctx.fillStyle = cmpColors[ci];
+        ctx.font = 'bold 9px monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(cs, PAD.l + pw - 2, PAD.t + (ci + 1) * 14);
+      }
+    });
+
+    // Draw candles / line / area
+    if (CL.type === 'candle') {
+      slice.forEach(function(d, i) {
+        var isUp = d.c >= d.o;
+        var col = isUp ? '#00e87a' : '#ff334e';
+        var x = xAt(i);
+        var bodyTop = yAt(Math.max(d.o, d.c));
+        var bodyBot = yAt(Math.min(d.o, d.c));
+        var bodyH = Math.max(1, bodyBot - bodyTop);
+        var hw = Math.max(0.5, cw / 2);
+        // Wick
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(x, yAt(d.h));
+        ctx.lineTo(x, bodyTop);
+        ctx.moveTo(x, bodyBot);
+        ctx.lineTo(x, yAt(d.l));
+        ctx.stroke();
+        // Body
+        ctx.fillStyle = col;
+        if (bodyH < 2) {
+          ctx.fillRect(x - hw, bodyTop - 0.5, cw, 2);
+        } else {
+          ctx.fillRect(x - hw, bodyTop, cw, bodyH);
+          if (!isUp) {
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(x - hw, bodyTop, cw, bodyH);
+          }
+        }
+      });
+    } else {
+      // Line / area
+      var isUp2 = slice[ns-1].c >= slice[0].c;
+      var lc = isUp2 ? '#00e87a' : '#ff334e';
+      ctx.beginPath();
+      slice.forEach(function(d, i) { i === 0 ? ctx.moveTo(xAt(i), yAt(d.c)) : ctx.lineTo(xAt(i), yAt(d.c)); });
+      ctx.strokeStyle = lc;
+      ctx.lineWidth = 1.8;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      if (CL.type === 'area') {
+        ctx.lineTo(xAt(ns-1), PAD.t + ph);
+        ctx.lineTo(PAD.l, PAD.t + ph);
+        ctx.closePath();
+        var g = ctx.createLinearGradient(0, PAD.t, 0, PAD.t + ph);
+        g.addColorStop(0, isUp2 ? 'rgba(0,232,122,.18)' : 'rgba(255,51,78,.18)');
+        g.addColorStop(1, 'rgba(7,9,13,0)');
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+    }
+
+    // Drawings
+    CL.drawings.forEach(function(dr) { drawAnnotation(ctx, dr, xAt, yAt, ns, slice); });
+
+    // ── Indicators panel ─────────────────────────────
+    ictx.clearRect(0, 0, CL.w, CL.indicH);
+    var panelIdx = 0;
+
+    if (showVol) {
+      var vpy = panelIdx * panelH;
+      var maxV = Math.max.apply(null, slice.map(function(d){ return d.v; })) || 1;
+      // Grid
+      ictx.strokeStyle = 'rgba(34,44,58,.4)';
+      ictx.lineWidth = 0.5;
+      ictx.beginPath(); ictx.moveTo(PAD.l, vpy); ictx.lineTo(PAD.l + pw, vpy); ictx.stroke();
+      ictx.fillStyle = '#445566';
+      ictx.font = '8px monospace';
+      ictx.textAlign = 'left';
+      ictx.fillText('VOL', PAD.l + pw + 2, vpy + 12);
+      slice.forEach(function(d, i) {
+        var x = xAt(i);
+        var vh = ((d.v / maxV) * (panelH - 12));
+        var col = d.c >= d.o ? 'rgba(0,232,122,.5)' : 'rgba(255,51,78,.5)';
+        ictx.fillStyle = col;
+        ictx.fillRect(x - cw/2, vpy + panelH - vh, cw, vh);
+      });
+      panelIdx++;
+    }
+
+    if (showRSI) {
+      var rpy = panelIdx * panelH;
+      var rsiArr = calcRSIArr(closes);
+      ictx.strokeStyle = 'rgba(34,44,58,.4)';
+      ictx.lineWidth = 0.5;
+      // 70/30 lines
+      [70, 50, 30].forEach(function(lvl) {
+        var ry = rpy + panelH - (lvl / 100) * (panelH - 8) - 4;
+        ictx.beginPath(); ictx.moveTo(PAD.l, ry); ictx.lineTo(PAD.l + pw, ry); ictx.stroke();
+        ictx.fillStyle = lvl === 70 ? '#ff334e66' : lvl === 30 ? '#00e87a66' : '#44556688';
+        ictx.font = '7px monospace';
+        ictx.textAlign = 'left';
+        ictx.fillText(lvl, PAD.l + pw + 2, ry + 3);
+      });
+      ictx.fillStyle = '#445566';
+      ictx.font = '8px monospace';
+      ictx.fillText('RSI', PAD.l + pw + 2, rpy + 12);
+      ictx.beginPath();
+      var rStarted = false;
+      for (var ri = CL.visStart; ri <= CL.visEnd; ri++) {
+        if (rsiArr[ri] === null) continue;
+        var rx = xAt(ri - CL.visStart);
+        var ry2 = rpy + panelH - (rsiArr[ri] / 100) * (panelH - 8) - 4;
+        if (!rStarted) { ictx.moveTo(rx, ry2); rStarted = true; } else ictx.lineTo(rx, ry2);
+      }
+      var lastRSI = rsiArr[CL.visEnd];
+      ictx.strokeStyle = lastRSI > 70 ? 'var(--r)' : lastRSI < 30 ? 'var(--g)' : '#a78bfa';
+      ictx.lineWidth = 1.5;
+      ictx.lineJoin = 'round';
+      ictx.stroke();
+      panelIdx++;
+    }
+
+    if (showMACD) {
+      var mpy = panelIdx * panelH;
+      var macdData = calcMACDArr(closes);
+      var allHist = macdData.hist.slice(CL.visStart, CL.visEnd + 1).filter(function(v){ return v !== null; });
+      var maxH = Math.max.apply(null, allHist.map(Math.abs)) || 1;
+      ictx.fillStyle = '#445566';
+      ictx.font = '8px monospace';
+      ictx.textAlign = 'left';
+      ictx.fillText('MACD', PAD.l + pw + 2, mpy + 12);
+      var midY = mpy + panelH / 2;
+      // zero line
+      ictx.strokeStyle = 'rgba(34,44,58,.5)';
+      ictx.lineWidth = 0.5;
+      ictx.beginPath(); ictx.moveTo(PAD.l, midY); ictx.lineTo(PAD.l + pw, midY); ictx.stroke();
+      // Histogram
+      for (var mi2 = CL.visStart; mi2 <= CL.visEnd; mi2++) {
+        var h2 = macdData.hist[mi2];
+        if (h2 === null) continue;
+        var mx2 = xAt(mi2 - CL.visStart);
+        var mh = (Math.abs(h2) / maxH) * (panelH / 2 - 4);
+        ictx.fillStyle = h2 >= 0 ? 'rgba(0,232,122,.5)' : 'rgba(255,51,78,.5)';
+        ictx.fillRect(mx2 - cw/2, h2 >= 0 ? midY - mh : midY, cw, mh);
+      }
+      // MACD + Signal lines
+      ictx.lineWidth = 1.2;
+      ictx.lineJoin = 'round';
+      ['macd','signal'].forEach(function(key, ki) {
+        ictx.beginPath();
+        var started = false;
+        for (var mk = CL.visStart; mk <= CL.visEnd; mk++) {
+          var v = macdData[key][mk];
+          if (v === null) continue;
+          var mkx = xAt(mk - CL.visStart);
+          var mky = midY - (v / maxH) * (panelH / 2 - 4);
+          if (!started) { ictx.moveTo(mkx, mky); started = true; } else ictx.lineTo(mkx, mky);
+        }
+        ictx.strokeStyle = ki === 0 ? '#3d8eff' : '#f5a623';
+        ictx.stroke();
+      });
+      panelIdx++;
+    }
+
+  } catch(e) { /* silently fail */ }
+}
+
+function drawAnnotation(ctx, dr, xAt, yAt, ns, slice) {
+  try {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(244,114,182,.8)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 3]);
+    if (dr.type === 'hline' && dr.pts.length >= 1) {
+      var y = yAt(dr.pts[0].price);
+      ctx.beginPath();
+      ctx.moveTo(CL.PAD.l, y); ctx.lineTo(CL.PAD.l + (CL.w - CL.PAD.l - CL.PAD.r), y);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(244,114,182,.9)';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText('$' + dr.pts[0].price.toFixed(2), CL.PAD.l + CL.w - CL.PAD.l - CL.PAD.r - 2, y - 2);
+    } else if ((dr.type === 'tline' || dr.type === 'fib') && dr.pts.length >= 2) {
+      var p1 = dr.pts[0], p2 = dr.pts[1];
+      ctx.beginPath();
+      ctx.moveTo(xAt(p1.i), yAt(p1.price));
+      ctx.lineTo(xAt(p2.i), yAt(p2.price));
+      ctx.stroke();
+      if (dr.type === 'fib') {
+        [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1].forEach(function(lvl) {
+          var fp = p1.price + (p2.price - p1.price) * lvl;
+          var fy = yAt(fp);
+          ctx.beginPath(); ctx.moveTo(CL.PAD.l, fy);
+          ctx.lineTo(CL.PAD.l + CL.w - CL.PAD.l - CL.PAD.r, fy); ctx.stroke();
+          ctx.fillStyle = 'rgba(244,114,182,.7)';
+          ctx.font = '8px monospace';
+          ctx.fillText((lvl * 100).toFixed(1) + '% $' + fp.toFixed(2), CL.PAD.l + 4, fy - 2);
+        });
+      }
+    }
+    ctx.setLineDash([]);
+    ctx.restore();
+  } catch(e) {}
+}
+
+// ── Touch / mouse interactions ────────────────────────
+function clSetupEvents() {
+  var canvas = document.getElementById('chartCanvas');
+  var icanvas = document.getElementById('indicCanvas');
+  if (!canvas) return;
+
+  // Mouse move → crosshair + tooltip
+  canvas.addEventListener('mousemove', function(e) {
+    if (CL.dragging) {
+      var dx = e.clientX - CL.dragStartX;
+      var candlesPerPx = 1 / CL.candleW;
+      var shift = Math.round(-dx * candlesPerPx);
+      CL.visEnd = Math.min(CL.data.length - 1, Math.max(clVisCount() - 1, CL.dragStartVis + shift));
+      CL.visStart = Math.max(0, CL.visEnd - clVisCount() + 1);
+      renderChart();
+    }
+    clShowCrosshair(e);
+  });
+
+  canvas.addEventListener('mousedown', function(e) {
+    if (CL.drawTool !== 'none') { clHandleDrawStart(e); return; }
+    CL.dragging = true;
+    CL.dragStartX = e.clientX;
+    CL.dragStartVis = CL.visEnd;
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('mouseup', function() { CL.dragging = false; canvas.style.cursor = 'crosshair'; });
+  canvas.addEventListener('mouseleave', function() {
+    CL.dragging = false; canvas.style.cursor = 'crosshair';
+    document.getElementById('chartTooltip').classList.remove('visible');
+    document.getElementById('chartPriceAxisLbl').style.display = 'none';
+  });
+
+  // Wheel → zoom
+  canvas.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var delta = e.deltaY > 0 ? 1.15 : 0.87;
+    var newW = Math.max(4, Math.min(40, CL.candleW * delta));
+    CL.candleW = newW;
+    var vis = clVisCount();
+    CL.visStart = Math.max(0, CL.visEnd - vis + 1);
+    renderChart();
+  }, { passive: false });
+
+  // Touch events
+  var lastTouchX = 0, lastTouchDist = 0;
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      if (CL.drawTool !== 'none') { clHandleDrawStartTouch(e); return; }
+      CL.dragging = true;
+      CL.dragStartX = e.touches[0].clientX;
+      CL.dragStartVis = CL.visEnd;
+      lastTouchX = e.touches[0].clientX;
+      clShowCrosshairTouch(e.touches[0]);
+    } else if (e.touches.length === 2) {
+      CL.dragging = false;
+      CL.pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      var newDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      var ratio = newDist / (CL.pinchDist || newDist);
+      CL.candleW = Math.max(3, Math.min(40, CL.candleW * ratio));
+      CL.pinchDist = newDist;
+      var vis = clVisCount();
+      CL.visStart = Math.max(0, CL.visEnd - vis + 1);
+      renderChart();
+    } else if (e.touches.length === 1 && CL.dragging) {
+      var dx = e.touches[0].clientX - CL.dragStartX;
+      var shift = Math.round(-dx / CL.candleW);
+      CL.visEnd = Math.min(CL.data.length - 1, Math.max(clVisCount() - 1, CL.dragStartVis + shift));
+      CL.visStart = Math.max(0, CL.visEnd - clVisCount() + 1);
+      renderChart();
+      clShowCrosshairTouch(e.touches[0]);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function() { CL.dragging = false; });
+}
+
+function clShowCrosshair(e) {
+  try {
+    var canvas = document.getElementById('chartCanvas');
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    clDrawCrosshair(x, y, canvas, rect);
+  } catch(err) {}
+}
+
+function clShowCrosshairTouch(touch) {
+  try {
+    var canvas = document.getElementById('chartCanvas');
+    var rect = canvas.getBoundingClientRect();
+    var x = touch.clientX - rect.left;
+    var y = touch.clientY - rect.top;
+    clDrawCrosshair(x, y, canvas, rect);
+  } catch(err) {}
+}
+
+function clDrawCrosshair(x, y, canvas, rect) {
+  var ns = CL.visEnd - CL.visStart + 1;
+  if (ns < 1) return;
+  var PAD = CL.PAD;
+  var pw = CL.w - PAD.l - PAD.r;
+  var ph = CL.mainH - PAD.t - PAD.b;
+
+  var i = Math.round((x - PAD.l) / (pw / ns) - 0.5);
+  i = Math.max(0, Math.min(ns - 1, i));
+  var d = CL.data[CL.visStart + i];
+  if (!d) return;
+
+  // Draw crosshair on canvas
+  var dpr = window.devicePixelRatio || 1;
+  var ctx = canvas.getContext('2d');
+  renderChart(); // redraw clean first
+  ctx.save();
+  ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = 'rgba(240,244,248,.2)';
+  ctx.lineWidth = 0.8;
+  var cx = PAD.l + (i + 0.5) * (pw / ns);
+  ctx.beginPath(); ctx.moveTo(cx, PAD.t); ctx.lineTo(cx, PAD.t + ph); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(PAD.l + pw, y); ctx.stroke();
+  ctx.restore();
+
+  // Price label on right axis
+  var price = PAD.t + ph > y ? (CL.mainH - PAD.b - y) / ph * (Math.max.apply(null, CL.data.slice(CL.visStart, CL.visEnd+1).map(function(d){return d.h;}))-Math.min.apply(null, CL.data.slice(CL.visStart, CL.visEnd+1).map(function(d){return d.l;}))) + Math.min.apply(null, CL.data.slice(CL.visStart, CL.visEnd+1).map(function(d){return d.l;})) : 0;
+
+  var axisLbl = document.getElementById('chartPriceAxisLbl');
+  if (axisLbl) {
+    axisLbl.style.display = 'block';
+    axisLbl.style.top = (y - 8) + 'px';
+    axisLbl.textContent = '$' + (d.c || 0).toFixed(2);
+  }
+
+  // Tooltip
+  var tip = document.getElementById('chartTooltip');
+  if (tip) {
+    tip.classList.add('visible');
+    var fmtV = function(v){ return v > 1e9 ? (v/1e9).toFixed(1)+'B' : v > 1e6 ? (v/1e6).toFixed(1)+'M' : (v||0).toString(); };
+    var dt = new Date(d.t);
+    document.getElementById('ctDate').textContent = dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+    document.getElementById('ctO').textContent = '$' + d.o.toFixed(2);
+    document.getElementById('ctH').textContent = '$' + d.h.toFixed(2);
+    document.getElementById('ctL').textContent = '$' + d.l.toFixed(2);
+    document.getElementById('ctC').textContent = '$' + d.c.toFixed(2);
+    document.getElementById('ctC').style.color = d.c >= d.o ? 'var(--g)' : 'var(--r)';
+    document.getElementById('ctV').textContent = fmtV(d.v);
+    // Position tooltip
+    var tipX = x + 12;
+    var tipY = y - 10;
+    if (tipX + 140 > CL.w) tipX = x - 150;
+    if (tipY < 0) tipY = 0;
+    tip.style.left = tipX + 'px';
+    tip.style.top  = tipY + 'px';
+  }
+}
+
+// ── Drawing tools ─────────────────────────────────────
+function clHandleDrawStart(e) {
+  var canvas = document.getElementById('chartCanvas');
+  var rect = canvas.getBoundingClientRect();
+  var x = e.clientX - rect.left;
+  var price = clXYToPrice(x, e.clientY - rect.top);
+  var idx = clXToIndex(x);
+  if (!CL.drawActive) {
+    CL.drawActive = {type: CL.drawTool, pts: [{i: idx, price: price}]};
+  } else {
+    CL.drawActive.pts.push({i: idx, price: price});
+    var needed = CL.drawTool === 'hline' ? 1 : 2;
+    if (CL.drawActive.pts.length >= needed) {
+      CL.drawings.push(CL.drawActive);
+      CL.drawActive = null;
+      renderChart();
+    }
+  }
+}
+
+function clHandleDrawStartTouch(e) {
+  var canvas = document.getElementById('chartCanvas');
+  var rect = canvas.getBoundingClientRect();
+  var touch = e.touches[0];
+  var x = touch.clientX - rect.left;
+  var price = clXYToPrice(x, touch.clientY - rect.top);
+  var idx = clXToIndex(x);
+  var mockE = {clientX: touch.clientX, clientY: touch.clientY};
+  clHandleDrawStart({clientX: touch.clientX, clientY: touch.clientY, target: canvas});
+}
+
+function clXToIndex(x) {
+  var ns = CL.visEnd - CL.visStart + 1;
+  var pw = CL.w - CL.PAD.l - CL.PAD.r;
+  return Math.round((x - CL.PAD.l) / (pw / ns) - 0.5) + CL.visStart;
+}
+
+function clXYToPrice(x, y) {
+  var slice = CL.data.slice(CL.visStart, CL.visEnd + 1);
+  var minP = Math.min.apply(null, slice.map(function(d){return d.l;}));
+  var maxP = Math.max.apply(null, slice.map(function(d){return d.h;}));
+  var pRange = maxP - minP; if (pRange < 0.001) pRange = 1;
+  var ph = CL.mainH - CL.PAD.t - CL.PAD.b;
+  return maxP - ((y - CL.PAD.t) / ph) * pRange;
+}
+
+// ── Init chart lab ────────────────────────────────────
+function initChartLab() {
+  // Size the main chart area
+  var main = document.getElementById('chartMain');
+  if (!main) return;
+  var totalH = Math.max(180, window.innerHeight - 370);
+  main.style.minHeight = totalH + 'px';
+  CL.w = main.offsetWidth || window.innerWidth;
+  clSetupEvents();
+  loadChartSym();
 }
 
 
