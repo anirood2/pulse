@@ -483,6 +483,152 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
   border:1px solid rgba(167,139,250,.15);border-radius:10px;}
 .qaib-lbl{font-family:var(--mono);font-size:7px;color:var(--p);letter-spacing:1.5px;margin-bottom:8px;}
 .qaib-txt{font-size:11px;color:var(--t1);line-height:1.8;}
+
+/* ── ALPHA ENGINE ── */
+.alphero{padding:16px 16px 10px;}
+.altitle{font-size:22px;font-weight:800;letter-spacing:-1px;}
+.altitle em{color:#f5a623;font-style:normal;}
+.alsub{font-family:var(--mono);font-size:9px;color:var(--t1);margin-top:4px;line-height:1.5;}
+
+/* Mode tabs */
+.almodes{display:flex;gap:0;margin:0 16px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.almode{flex:1;padding:10px 6px;text-align:center;font-family:var(--mono);font-size:8px;
+  letter-spacing:.5px;color:var(--t2);cursor:pointer;transition:all .15s;border-right:1px solid var(--line);}
+.almode:last-child{border-right:none;}
+.almode.on{background:rgba(245,166,35,.1);color:var(--y);}
+.almode-icon{font-size:16px;display:block;margin-bottom:3px;}
+
+/* Sector selector */
+.alsect-wrap{padding:0 16px 12px;}
+.alsect-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1.5px;margin-bottom:8px;}
+.alsect-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.alscard{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;cursor:pointer;transition:all .15s;position:relative;}
+.alscard.on{border-color:var(--y);background:rgba(245,166,35,.06);}
+.alscard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  border-radius:10px 0 0 10px;background:var(--y);opacity:0;transition:opacity .15s;}
+.alscard.on::before{opacity:1;}
+.als-name{font-weight:700;font-size:11px;line-height:1.2;}
+.als-ran{font-family:var(--mono);font-size:8px;margin-top:3px;}
+.als-chk{position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:8px;}
+.alscard.on .als-chk{background:var(--y);border-color:var(--y);color:var(--bg);}
+
+/* Return factor selector */
+.alfactors{padding:0 16px 12px;}
+.alfact-lbl{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1.5px;margin-bottom:8px;}
+.alfact-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.alfact{padding:6px 12px;border-radius:20px;border:1px solid var(--line2);
+  font-family:var(--mono);font-size:8px;color:var(--t2);cursor:pointer;transition:all .15s;flex-shrink:0;}
+.alfact.on{border-color:var(--y);color:var(--y);background:rgba(245,166,35,.08);}
+
+/* Puts/hedge section */
+.alputbox{margin:0 16px 12px;background:linear-gradient(135deg,rgba(255,51,78,.08),rgba(167,139,250,.06));
+  border:1px solid rgba(255,51,78,.2);border-radius:14px;padding:14px;}
+.alput-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.alput-bdg{font-family:var(--mono);font-size:8px;padding:2px 8px;border-radius:10px;
+  background:rgba(255,51,78,.15);color:var(--r);border:1px solid rgba(255,51,78,.3);}
+.alput-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.alput-icon{font-size:18px;flex-shrink:0;}
+.alput-text{font-size:11px;color:var(--t1);line-height:1.5;}
+.alput-text strong{color:var(--t0);}
+.almktgauge{margin-top:10px;background:var(--card2);border-radius:8px;padding:10px;}
+.amg-lbl{font-family:var(--mono);font-size:7px;color:var(--t2);letter-spacing:1px;margin-bottom:6px;}
+.amg-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--g),var(--y),var(--r));position:relative;margin-bottom:4px;}
+.amg-thumb{position:absolute;top:-4px;width:14px;height:14px;background:var(--t0);
+  border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg);transition:left .8s;}
+.amg-lbls{display:flex;justify-content:space-between;font-family:var(--mono);font-size:7px;}
+.amg-val{font-family:var(--mono);font-size:11px;font-weight:600;text-align:center;margin-top:6px;}
+
+/* Run button */
+.alrun{margin:0 16px 14px;padding:12px 16px;
+  background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(255,51,78,.08));
+  border:1px solid rgba(245,166,35,.3);border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.alrun-l{font-size:13px;font-weight:700;}
+.alrun-s{font-family:var(--mono);font-size:8px;color:var(--t1);margin-top:2px;}
+.alrunbtn{font-family:var(--mono);font-size:10px;padding:9px 16px;background:var(--y);
+  color:var(--bg);border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.alrunbtn:disabled{opacity:.4;}
+
+/* Output cards */
+.alout{padding:0 16px 16px;}
+
+/* Sector laggard card */
+.slcard{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;margin-bottom:12px;animation:fadein .35s ease both;}
+.slcard.STRONG{border-left:3px solid var(--g);}
+.slcard.MODERATE{border-left:3px solid var(--y);}
+.slcard.SPECULATIVE{border-left:3px solid var(--r);}
+.slhdr{padding:14px 14px 10px;display:flex;align-items:center;gap:10px;}
+.sllogo{width:38px;height:38px;border-radius:10px;background:var(--card2);
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.sllogo img{width:100%;height:100%;object-fit:contain;padding:5px;}
+.slinfo{flex:1;min-width:0;}
+.slsym{font-weight:800;font-size:18px;letter-spacing:-.3px;}
+.slname{font-size:10px;color:var(--t1);margin-top:1px;}
+.slbdg{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;
+  padding:2px 7px;border-radius:10px;border:1px solid;margin-top:4px;}
+.slright{text-align:right;flex-shrink:0;}
+.slprice{font-family:var(--mono);font-size:14px;font-weight:600;}
+.slchg{font-family:var(--mono);font-size:9px;margin-top:2px;}
+.slpt{font-family:var(--mono);font-size:9px;color:var(--g);margin-top:2px;}
+
+/* Factor scores */
+.slfacts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0 12px 10px;}
+.slf{background:var(--card2);border-radius:8px;padding:7px 8px;text-align:center;}
+.slfl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:3px;}
+.slfv{font-family:var(--mono);font-size:11px;font-weight:700;}
+.slfbar{height:2px;background:var(--line2);border-radius:1px;margin-top:4px;overflow:hidden;}
+.slffill{height:100%;border-radius:1px;}
+
+/* Options strategy */
+.slstrat{margin:0 12px 10px;background:var(--card2);border-radius:8px;padding:10px 12px;}
+.slstrat-lbl{font-family:var(--mono);font-size:7px;color:var(--y);letter-spacing:1.5px;margin-bottom:6px;}
+.slstrat-main{font-size:12px;font-weight:700;margin-bottom:4px;}
+.slstrat-detail{font-family:var(--mono);font-size:9px;color:var(--t1);line-height:1.6;}
+.slstrat-detail em{color:var(--y);font-style:normal;}
+
+/* Why lagging */
+.slwhy{margin:0 12px 10px;padding:10px 12px;border-radius:8px;border-left:3px solid var(--b);
+  background:rgba(61,142,255,.05);font-size:11px;color:var(--t1);line-height:1.75;}
+.slwhy strong{color:var(--t0);}
+
+/* Put recommendation card */
+.putcard{background:var(--card);border:1px solid rgba(255,51,78,.2);border-left:3px solid var(--r);
+  border-radius:14px;overflow:hidden;margin-bottom:12px;animation:fadein .35s ease both;}
+.puthdr{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+.put-sym{font-weight:800;font-size:16px;}
+.put-bdg{font-family:var(--mono);font-size:8px;padding:3px 10px;border-radius:20px;}
+.put-thesis{padding:0 12px 10px;font-size:11px;color:var(--t1);line-height:1.75;}
+.put-thesis strong{color:var(--r);}
+.put-setup{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:0 12px 10px;}
+.pss{background:var(--card2);border-radius:8px;padding:7px 8px;text-align:center;}
+.pssl{font-family:var(--mono);font-size:7px;color:var(--t2);margin-bottom:2px;}
+.pssv{font-family:var(--mono);font-size:11px;font-weight:700;}
+
+/* AI insight */
+.al-ai{margin:0 16px 14px;padding:12px;background:rgba(245,166,35,.04);
+  border:1px solid rgba(245,166,35,.15);border-radius:12px;}
+.al-ai-lbl{font-family:var(--mono);font-size:7px;color:var(--y);letter-spacing:1.5px;margin-bottom:8px;}
+.al-ai-txt{font-size:11px;color:var(--t1);line-height:1.8;}
+.al-spin{width:28px;height:28px;border:2px solid var(--line2);border-top-color:var(--y);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;}
+.al-loading{padding:32px 16px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--t1);}
+.al-empty{padding:32px 16px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.8;}
+.alscorecard{margin:0 16px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.alsc-hdr{padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;}
+.alsc-title{font-family:var(--mono);font-size:8px;color:var(--t2);letter-spacing:1px;}
+.alsc-val{font-family:var(--mono);font-size:20px;font-weight:800;}
+.alsc-rows{padding:0;}
+.alsc-row{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line);}
+.alsc-row:last-child{border-bottom:none;}
+.alsc-l{font-family:var(--mono);font-size:9px;color:var(--t1);}
+.alsc-r{font-family:var(--mono);font-size:10px;font-weight:600;}
+.alsc-bar{flex:1;height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin:0 10px;}
+.alsc-fill{height:100%;border-radius:2px;}
+
 </style>
 </head>
 <body>
@@ -739,6 +885,113 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
   <div class="disc"><div class="dtxt">Quant Engine uses live market data + AI. Not investment advice. Always do your own due diligence.</div></div>
 </div>
 
+
+<!-- ═══════ ALPHA ENGINE ═══════ -->
+<div class="page" id="pg-alpha">
+  <div class="alphero">
+    <div class="altitle">Alpha <em>Edge</em></div>
+    <div class="alsub">Sector laggards · options strategy builder · put hedges · AI conviction picks</div>
+  </div>
+
+  <!-- Mode tabs -->
+  <div class="almodes">
+    <div class="almode on" data-am="laggard" onclick="setAlMode('laggard',this)">
+      <span class="almode-icon">🎯</span>LAGGARDS
+    </div>
+    <div class="almode" data-am="options" onclick="setAlMode('options',this)">
+      <span class="almode-icon">📈</span>OPTIONS
+    </div>
+    <div class="almode" data-am="puts" onclick="setAlMode('puts',this)">
+      <span class="almode-icon">🐻</span>PUT HEDGE
+    </div>
+  </div>
+
+  <!-- LAGGARD MODE -->
+  <div id="alm-laggard">
+    <div class="alsect-wrap">
+      <div class="alsect-lbl">WHICH SECTORS HAVE RUN? (SELECT ALL THAT APPLY)</div>
+      <div class="alsect-grid" id="alSectGrid"></div>
+    </div>
+  </div>
+
+  <!-- OPTIONS MODE -->
+  <div id="alm-options" style="display:none">
+    <div class="alfactors">
+      <div class="alfact-lbl">OPTIMIZE FOR (PICK YOUR PRIORITIES)</div>
+      <div class="alfact-grid">
+        <div class="alfact on" data-af="momentum" onclick="toggleAlFact('momentum',this)">🚀 Max Momentum</div>
+        <div class="alfact on" data-af="value" onclick="toggleAlFact('value',this)">💎 Deep Value</div>
+        <div class="alfact" data-af="catalyst" onclick="toggleAlFact('catalyst',this)">🔥 Near Catalyst</div>
+        <div class="alfact" data-af="short_squeeze" onclick="toggleAlFact('short_squeeze',this)">⚡ Short Squeeze</div>
+        <div class="alfact" data-af="low_iv" onclick="toggleAlFact('low_iv',this)">📉 Low IV Options</div>
+        <div class="alfact" data-af="high_conviction" onclick="toggleAlFact('high_conviction',this)">🎯 High Conviction</div>
+        <div class="alfact" data-af="sector_rotation" onclick="toggleAlFact('sector_rotation',this)">🔄 Sector Rotation</div>
+        <div class="alfact" data-af="earnings_play" onclick="toggleAlFact('earnings_play',this)">📊 Earnings Play</div>
+      </div>
+    </div>
+    <div class="alfactors" style="padding-top:0">
+      <div class="alfact-lbl">TIMEFRAME</div>
+      <div class="alfact-grid">
+        <div class="alfact on" data-atf="near" onclick="setAlTF('near',this)">⚡ 0-30 Days</div>
+        <div class="alfact" data-atf="mid" onclick="setAlTF('mid',this)">📅 1-3 Months</div>
+        <div class="alfact" data-atf="long" onclick="setAlTF('long',this)">🗓 3-6 Months</div>
+      </div>
+    </div>
+    <div class="alfactors" style="padding-top:0">
+      <div class="alfact-lbl">RISK TOLERANCE</div>
+      <div class="alfact-grid">
+        <div class="alfact" data-arf="conservative" onclick="setAlRisk('conservative',this)">🟢 Conservative</div>
+        <div class="alfact on" data-arf="moderate" onclick="setAlRisk('moderate',this)">🟡 Moderate</div>
+        <div class="alfact" data-arf="aggressive" onclick="setAlRisk('aggressive',this)">🔴 Aggressive</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUTS MODE -->
+  <div id="alm-puts" style="display:none">
+    <div class="alputbox">
+      <div class="alput-title">🐻 Put Hedge Intelligence <span class="alput-bdg">LIVE</span></div>
+      <div class="alput-row"><span class="alput-icon">📊</span>
+        <div class="alput-text"><strong>When to buy puts:</strong> Market breadth deteriorating, VIX rising, sector leaders breaking down, or you have concentrated long exposure.</div>
+      </div>
+      <div class="alput-row"><span class="alput-icon">⚠️</span>
+        <div class="alput-text"><strong>Key rule:</strong> Never spend more than 2-3% of portfolio on put premium. Treat it as insurance, not a bet.</div>
+      </div>
+      <div class="almktgauge">
+        <div class="amg-lbl">MARKET STRESS INDICATOR (LIVE)</div>
+        <div class="amg-track"><div class="amg-thumb" id="alStressThumb" style="left:30%"></div></div>
+        <div class="amg-lbls"><span style="color:var(--g)">LOW STRESS</span><span style="color:var(--t2)">NEUTRAL</span><span style="color:var(--r)">HIGH STRESS</span></div>
+        <div class="amg-val" id="alStressVal" style="color:var(--g)">COMPUTING...</div>
+      </div>
+    </div>
+    <div class="alfactors">
+      <div class="alfact-lbl">HEDGE TYPE</div>
+      <div class="alfact-grid">
+        <div class="alfact on" data-aht="portfolio" onclick="setAlHedge('portfolio',this)">🛡 Portfolio Hedge</div>
+        <div class="alfact" data-aht="sector" onclick="setAlHedge('sector',this)">🏭 Sector Specific</div>
+        <div class="alfact" data-aht="single" onclick="setAlHedge('single',this)">🎯 Single Stock</div>
+        <div class="alfact" data-aht="macro" onclick="setAlHedge('macro',this)">🌍 Macro Event</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RUN button -->
+  <div class="alrun" onclick="runAlpha()">
+    <div>
+      <div class="alrun-l">Generate Alpha Report</div>
+      <div class="alrun-s" id="alRunSub">Select mode and parameters above</div>
+    </div>
+    <button class="alrunbtn" id="alRunBtn">RUN →</button>
+  </div>
+
+  <!-- Output -->
+  <div class="alout" id="alOut">
+    <div class="al-empty">Select a mode above — Laggards finds stocks in run sectors that haven't moved yet. Options builds a strategy. Put Hedge tells you when and how to protect.</div>
+  </div>
+
+  <div class="disc"><div class="dtxt">Alpha Engine uses AI + live data. Not investment advice. Do your own due diligence.</div></div>
+</div>
+
 </div><!-- /pages -->
 
 <div class="tabbar">
@@ -746,6 +999,7 @@ canvas.qcanvas{display:block;width:100%;height:150px;background:transparent;}
   <button class="tb" onclick="switchPg('radar',this)"><span class="tb-i">📡</span><span class="tb-l">RADAR</span></button>
   <button class="tb" onclick="switchPg('edu',this)"><span class="tb-i">📖</span><span class="tb-l">LEARN</span></button>
   <button class="tb" onclick="switchPg('quant',this)"><span class="tb-i">🔬</span><span class="tb-l">QUANT</span></button>
+  <button class="tb" onclick="switchPg('alpha',this)"><span class="tb-i">🎯</span><span class="tb-l">ALPHA</span></button>
 </div>
 
 <script>
@@ -910,6 +1164,7 @@ function switchPg(pg, btn) {
   if (pg === 'radar') { renderRR(); updateRwyDots(); }
   if (pg === 'edu')   renderEdu();
   if (pg === 'quant') initQuant();
+  if (pg === 'alpha') { initAlpha(); computeStressIndicator(); }
 }
 
 // ─── RSI CALCULATION ────────────────────────────────────────
@@ -2324,11 +2579,580 @@ function initQuant() {
   updateQRunSub();
 }
 
+
+// ─── ALPHA ENGINE ─────────────────────────────────────────────
+
+var ALPHA_SECTORS = [
+  {id:'ai_gpu',    label:'AI / GPU',        emoji:'🧠', ran:true,
+   leaders:['NVDA','AMD','AVGO'],
+   laggards:[
+     {s:'MU',  n:'Micron Technology',   why:'HBM3E/HBM4 supplier sold out through 2026. Gets the GPU spend but trades at 10x vs NVDA 30x+. Massive rerating gap.',       pt:120, up:35, setup:'CALLS 3-6M · $90–$100 strikes · Earnings binary May/Jun',     conviction:92, factors:{momentum:78,value:95,catalyst:88,squeeze:45}},
+     {s:'ENTG',n:'Entegris',             why:'Every AI chip fab needs Entegris chemistry. TSMC Arizona ramp is direct volume. Market ignoring the moat at 28x vs historical 40x+.',pt:120,up:40,setup:'CALLS 3M · leaps into earnings · $80 strikes',conviction:85,factors:{momentum:65,value:88,catalyst:75,squeeze:30}},
+     {s:'SMTC',n:'Semtech Corp',         why:'1.6T DSP interconnect inside AI data centers. 14/14 analysts Buy. $104 PT vs ~$87. May 26 earnings = ignition.',              pt:104,up:25,setup:'CALLS 05/30 · $90–$95 strikes · pre-earnings',               conviction:90,factors:{momentum:72,value:80,catalyst:95,squeeze:55}},
+   ]},
+  {id:'semis',     label:'Semi Equipment', emoji:'⚙️', ran:true,
+   leaders:['AMAT','LRCX','KLAC'],
+   laggards:[
+     {s:'ACLS',n:'Axcelis Technologies', why:'P/E 20x vs sector 44x. SiC ramp structural. B.Riley upgraded 4/22. Q4 EPS +33% beat. Merger removes China risk.',             pt:144,up:44,setup:'CALLS 3-6M · $100–$110 strikes · post-merger close',       conviction:88,factors:{momentum:55,value:96,catalyst:82,squeeze:60}},
+     {s:'UCTT',n:'Ultra Clean Holdings', why:'Advanced node chemistry. Same TSMC ramp tailwind as ENTG. 16x P/E, minimal coverage. Direct beneficiary of every fab line.',  pt:58, up:35,setup:'CALLS 2-3M · $42–$45 strikes',                             conviction:78,factors:{momentum:60,value:90,catalyst:70,squeeze:70}},
+     {s:'COHU',n:'Cohu Inc.',            why:'AI chip testing demand surge. $30M HPC test order confirmed. B.Riley $50 PT. Memory recovery adds second revenue leg.',         pt:50, up:22,setup:'CALLS 2M · $40–$42 strikes · earnings play',               conviction:74,factors:{momentum:80,value:72,catalyst:78,squeeze:65}},
+   ]},
+  {id:'power',     label:'Power Infra',    emoji:'⚡', ran:true,
+   leaders:['POWL','HUBB','ETN'],
+   laggards:[
+     {s:'AGX', n:'Argan Inc.',           why:'POWL ran 99% YTD. AGX is the same theme 1 step behind — power plant construction + data center electrical. Net cash. Zero coverage.',pt:130,up:45,setup:'CALLS 3-6M · $88–$95 strikes · discovery phase',        conviction:91,factors:{momentum:45,value:92,catalyst:80,squeeze:40}},
+     {s:'IESC',n:'IES Holdings',         why:'Electrical infra installation for data centers. POWL peer comp on Yahoo Finance. POWL's run proves the theme. IESC next.',       pt:180,up:38,setup:'CALLS 3-6M · $125–$135 strikes',                         conviction:87,factors:{momentum:50,value:88,catalyst:78,squeeze:35}},
+     {s:'AMPS',n:'Altus Power',          why:'Distributed power + commercial solar. AI data center clients need power now. Under-discovered, clean balance sheet.',             pt:12, up:30,setup:'CALLS 3M · $8–$9 strikes · speculative',                  conviction:68,factors:{momentum:55,value:75,catalyst:65,squeeze:50}},
+   ]},
+  {id:'crypto',    label:'Crypto/Fintech', emoji:'🪙', ran:false,
+   leaders:['COIN','CRCL'],
+   laggards:[
+     {s:'HOOD',n:'Robinhood Markets',    why:'Everyone in COIN/CRCL. Nobody rotated HOOD. 94.96% gross margin. Bitstamp acquisition. Gold subs compounding. Same vol tailwind, no stablecoin risk.',pt:150,up:35,setup:'CALLS 06/18 · $95–$105 strikes',conviction:88,factors:{momentum:62,value:82,catalyst:75,squeeze:55}},
+     {s:'NU',  n:'Nu Holdings',          why:'Largest digital bank in Latin America. 110M+ customers. Crypto/fintech wave hitting LatAm with 6-12M lag. Warren Buffett backed.',pt:18, up:28,setup:'CALLS 3M · $13–$14 strikes · earnings Q1 May',          conviction:80,factors:{momentum:68,value:78,catalyst:72,squeeze:40}},
+     {s:'SoFi',n:'SoFi Technologies',   why:'Bank charter + student loan restart + crypto offering. 19% float short. Any fintech re-rate pulls SOFI violently.',               pt:14, up:30,setup:'CALLS 3M · $10 strikes · squeeze setup',                  conviction:72,factors:{momentum:58,value:70,catalyst:68,squeeze:85}},
+   ]},
+  {id:'robotics',  label:'Robotics/Auto',  emoji:'🤖', ran:false,
+   leaders:['SYM','PATH'],
+   laggards:[
+     {s:'VPG', n:'Vishay Precision',     why:'Physical AI sensors. Humanoid robot orders $37.8M (beat). Book-to-bill 1.15 — highest since 2022. No one is telling this story.',pt:63, up:30,setup:'CALLS 11/20 · $55–$60 strikes · long runway',             conviction:87,factors:{momentum:72,value:85,catalyst:70,squeeze:42}},
+     {s:'BRKS',n:'Brooks Automation',    why:'Wafer handling automation for advanced node fabs. Same AI chip capex tailwind as AMAT/LRCX but zero attention. Deep value.',     pt:80, up:32,setup:'CALLS 3-6M · $58–$62 strikes',                           conviction:76,factors:{momentum:45,value:90,catalyst:65,squeeze:55}},
+     {s:'ONTO',n:'Onto Innovation',      why:'Optical metrology — every 2nm/3nm wafer needs ONTO inspection. Direct TSMC Arizona ramp beneficiary. Ignored by semi-focused funds.',pt:195,up:28,setup:'CALLS 3M · $148–$155 strikes',                       conviction:82,factors:{momentum:65,value:80,catalyst:75,squeeze:35}},
+   ]},
+  {id:'ev',        label:'EV / SiC',       emoji:'🔋', ran:false,
+   leaders:['TSLA','LI'],
+   laggards:[
+     {s:'ACLS',n:'Axcelis Technologies', why:'Ion implant = SiC wafer manufacturing. EV recovery adds to AI upside. Two independent growth vectors, both early.',               pt:144,up:44,setup:'CALLS 3-6M · $100 strikes',                              conviction:88,factors:{momentum:55,value:96,catalyst:82,squeeze:60}},
+     {s:'ON',  n:'ON Semiconductor',     why:'18% float short. SiC content per vehicle rising even if unit volumes slow. ASP expansion covers volume risk. Squeeze fuel loaded.',pt:78, up:35,setup:'CALLS 3M · $55–$60 strikes · high short %',             conviction:78,factors:{momentum:60,value:82,catalyst:70,squeeze:82}},
+   ]},
+  {id:'biotech',   label:'Biotech/Health', emoji:'💊', ran:false,
+   leaders:['LLY','NVO'],
+   laggards:[
+     {s:'SMMT',n:'Summit Therapeutics',  why:'Phase 3 ivonescimab data. 35% short float. Oncology binary into massive short position = textbook squeeze ignition if data positive.',pt:65,up:45,setup:'CALLS 3M · $40–$45 strikes · binary catalyst',          conviction:82,factors:{momentum:58,value:60,catalyst:95,squeeze:88}},
+     {s:'HIMS',n:'Hims & Hers Health',   why:'29% float short. FDA compounding ruling is the binary. GLP-1 wave + telehealth expansion. Stock flat while category explodes.',    pt:24, up:30,setup:'CALLS 3M · $18 strikes · FDA catalyst',                 conviction:76,factors:{momentum:65,value:72,catalyst:88,squeeze:75}},
+   ]},
+];
+
+var PUT_SETUPS = [
+  {s:'SPY',  n:'S&P 500 ETF',        type:'PORTFOLIO HEDGE',
+   thesis:'<strong>Portfolio insurance baseline.</strong> Always maintain 1-2% of portfolio in 30-60 DTE SPY puts 5-8% OTM. Roll monthly. Protects against black swan events. Most cost-effective broad hedge.',
+   setup:'05/30 or 06/20 expiry · 5% OTM strikes · spend max 1% portfolio',
+   signals:['VIX > 18','Breadth < 40%','Distribution days > 4'],
+   urgency:'ALWAYS HAVE',color:'var(--r)'},
+  {s:'QQQ',  n:'Nasdaq-100 ETF',     type:'TECH HEDGE',
+   thesis:'<strong>When AI/semis have had a violent run.</strong> QQQ puts protect your tech long book. After NVDA/AMD run 80%+, QQQ puts give you optionality if the sector consolidates.',
+   setup:'1-3M expiry · 8-10% OTM strikes · ratio 1:3 vs long deltas',
+   signals:['Tech sector RSI > 72','NVDA/AMD > 30% month','Rates rising'],
+   urgency:'CONSIDER NOW',color:'var(--y)'},
+  {s:'IWM',  n:'Russell 2000 ETF',   type:'SMALL CAP HEDGE',
+   thesis:'<strong>Small caps crack first in risk-off.</strong> IWM puts are cheap (low IV vs SPY) and give outsized protection when liquidity dries up. Key for a portfolio with small/micro cap longs.',
+   setup:'2-3M expiry · 7% OTM strikes · buy on VIX dips',
+   signals:['IWM underperforming SPY','Credit spreads widening','Breadth collapse'],
+   urgency:'WATCH',color:'var(--b)'},
+  {s:'CAR',  n:'Avis Budget Group',  type:'SHORT CANDIDATE',
+   thesis:'<strong>Already ran 5x.</strong> This is the stock that squeezed — now the setup is potentially inverted. If coverage resumes, puts on CAR capture the reversion. High risk — squeeze can continue.',
+   setup:'Far OTM puts · 6M+ expiry · small size only',
+   signals:['CAR > $400','Short interest collapsing','Swap unwind signals'],
+   urgency:'SPECULATIVE',color:'var(--p)'},
+];
+
+var alMode = 'laggard';
+var alSelSectors = new Set();
+var alSelFacts = new Set(['momentum','value']);
+var alTimeframe = 'near';
+var alRisk = 'moderate';
+var alHedge = 'portfolio';
+var alRunning = false;
+
+// ── Sector grid ──────────────────────────────────────────────
+function initAlpha() {
+  var sg = document.getElementById('alSectGrid');
+  if (!sg || sg.innerHTML) return;
+  var html = '';
+  ALPHA_SECTORS.forEach(function(s) {
+    var ranLabel = s.ran ? '<span style="color:var(--r);font-family:var(--mono)">🔴 ALREADY RAN</span>' : '<span style="color:var(--g);font-family:var(--mono)">🟢 BUILDING</span>';
+    html += '<div class="alscard" data-sid="'+s.id+'" onclick="toggleAlSect(''+s.id+'',this)">'+
+      '<div class="als-chk">✓</div>'+
+      '<div class="als-name">'+s.emoji+' '+s.label+'</div>'+
+      '<div class="als-ran" style="font-size:8px;margin-top:3px">'+ranLabel+'</div>'+
+      '<div style="font-family:var(--mono);font-size:7px;color:var(--t2);margin-top:3px">'+s.leaders.join(' · ')+'</div>'+
+    '</div>';
+  });
+  sg.innerHTML = html;
+  updateAlRunSub();
+  // Compute stress indicator
+  computeStressIndicator();
+}
+
+function toggleAlSect(id, el) {
+  if (alSelSectors.has(id)) { alSelSectors.delete(id); el.classList.remove('on'); }
+  else { alSelSectors.add(id); el.classList.add('on'); }
+  updateAlRunSub();
+}
+
+function toggleAlFact(f, el) {
+  if (alSelFacts.has(f)) { alSelFacts.delete(f); el.classList.remove('on'); }
+  else { alSelFacts.add(f); el.classList.add('on'); }
+}
+
+function setAlTF(tf, el) {
+  alTimeframe = tf;
+  document.querySelectorAll('[data-atf]').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function setAlRisk(r, el) {
+  alRisk = r;
+  document.querySelectorAll('[data-arf]').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function setAlHedge(h, el) {
+  alHedge = h;
+  document.querySelectorAll('[data-aht]').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function setAlMode(m, el) {
+  alMode = m;
+  document.querySelectorAll('[data-am]').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  ['laggard','options','puts'].forEach(function(id){
+    var e2 = document.getElementById('alm-'+id);
+    if (e2) e2.style.display = m===id ? '' : 'none';
+  });
+  updateAlRunSub();
+}
+
+function updateAlRunSub() {
+  var sub = document.getElementById('alRunSub');
+  if (!sub) return;
+  if (alMode === 'laggard') {
+    sub.textContent = alSelSectors.size ? alSelSectors.size+' sector(s) selected — find what hasn't run' : 'Select sectors above that have already run';
+  } else if (alMode === 'options') {
+    sub.textContent = 'Build optimal options strategy for your factors';
+  } else {
+    sub.textContent = 'Analyze market stress + generate put hedge recommendations';
+  }
+}
+
+function computeStressIndicator() {
+  // Use average RSI across known tech stocks as proxy for stress
+  var rsis = [];
+  Object.keys(techC).forEach(function(sym){ if(techC[sym] && techC[sym].rsi) rsis.push(techC[sym].rsi); });
+  var thumb = document.getElementById('alStressThumb');
+  var val = document.getElementById('alStressVal');
+  if (!thumb || !val) return;
+  if (rsis.length === 0) {
+    val.textContent = 'LOADING MARKET DATA…';
+    setTimeout(computeStressIndicator, 3000);
+    return;
+  }
+  var avgRsi = rsis.reduce(function(a,b){return a+b;},0)/rsis.length;
+  // High RSI = market is extended = stress (potential reversal)
+  var stress = Math.max(5, Math.min(95, ((avgRsi-30)/50*100)));
+  thumb.style.left = stress+'%';
+  var stressLevel = stress > 65 ? 'HIGH STRESS — Extended market. PUT HEDGES WARRANTED.' :
+                    stress > 45 ? 'MODERATE — Selective hedging appropriate.' :
+                    'LOW STRESS — Bull trend intact. Light hedging only.';
+  val.textContent = stressLevel;
+  val.style.color = stress > 65 ? 'var(--r)' : stress > 45 ? 'var(--y)' : 'var(--g)';
+}
+
+// ── Score ticker by factors ──────────────────────────────────
+function scoreByFactors(lag, facts, tf, risk) {
+  var score = 0;
+  var weights = {momentum:0, value:0, catalyst:0, short_squeeze:0, low_iv:0, high_conviction:0, sector_rotation:0, earnings_play:0};
+  facts.forEach(function(f){ weights[f] = 1; });
+
+  if (weights.momentum)     score += (lag.factors.momentum||50) * 0.25;
+  if (weights.value)        score += (lag.factors.value||50) * 0.25;
+  if (weights.catalyst)     score += (lag.factors.catalyst||50) * 0.25;
+  if (weights.short_squeeze)score += (lag.factors.squeeze||0) * 0.25;
+  if (weights.high_conviction) score += lag.conviction * 0.3;
+  if (weights.earnings_play)   score += (lag.factors.catalyst||50) * 0.2;
+  if (weights.sector_rotation) score += (100 - (lag.factors.momentum||50)) * 0.15; // early rotation = low momentum
+  if (weights.low_iv)          score += (100 - (lag.factors.squeeze||50)) * 0.15;
+
+  // Timeframe bonus
+  if (tf === 'near' && lag.setup.indexOf('pre-earnings') >= 0) score += 15;
+  if (tf === 'long' && lag.factors.value > 80) score += 10;
+
+  // Risk adjustment
+  if (risk === 'conservative') score *= lag.conviction/100;
+  if (risk === 'aggressive' && lag.factors.squeeze > 70) score += 10;
+
+  return Math.min(99, Math.round(score));
+}
+
+// ── Main runner ──────────────────────────────────────────────
+async function runAlpha() {
+  if (alRunning) return;
+  alRunning = true;
+  var btn = document.getElementById('alRunBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  var out = document.getElementById('alOut');
+  if (out) out.innerHTML = '<div class="al-loading"><div class="al-spin"></div>Generating Alpha Report…<br><span style="font-size:8px;color:var(--t2)">Fetching live prices · AI analysis running</span></div>';
+
+  if (alMode === 'laggard') await runLaggard();
+  else if (alMode === 'options') await runOptions();
+  else await runPuts();
+
+  alRunning = false;
+  if (btn) { btn.disabled = false; btn.textContent = 'RUN →'; }
+}
+
+async function runLaggard() {
+  var out = document.getElementById('alOut');
+  var sectors = alSelSectors.size ? Array.from(alSelSectors) : ALPHA_SECTORS.map(function(s){return s.id;});
+  var laggards = [];
+  sectors.forEach(function(sid) {
+    var sec = ALPHA_SECTORS.find(function(s){return s.id===sid;});
+    if (sec) sec.laggards.forEach(function(l){ laggards.push({lag:l, sector:sec}); });
+  });
+
+  // Dedupe by symbol
+  var seen = {}, unique = [];
+  laggards.forEach(function(item){ if(!seen[item.lag.s]){seen[item.lag.s]=true;unique.push(item);} });
+
+  // Fetch live prices
+  await Promise.all(unique.map(function(item){
+    return fetchYahoo(item.lag.s).then(function(q){if(q)prices[item.lag.s]=q;}).catch(function(){});
+  }));
+
+  // Sort by conviction
+  unique.sort(function(a,b){return b.lag.conviction - a.lag.conviction;});
+
+  // Build AI prompt
+  var tickerSummary = unique.slice(0,8).map(function(item){
+    var q = prices[item.lag.s];
+    var price = q ? '$'+q.p.toFixed(2) : 'unknown';
+    return item.lag.s+' ('+item.lag.n+'): Price '+price+'. PT $'+item.lag.pt+' ('+item.lag.up+'% upside). Conviction '+item.lag.conviction+'%. '+item.lag.why;
+  }).join('
+');
+
+  var prompt = 'You are a top hedge fund analyst. These are laggard stocks in sectors that have already run. For each ticker, in 2 sentences: (1) Why specifically it hasn't run yet when its sector peers have, (2) The single most important catalyst that will close the gap. Be razor sharp, no generic commentary. Start each with **TICKER:**
+
+'+tickerSummary+'
+
+Date: April 2026.';
+
+  var aiText = '';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1200, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await resp.json();
+    if (data.content && data.content[0]) aiText = data.content[0].text||'';
+  } catch(e){}
+
+  // Parse AI by ticker
+  var aiByTicker = {};
+  if (aiText) {
+    var parts = aiText.split(/\*\*([A-Z.]+):\*\*/);
+    for (var i=1;i<parts.length;i+=2) aiByTicker[parts[i].trim()] = (parts[i+1]||'').trim();
+  }
+
+  // Render
+  var html = renderLaggardSummary(unique);
+  unique.forEach(function(item, idx){
+    html += renderLaggardCard(item.lag, item.sector, aiByTicker[item.lag.s]||'', idx);
+  });
+  if (out) { out.innerHTML = html; out.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+function renderLaggardSummary(items) {
+  var avgUp = items.reduce(function(a,b){return a+b.lag.up;},0)/items.length;
+  var topConv = items[0];
+  return '<div class="alscorecard" style="margin-bottom:14px">'+
+    '<div class="alsc-hdr">'+
+      '<span class="alsc-title">ALPHA SCAN — '+items.length+' LAGGARDS FOUND</span>'+
+      '<span style="font-family:var(--mono);font-size:11px;color:var(--g)">AVG +'+Math.round(avgUp)+'% UPSIDE</span>'+
+    '</div>'+
+    '<div class="alsc-rows">'+
+      '<div class="alsc-row"><span class="alsc-l">TOP CONVICTION</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+topConv.lag.conviction+'%;background:var(--g)"></div></div><span class="alsc-r" style="color:var(--g)">'+topConv.lag.s+' ('+topConv.lag.conviction+'%)</span></div>'+
+      '<div class="alsc-row"><span class="alsc-l">HIGHEST UPSIDE</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+items.reduce(function(a,b){return b.lag.up>a.lag.up?b:a;}).lag.up+'%;background:var(--b)"></div></div><span class="alsc-r" style="color:var(--b)">'+items.reduce(function(a,b){return b.lag.up>a.lag.up?b:a;}).lag.s+' (+'+items.reduce(function(a,b){return b.lag.up>a.lag.up?b:a;}).lag.up+'%)</span></div>'+
+      '<div class="alsc-row"><span class="alsc-l">BEST SQUEEZE SET</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+items.reduce(function(a,b){return b.lag.factors.squeeze>a.lag.factors.squeeze?b:a;}).lag.factors.squeeze+'%;background:var(--r)"></div></div><span class="alsc-r" style="color:var(--r)">'+items.reduce(function(a,b){return b.lag.factors.squeeze>a.lag.factors.squeeze?b:a;}).lag.s+'</span></div>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderLaggardCard(lag, sector, aiText, idx) {
+  var q = prices[lag.s];
+  var price = q ? '$'+q.p.toFixed(2) : '—';
+  var chg = q ? q.ch : null;
+  var chgC = chg!=null?(chg>=0?'var(--g)':'var(--r)'):'var(--t2)';
+  var upside = lag.up;
+  var cv = lag.conviction;
+  var cvC = cv>=85?'var(--g)':cv>=70?'var(--y)':'var(--r)';
+  var convClass = cv>=85?'STRONG':cv>=70?'MODERATE':'SPECULATIVE';
+
+  return '<div class="slcard '+convClass+'" style="animation-delay:'+Math.min(idx*.08,.5)+'s">'+
+    '<div class="slhdr">'+
+      '<div class="sllogo">'+
+        '<img src="https://logo.clearbit.com/'+lag.s.toLowerCase()+'.com" alt="'+lag.s+'" style="width:100%;height:100%;object-fit:contain;padding:5px;"'+
+        ' onerror="this.style.display='none';var f=document.createElement('div');f.style.cssText='font-family:var(--mono);font-size:9px;color:var(--t2);font-weight:700';f.textContent=''+lag.s.slice(0,4)+'';this.parentNode.appendChild(f);">'+
+      '</div>'+
+      '<div class="slinfo">'+
+        '<div class="slsym">'+lag.s+'</div>'+
+        '<div class="slname">'+lag.n+'</div>'+
+        '<div class="slbdg" style="border-color:'+cvC+'40;color:'+cvC+'">'+sector.emoji+' '+sector.label+' · LAGGARD</div>'+
+      '</div>'+
+      '<div class="slright">'+
+        '<div class="slprice">'+price+'</div>'+
+        (chg!=null?'<div class="slchg" style="color:'+chgC+'">'+(chg>=0?'+':'')+chg.toFixed(2)+'%</div>':'')+
+        '<div class="slpt">PT $'+lag.pt+' (+'+upside+'%)</div>'+
+      '</div>'+
+    '</div>'+
+
+    // Factor scores
+    '<div class="slfacts">'+
+      [['Momentum',lag.factors.momentum,'var(--y)'],
+       ['Deep Value',lag.factors.value,'var(--b)'],
+       ['Catalyst',lag.factors.catalyst,'var(--p)'],
+       ['Squeeze',lag.factors.squeeze,'var(--r)'],
+       ['Conviction',cv,cvC],
+       ['Upside',upside,'var(--g)']].map(function(f){
+        return '<div class="slf">'+
+          '<div class="slfl">'+f[0]+'</div>'+
+          '<div class="slfv" style="color:'+f[2]+'">'+f[1]+'</div>'+
+          '<div class="slfbar"><div class="slffill" style="width:'+f[1]+'%;background:'+f[2]+'"></div></div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+
+    // Why lagging
+    '<div class="slwhy">'+lag.why+'</div>'+
+
+    // Options setup
+    '<div class="slstrat">'+
+      '<div class="slstrat-lbl">💡 OPTIONS SETUP</div>'+
+      '<div class="slstrat-detail"><em>'+lag.setup+'</em></div>'+
+    '</div>'+
+
+    // AI insight
+    (aiText ?
+      '<div style="margin:0 12px 12px;padding:10px;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.12);border-radius:8px;">'+
+        '<div style="font-family:var(--mono);font-size:7px;color:var(--y);letter-spacing:1px;margin-bottom:6px">🤖 AI INSIGHT</div>'+
+        '<div style="font-size:11px;color:var(--t1);line-height:1.75">'+aiText.replace(/
+/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')+'</div>'+
+      '</div>'
+    : '') +
+  '</div>';
+}
+
+// ── OPTIONS mode ──────────────────────────────────────────────
+async function runOptions() {
+  var out = document.getElementById('alOut');
+  var facts = Array.from(alSelFacts);
+  var allLaggards = [];
+  ALPHA_SECTORS.forEach(function(s){ s.laggards.forEach(function(l){ allLaggards.push({lag:l,sector:s}); }); });
+
+  // Score each by selected factors
+  var scored = allLaggards.map(function(item){
+    return {item:item, score: scoreByFactors(item.lag, facts, alTimeframe, alRisk)};
+  });
+  scored.sort(function(a,b){return b.score-a.score;});
+  var top = scored.slice(0,6);
+
+  // Fetch prices
+  await Promise.all(top.map(function(t){
+    return fetchYahoo(t.item.lag.s).then(function(q){if(q)prices[t.item.lag.s]=q;}).catch(function(){});
+  }));
+
+  // AI prompt
+  var factList = facts.join(', ');
+  var tfMap = {near:'0-30 days',mid:'1-3 months',long:'3-6 months'};
+  var rkMap = {conservative:'conservative (smaller size, higher probability)',moderate:'moderate (balanced R/R)',aggressive:'aggressive (high delta, higher risk)'};
+  var tickerData = top.map(function(t){
+    var q = prices[t.item.lag.s];
+    return t.item.lag.s+': Score '+t.score+'/99. PT $'+t.item.lag.pt+'. Setup: '+t.item.lag.setup;
+  }).join('
+');
+
+  var prompt = 'You are an expert options strategist. For each ticker, give ONE specific options trade recommendation optimized for: '+factList+'. Timeframe: '+tfMap[alTimeframe]+'. Risk profile: '+rkMap[alRisk]+'. Format each as: **TICKER:** [trade type] [expiry] [strike] | [max gain scenario] | [stop loss level]. Be specific with real strikes near current price. Date: April 2026.
+
+'+tickerData;
+
+  var aiText = '';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1400, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await resp.json();
+    if (data.content && data.content[0]) aiText = data.content[0].text||'';
+  } catch(e){}
+
+  var aiByTicker = {};
+  if (aiText) {
+    var parts = aiText.split(/\*\*([A-Z.]+):\*\*/);
+    for (var i=1;i<parts.length;i+=2) aiByTicker[parts[i].trim()]=(parts[i+1]||'').trim();
+  }
+
+  // Render ranked cards
+  var html = '<div class="alscorecard" style="margin-bottom:14px">'+
+    '<div class="alsc-hdr">'+
+      '<span class="alsc-title">OPTIONS STRATEGY — '+facts.join('+').toUpperCase()+' · '+alTimeframe.toUpperCase()+' · '+alRisk.toUpperCase()+'</span>'+
+      '<span style="font-family:var(--mono);font-size:10px;color:var(--y)">TOP '+top.length+'</span>'+
+    '</div>'+
+    '<div class="alsc-rows">'+
+    top.map(function(t){
+      var sc = t.score;
+      var sc2 = sc>=80?'var(--g)':sc>=60?'var(--y)':'var(--t1)';
+      return '<div class="alsc-row">'+
+        '<span class="alsc-l">'+t.item.lag.s+'</span>'+
+        '<div class="alsc-bar"><div class="alsc-fill" style="width:'+sc+'%;background:'+sc2+'"></div></div>'+
+        '<span class="alsc-r" style="color:'+sc2+'">'+sc+'/99</span>'+
+      '</div>';
+    }).join('')+
+    '</div></div>';
+
+  top.forEach(function(t, idx) {
+    var lag = t.item.lag; var sec = t.item.sector;
+    var q = prices[lag.s];
+    var price = q ? '$'+q.p.toFixed(2) : '—';
+    var chg = q ? q.ch : null;
+    var chgC = chg!=null?(chg>=0?'var(--g)':'var(--r)'):'var(--t2)';
+    var scC = t.score>=80?'var(--g)':t.score>=60?'var(--y)':'var(--t1)';
+    var convClass = t.score>=80?'STRONG':t.score>=60?'MODERATE':'SPECULATIVE';
+
+    html += '<div class="slcard '+convClass+'" style="animation-delay:'+Math.min(idx*.08,.4)+'s">'+
+      '<div class="slhdr">'+
+        '<div class="sllogo" style="background:var(--card2);border:1px solid var(--line2);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+          '<span style="font-family:var(--mono);font-size:9px;color:var(--t1);font-weight:700">'+lag.s.slice(0,4)+'</span>'+
+        '</div>'+
+        '<div class="slinfo">'+
+          '<div class="slsym">'+lag.s+'</div>'+
+          '<div class="slname">'+lag.n+'</div>'+
+          '<div class="slbdg" style="border-color:'+scC+'40;color:'+scC+'">#'+( idx+1)+' RANKED · '+t.score+'/99</div>'+
+        '</div>'+
+        '<div class="slright">'+
+          '<div class="slprice">'+price+'</div>'+
+          (chg!=null?'<div class="slchg" style="color:'+chgC+'">'+(chg>=0?'+':'')+chg.toFixed(2)+'%</div>':'')+
+          '<div class="slpt">PT $'+lag.pt+' (+'+lag.up+'%)</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="slstrat">'+
+        '<div class="slstrat-lbl">📋 RECOMMENDED SETUP</div>'+
+        '<div class="slstrat-detail"><em>'+lag.setup+'</em></div>'+
+      '</div>'+
+      (aiByTicker[lag.s] ?
+        '<div style="margin:0 12px 12px;padding:10px;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.12);border-radius:8px;">'+
+          '<div style="font-family:var(--mono);font-size:7px;color:var(--y);letter-spacing:1px;margin-bottom:6px">🤖 AI OPTIONS TRADE</div>'+
+          '<div style="font-family:var(--mono);font-size:10px;color:var(--t0);line-height:1.9">'+aiByTicker[lag.s].replace(/
+/g,'<br>').replace(/\|/g,'<span style="color:var(--line2)"> | </span>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')+'</div>'+
+        '</div>'
+      : '') +
+    '</div>';
+  });
+
+  if (out) { out.innerHTML = html; out.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+// ── PUTS mode ─────────────────────────────────────────────────
+async function runPuts() {
+  var out = document.getElementById('alOut');
+
+  // Refresh stress indicator
+  computeStressIndicator();
+
+  // Fetch SPY/QQQ for context
+  var spyQ = await fetchYahoo('SPY').catch(function(){return null;});
+  var qqqQ = await fetchYahoo('QQQ').catch(function(){return null;});
+  var vixQ = await fetchYahoo('^VIX').catch(function(){return null;});
+
+  // AI market assessment
+  var mktCtx = 'SPY: '+(spyQ?'$'+spyQ.p.toFixed(2)+' ('+spyQ.ch.toFixed(2)+'%)':'unknown')+
+    '. QQQ: '+(qqqQ?'$'+qqqQ.p.toFixed(2)+' ('+qqqQ.ch.toFixed(2)+'%)':'unknown')+
+    '. VIX: '+(vixQ?vixQ.p.toFixed(2):'unknown')+
+    '. Market context: Major AI/semi/power sectors have had large runs in 2025-2026. '+
+    'CAR squeezed 5x. Hedge type requested: '+alHedge+'. Date: April 2026.';
+
+  var prompt = 'You are a risk manager at a hedge fund. Given current market conditions, provide a specific put hedging recommendation. Be direct about: (1) Whether NOW is the right time to add puts, (2) Exactly which puts to buy (ticker, expiry, strike, size as % of portfolio), (3) What signal would make you add more or exit the hedge. Context: '+mktCtx;
+
+  var aiText = '';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}]})
+    });
+    var data = await resp.json();
+    if (data.content && data.content[0]) aiText = data.content[0].text||'';
+  } catch(e){}
+
+  // Render
+  var vixVal = vixQ ? vixQ.p.toFixed(1) : '—';
+  var vixC = vixQ ? (vixQ.p > 20 ? 'var(--r)' : vixQ.p > 15 ? 'var(--y)' : 'var(--g)') : 'var(--t2)';
+  var spyChg = spyQ ? spyQ.ch : 0;
+  var urgency = vixQ && vixQ.p > 20 ? 'HIGH — Add puts now' : vixQ && vixQ.p > 15 ? 'MODERATE — Consider sizing in' : 'LOW — Light insurance only';
+  var urgC = vixQ && vixQ.p > 20 ? 'var(--r)' : vixQ && vixQ.p > 15 ? 'var(--y)' : 'var(--g)';
+
+  var html = '<div class="alscorecard" style="margin-bottom:14px">'+
+    '<div class="alsc-hdr">'+
+      '<span class="alsc-title">MARKET HEDGE DASHBOARD — LIVE</span>'+
+      '<span style="font-family:var(--mono);font-size:10px;color:'+urgC+'">'+urgency+'</span>'+
+    '</div>'+
+    '<div class="alsc-rows">'+
+      '<div class="alsc-row"><span class="alsc-l">SPY</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+(Math.abs(spyChg)*10)+'%;background:'+(spyChg>=0?'var(--g)':'var(--r)')+'"></div></div><span class="alsc-r" style="color:'+(spyChg>=0?'var(--g)':'var(--r)')+'">'+(spyQ?'$'+spyQ.p.toFixed(2)+' ('+(spyChg>=0?'+':'')+spyChg.toFixed(2)+'%)':'—')+'</span></div>'+
+      '<div class="alsc-row"><span class="alsc-l">QQQ</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+(Math.abs(qqqQ?qqqQ.ch:0)*10)+'%;background:'+(qqqQ&&qqqQ.ch>=0?'var(--g)':'var(--r)')+'"></div></div><span class="alsc-r" style="color:'+(qqqQ&&qqqQ.ch>=0?'var(--g)':'var(--r)')+'">'+(qqqQ?'$'+qqqQ.p.toFixed(2)+' ('+(qqqQ.ch>=0?'+':'')+qqqQ.ch.toFixed(2)+'%)':'—')+'</span></div>'+
+      '<div class="alsc-row"><span class="alsc-l">VIX</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+(vixQ?Math.min(vixQ.p*3,100):30)+'%;background:'+vixC+'"></div></div><span class="alsc-r" style="color:'+vixC+'">'+vixVal+'</span></div>'+
+      '<div class="alsc-row"><span class="alsc-l">PUT URGENCY</span><div class="alsc-bar"><div class="alsc-fill" style="width:'+(vixQ&&vixQ.p>20?90:vixQ&&vixQ.p>15?55:25)+'%;background:'+urgC+'"></div></div><span class="alsc-r" style="color:'+urgC+'">'+(vixQ&&vixQ.p>20?'HIGH':vixQ&&vixQ.p>15?'MODERATE':'LOW')+'</span></div>'+
+    '</div>'+
+  '</div>';
+
+  // AI hedge recommendation
+  if (aiText) {
+    html += '<div class="al-ai" style="margin-bottom:14px">'+
+      '<div class="al-ai-lbl">🤖 AI HEDGE RECOMMENDATION — LIVE MARKET ANALYSIS</div>'+
+      '<div class="al-ai-txt">'+aiText.replace(/
+/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')+'</div>'+
+    '</div>';
+  }
+
+  // Static put setups
+  var relevant = PUT_SETUPS.filter(function(p){
+    if (alHedge === 'portfolio') return p.type.indexOf('PORTFOLIO') >= 0 || p.type.indexOf('TECH') >= 0;
+    if (alHedge === 'sector') return p.type.indexOf('TECH') >= 0 || p.type.indexOf('SMALL') >= 0;
+    if (alHedge === 'single') return p.type.indexOf('SHORT') >= 0;
+    return true;
+  });
+  if (!relevant.length) relevant = PUT_SETUPS;
+
+  relevant.forEach(function(p, idx) {
+    html += '<div class="putcard" style="animation-delay:'+Math.min(idx*.1,.4)+'s">'+
+      '<div class="puthdr">'+
+        '<div>'+
+          '<div class="put-sym">'+p.s+'</div>'+
+          '<div style="font-size:10px;color:var(--t1);margin-top:2px">'+p.n+'</div>'+
+        '</div>'+
+        '<div class="put-bdg" style="background:rgba(255,51,78,.12);color:'+p.color+';border:1px solid '+p.color+'40;font-family:var(--mono);font-size:8px;padding:3px 10px;border-radius:20px">'+p.type+'</div>'+
+      '</div>'+
+      '<div class="put-thesis">'+p.thesis+'</div>'+
+      '<div class="put-setup" style="margin:0 12px 10px;padding:10px 12px;background:var(--card2);border-radius:8px;">'+
+        '<div style="font-family:var(--mono);font-size:7px;color:var(--t2);letter-spacing:1px;margin-bottom:6px">📋 SPECIFIC SETUP</div>'+
+        '<div style="font-family:var(--mono);font-size:9px;color:var(--y);line-height:1.8">'+p.setup+'</div>'+
+      '</div>'+
+      '<div style="margin:0 12px 12px;display:flex;flex-wrap:wrap;gap:5px">'+
+        '<span style="font-family:var(--mono);font-size:7px;color:var(--t2)">SIGNALS TO BUY:</span>'+
+        p.signals.map(function(sig){
+          return '<span style="font-family:var(--mono);font-size:8px;padding:2px 8px;border-radius:10px;border:1px solid rgba(255,51,78,.2);color:var(--r)">'+sig+'</span>';
+        }).join('')+
+      '</div>'+
+      '<div style="margin:0 12px 12px;padding:6px 10px;background:rgba(255,51,78,.06);border-radius:8px;font-family:var(--mono);font-size:9px;color:var(--r);letter-spacing:.5px">'+p.urgency+'</div>'+
+    '</div>';
+  });
+
+  if (out) { out.innerHTML = html; out.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+
 // ─── INIT ────────────────────────────────────────────────────
 function init(){
   render();
   renderEdu();
   initQuant();
+  initAlpha();
   // Test connectivity with Yahoo Finance (no API key needed)
   setStatus('si-price','PRICES: CONNECTING','loading');
   fetchYahoo('AAPL').then(function(q){
