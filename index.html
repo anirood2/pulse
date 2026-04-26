@@ -497,40 +497,41 @@ function getQuote(sym) {
     });
 }
 
+// Finnhub candles — resolution and days based on selected range
 function getCandles(sym, range) {
-  var rm = {
-    '1d':{range:'5d',iv:'15m'}, '3mo':{range:'1y',iv:'1d'},
-    '6mo':{range:'2y',iv:'1wk'}, '1y':{range:'5y',iv:'1wk'}, '2y':{range:'5y',iv:'1wk'}
+  var now = Math.floor(Date.now()/1000);
+  // Map UI range to Finnhub resolution + lookback days
+  var cfg = {
+    '1d':  {res:'15', days:2},
+    '3mo': {res:'D',  days:95},
+    '6mo': {res:'D',  days:185},
+    '1y':  {res:'D',  days:370},
+    '2y':  {res:'W',  days:740},
   };
-  var r = rm[range] || {range:'1y',iv:'1d'};
-  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval='+r.iv+'&range='+r.range;
-  return fetch(url, {cache:'no-store'})
-    .then(function(r2){ return r2.json(); })
-    .then(function(d){
-      if(!d||!d.chart||!d.chart.result||!d.chart.result[0]) return null;
-      var res = d.chart.result[0];
-      var ts = res.timestamp||[], q = res.indicators.quote[0];
-      var arr = [];
-      for(var i=0;i<ts.length;i++){
-        if(q.close[i]==null) continue;
-        arr.push({t:ts[i]*1000,o:q.open[i]||q.close[i],h:q.high[i]||q.close[i],
-          l:q.low[i]||q.close[i],c:q.close[i],v:q.volume[i]||0});
-      }
-      return arr.length>1?arr:null;
-    })
-    .catch(function(){ return null; });
+  var c = cfg[range] || cfg['1y'];
+  var from = now - c.days * 24 * 3600;
+  var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+sym+
+    '&resolution='+c.res+'&from='+from+'&to='+now+'&token='+API;
+  return apiFetch(url).then(function(d){
+    if(!d || d.s!=='ok' || !d.c || d.c.length < 2) return null;
+    var arr = [];
+    for(var i=0;i<d.c.length;i++){
+      arr.push({
+        t: d.t[i]*1000,
+        o: d.o[i]||d.c[i],
+        h: d.h[i]||d.c[i],
+        l: d.l[i]||d.c[i],
+        c: d.c[i],
+        v: (d.v&&d.v[i])||0
+      });
+    }
+    return arr;
+  }).catch(function(){ return null; });
 }
 
+// Keep getFinnhubCandles as alias for tech loading
 function getFinnhubCandles(sym) {
-  var now = Math.floor(Date.now()/1000);
-  var from = now - 400*24*3600;
-  return apiFetch('https://finnhub.io/api/v1/stock/candle?symbol='+sym+'&resolution=D&from='+from+'&to='+now+'&token='+API)
-    .then(function(d){
-      if(!d||d.s!=='ok'||!d.c) return null;
-      var arr=[];
-      for(var i=0;i<d.c.length;i++) arr.push({t:d.t[i]*1000,o:d.o[i],h:d.h[i],l:d.l[i],c:d.c[i],v:(d.v&&d.v[i])||0});
-      return arr.length>1?arr:null;
-    });
+  return getCandles(sym, '1y');
 }
 
 // ── RSI calc ──────────────────────────────────────────
@@ -749,27 +750,35 @@ async function loadChart() {
   var ldt=document.getElementById('chartLoadTxt');
   if(ld)ld.style.display='flex';
   if(ldt)ldt.textContent='Loading '+chartSym+'…';
+
+  // Reset chart events so they rebind to new data
+  chartEventsSetup=false;
+
   try {
     var candles=await getCandles(chartSym,chartCI);
-    if(!candles||candles.length<5){
-      // fallback to finnhub
-      candles=await getFinnhubCandles(chartSym);
+    if(!candles||candles.length<2){
+      if(ldt)ldt.textContent='No candle data for '+chartSym+' — check symbol';
+      return;
     }
-    if(!candles||candles.length<5){if(ldt)ldt.textContent='No data for '+chartSym;return;}
     chartData[chartSym]=candles;
     cVisEnd=candles.length-1;
-    cCandleW=8;
+    // Set candle width based on data density
+    var area=document.getElementById('chartArea');
+    var areaW=area?area.offsetWidth:window.innerWidth;
+    cCandleW=Math.max(3,Math.min(16,Math.floor(areaW/candles.length*0.9)));
     updateChartStats(candles);
-    drawChart();
     if(ld)ld.style.display='none';
-    // Live quote for header
+    drawChart();
+    // Fetch live quote separately
     getQuote(chartSym).then(function(q){
       if(!q)return;
       var ep=document.getElementById('cPrice'), ec=document.getElementById('cChg');
       if(ep){ep.textContent='$'+q.p.toFixed(2);ep.style.color=q.ch>=0?'var(--g)':'var(--r)';}
       if(ec){ec.textContent=(q.ch>=0?'+':'')+q.ch.toFixed(2)+'%';ec.style.color=q.ch>=0?'var(--g)':'var(--r)';}
-    });
-  } catch(e){if(ldt)ldt.textContent='Error loading '+chartSym;}
+    }).catch(function(){});
+  } catch(e){
+    if(ldt)ldt.textContent='Error: '+e.message;
+  }
 }
 
 function updateChartStats(data) {
@@ -1062,7 +1071,14 @@ async function runQuant(){
     var p=q?'$'+q.p.toFixed(2)+' ('+(q.ch>=0?'+':'')+q.ch.toFixed(2)+'% today)':'price unavailable';
     var closes=candleMap[sym]?candleMap[sym].map(function(d){return d.c;}):[];
     var rsi=closes.length>14?calcRSI(closes):'N/A';
-    var tech=closes.length>50?'RSI='+rsi+', vs50MA='+((closes[closes.length-1]-closes.slice(-50).reduce(function(a,b){return a+b;})/50)/( closes.slice(-50).reduce(function(a,b){return a+b;})/50)*100).toFixed(1)+'%':'';
+    var techStr='';
+    if(closes.length>50){
+      var ma50sum=closes.slice(-50).reduce(function(a,b){return a+b;},0);
+      var ma50=ma50sum/50;
+      var ma50pct=ma50>0?((closes[closes.length-1]-ma50)/ma50*100).toFixed(1):'0';
+      techStr='RSI='+rsi+', vs50MA='+ma50pct+'%';
+    }
+    var tech=techStr;
     var thesis=db?db.th.replace(/<[^>]+>/g,''):'';
     return sym+': '+p+'. '+tech+(thesis?' Context: '+thesis.substring(0,100):'');
   }).join('\n');
