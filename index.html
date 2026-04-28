@@ -1671,7 +1671,12 @@ function updateRegime(W, residuals) {
   if (nm) { nm.textContent = regime; nm.style.color = color; }
   if (dc) dc.textContent = desc;
   if (cf) { cf.textContent = conf; cf.style.color = color; }
-  if (dt) { dt.style.borderColor = color; dt.style.background = color.replace(')',',0.1)').replace('var(--','rgba(').replace('var(--g)','rgba(0,232,122,.1)').replace('var(--r)','rgba(255,51,78,.1)').replace('var(--b)','rgba(61,142,255,.1)').replace('var(--y)','rgba(245,166,35,.1)').replace('var(--t1)','rgba(136,153,170,.1)'); dt.textContent = emoji; }
+  if (dt) {
+    dt.style.borderColor = color;
+    var bgMap = {'var(--g)':'rgba(0,232,122,.1)','var(--r)':'rgba(255,51,78,.1)','var(--b)':'rgba(61,142,255,.1)','var(--y)':'rgba(245,166,35,.1)','var(--t1)':'rgba(136,153,170,.1)'};
+    dt.style.background = bgMap[color] || 'rgba(61,142,255,.1)';
+    dt.textContent = emoji;
+  }
 }
 
 // ── Update top signal card ─────────────────────────────────────────────────
@@ -1861,7 +1866,7 @@ function drawCorrelationMatrix() {
       ctx.fillText(SIG_NODES[k].s.slice(0,3), k*cellW+cellW/2, h+8);
     }
     var bl = document.getElementById('bettiLbl');
-    var posCount = Object.values(sigResiduals).filter(function(v){return v>0.002;}).length;
+    var posCount = SIG_NODES.filter(function(nd){return (sigResiduals[nd.s]||0)>0.002;}).length;
     if (bl) bl.textContent = 'β₀=' + posCount + ' · β₁=' + (n-posCount) + ' · n=' + n;
   } catch(e) {}
 }
