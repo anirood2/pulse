@@ -447,7 +447,7 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none;color:
 <div class="page" id="pg-sq">
   <div class="phdr">
     <span class="ptl">AR SS FRAMEWORK</span>
-    <button class="rfb" onclick="doRf()">↻ REFRESH</button>
+    <button class="rfb" id="rfbtn" onclick="doRf()">↻ REFRESH</button>
   </div>
   <div class="chips">
     <div class="chip"><div class="cv" id="c0" style="color:var(--y)">—</div><div class="cl">AVG SHORT%</div></div>
@@ -609,7 +609,6 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none;color:
 </div>
 
 <script>
-'use strict';
 var FH='d7lmqs9r01qk7lvtlku0d7lmqs9r01qk7lvtlkug';
 var AV='RIBPXBWFZJI87F7H';
 
@@ -854,7 +853,7 @@ function loadT(){
   }
   nx();
 }
-function doRf(){var b=document.querySelector('[onclick="doRf()"]');if(b){b.textContent='…';b.disabled=true;}loadP();setTimeout(function(){if(b){b.textContent='↻ REFRESH';b.disabled=false;}},3000);}
+function doRf(){var b=document.getElementById('rfbtn');if(b){b.textContent='…';b.disabled=true;}loadP();setTimeout(function(){if(b){b.textContent='↻ REFRESH';b.disabled=false;}},3000);}
 
 // ── CHART ──────────────────────────────────────────────────────────────────
 var cSym='NVDA',cRange='3m',cType='candle';
@@ -1176,13 +1175,13 @@ async function runQ(){
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 function init(){
-  renderGeo();
-  sqR();
+  try { renderGeo(); } catch(e) { document.getElementById('geoList').innerHTML='<div class="mst">Geo Error: '+e.message+'</div>'; }
+  try { sqR(); } catch(e) { document.getElementById('sqg').innerHTML='<div class="mst">SQ Error: '+e.message+'</div>'; }
   setTimeout(loadP,600);
   setTimeout(loadT,8000);
   setInterval(loadP,120000);
 }
-init();
+try { init(); } catch(e) { document.title='JS Error: '+e.message; }
 </script>
 </body>
 </html>
